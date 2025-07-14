@@ -8,7 +8,7 @@ import Svelecte from 'svelecte';
 
 
 async function handleFetch(query) {
-    const url = 'https://api.ror.org/organizations?query='+query;
+    const url = 'https://api.ror.org/v2/organizations?query='+query;
 
     let postOptions = {
         method: 'GET',
@@ -22,14 +22,12 @@ async function handleFetch(query) {
     let resultJson = await response.json();
 
     let result = resultJson['items'].map(item => {
-
         let searchResultItem = [];
-
-        searchResultItem.push(item.name);
-        if (item.addresses) {
-            searchResultItem.push(item.addresses[0].city);
+        searchResultItem.push(item.names.find(n=>n['types'].includes('ror_display')).value);
+        if (item.locations) {
+            searchResultItem.push(item.locations[0].geonames_details.name);
+            searchResultItem.push(item.locations[0].geonames_details.country_name);
         }
-        searchResultItem.push(item.country.country_name);
 
         let newItem = {
             id: item.id,
@@ -38,7 +36,7 @@ async function handleFetch(query) {
 
         return newItem;
     });
-
+    console.log(result);
     return result;
 }
 
