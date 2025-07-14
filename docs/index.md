@@ -4,4 +4,6 @@ Biologist-friendly application for creating MIAPPE-compliant metadata. The MIAPP
 
 ## Citation
 
-Arend, Daniel, Sebastian Beier, Dominik Brilhaus, Hannah Dörpholz, Manuel Feser, Kevin Frey, Patrick König, et al. 2023. “Improving Metadata Collection and Aggregation in Plant Phenotyping Experiments with MIAPPE Wizard and Dataplant.” BioHackrXiv. April 5. [doi:10.37044/osf.io/ekhdw](https://doi.org/10.37044/osf.io/ekhdw)
+- Daniel Arend, Sebastian Beier, Dominik Brilhaus, Hannah Dörpholz, Manuel Feser, Kevin Frey, Patrick König, et al. 2023. “Improving Metadata Collection and Aggregation in Plant Phenotyping Experiments with MIAPPE Wizard and Dataplant.” BioHackrXiv. April 5. [doi:10.37044/osf.io/ekhdw](https://doi.org/10.37044/osf.io/ekhdw)
+
+- Sebastian Beier & Patrick König 2025. "BioHackGermany24 report: User-friendly ISA-based metadata annotation of life science experiments with ISA Wizard." BioHackrXiv. February 7. [doi:10.37044/osf.io/gzyxq_v1](https://doi.org/10.37044/osf.io/gzyxq_v1)
