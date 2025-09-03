@@ -4,8 +4,8 @@ export { publications as value };
 export let attr = '';
 export let jsonPath = null;
 
-import get from 'lodash.get';
-import set from 'lodash.set';
+import get from 'lodash/get';
+import set from 'lodash/set';
 
 import { onMount } from 'svelte';
 
