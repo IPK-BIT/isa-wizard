@@ -1,68 +1,52 @@
-<script>
-    export let label = '';
-    export let isaLevel = null;
-    export let attr;
-    export let value;
-    export let showLabel = true;
-    export let focus = false;
+<script lang="ts">
+    let {
+        label = '',
+        isaLevel = '',
+        attr,
+        value = $bindable(),
+        showLabel = true,
+        focus = false
+    } = $props();
 
     if (!label) {
         label = attr;
     }
 
-    import { explanationActionFactory } from '@/actions/explanation.js';
-    import { appstate } from '@/stores/appstate';
-    import { getContext } from 'svelte';
-
-    if (!isaLevel) {
-        isaLevel = getContext('isaLevel');
-    }
-
-    let explanationAction = explanationActionFactory(isaLevel);
-
-    function setFocus(el){
-        if ($appstate==appstate.WIZARD && focus){
-            el.focus();
-        }
-    }
-
 </script>
 
-
-<section style="border: 0px solid black;">
-
-    <div class="attr pure-g v-center">
-        <div class="pure-u-5-24">
+<section>
+    <div>
+        <div class="label-wrapper">
             {#if showLabel}
-            <label>{label}</label>
+            <label for="input-{label}">{label}</label>
             {/if}
         </div>
-        <div class="pure-u-19-24">
-            <input style="width: 100%;" class:wide={!showLabel} use:explanationAction use:setFocus data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={value} on:change />
+        <div class="input-wrapper">
+            <input type="text" id="input-{label}" bind:value={value} />
         </div>
     </div>
-
-    <!--
-    <div class="attr">
-        {#if showLabel}
-        <label>{label}:</label>
-        {/if}
-        <input class:wide={!showLabel} use:explanationAction use:setFocus data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={value} on:change />
-    </div>
-    -->
-
 </section>
 
-
 <style>
-    input {
-        /*padding: 4px;*/
-        /*font-family: sans-serif;
-        font-size: 120%;*/
-        width: 500px;
+    section div {
+        padding: .5rem;
+        margin: 0;
+        box-sizing: border-box;
+        align-items: center;
+        display: flex;
+        align-content: flex-start;
+        flex-flow: row wrap;
     }
 
-    .wide {
+    div.label-wrapper {
+        width: 20%;
+    }
+
+    div.input-wrapper {
+        width: 80%;
+    }
+
+    input {
         width: 100%;
     }
 </style>

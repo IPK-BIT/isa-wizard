@@ -1,15 +1,5 @@
-import sveltePreprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
 export default {
-    // svelte options
-    extensions: ['.svelte'],
-    compilerOptions: {},
-    preprocess: sveltePreprocess({ typescript: true }),
-    onwarn: (warning, handler) => handler(warning),
-    // plugin options
-    vitePlugin: {
-      exclude: [],
-      // experimental options
-      experimental: {}
-    }
+  preprocess: vitePreprocess(),
 }

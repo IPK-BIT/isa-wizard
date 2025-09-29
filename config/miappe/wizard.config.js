@@ -1,8 +1,9 @@
 window.config = {
 
     general: {
+        name: 'MIAPPE Wizard',
         layoutMode: 'standalone', // standalone | plugin
-        initialView: 'questionnaire', // questionnaire
+        initialView: 'init', // init, wizard, form
         showQuestionnaireProgressBar: true,
     },
 

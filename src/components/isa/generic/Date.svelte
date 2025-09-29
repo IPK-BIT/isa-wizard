@@ -1,134 +1,53 @@
-<script>
-export let label = '';
-export let isaLevel = null;
-export let attr;
-let date;
-export { date as value };
-export let showLabel = true;
-export let focus = false;
+<script lang="ts">
+    let {
+        label = '',
+        isaLevel = '',
+        attr,
+        value = $bindable(),
+        showLabel = true,
+        focus = false
+    } = $props();
 
-if (!label) {
-    label = attr;
-}
-
-import { explanationActionFactory } from '@/actions/explanation.js';
-import { appstate } from '@/stores/appstate';
-import { onMount, getContext, createEventDispatcher } from 'svelte';
-const dispatch = createEventDispatcher();
-
-let year = '';
-let month = '';
-let day = '';
-
-
-if (!isaLevel) {
-    isaLevel = getContext('isaLevel');
-}
-
-let explanationAction = explanationActionFactory(isaLevel);
-
-function setFocus(el){
-    if ($appstate==appstate.WIZARD && focus){
-        el.focus();
-    }
-}
-
-function onChange() {
-    if (year == '') {
-        year = new Date().getFullYear().toString();
-    }
-    if (month == '') {
-        month = '01';
-    }
-    if (day == '') {
-        day = '01';
-    }
-    date = year+'-'+month+'-'+day;
-    dispatch('change');
-}
-
-const zeroPad = (num, places) => String(num).padStart(places, '0');
-
-function init() {
-    if (date && date.length == 10 && date.includes('-')) {
-        let parts = date.split('-');
-        year = parts[0];
-        month = parts[1];
-        day = parts[2];
+    if (!label) {
+        label = attr;
     }
 
-}
-
-onMount(() => {
-    //init();
-})
 
 </script>
 
-
 <section>
-
-    <div class="attr pure-g v-center">
-        <div class="pure-u-5-24">
+    <div>
+        <div class="label-wrapper">
             {#if showLabel}
-            <label>{label}</label>
+            <label for="input-{label}">{label}</label>
             {/if}
         </div>
-        <div class="pure-u-19-24">
-
-            <!--
-            <input style="width: 33%;" type="number" min="2000" max="2050" bind:value={year} on:change={onChange} />
-            
-            <select style="width: 33%;" bind:value={month} on:change={onChange}>
-                <option value=""></option>
-                {#each {length: 12} as _, i}
-                <option value="{zeroPad(i+1, 2)}">{zeroPad(i+1, 2)}</option>
-                {/each}
-            </select>
-            <select style="width: 33%;" bind:value={day} on:change={onChange}>
-                <option value=""></option>
-                {#each {length: 31} as _, i}
-                <option value="{zeroPad(i+1, 2)}">{zeroPad(i+1, 2)}</option>
-                {/each}
-            </select>
-            -->
-
-            <input bind:value={date} type="date" style="width: 100%;" on:change />
+        <div class="input-wrapper">
+            <input type="date" id="input-{label}" bind:value={value} />
         </div>
     </div>
-
-    <!--
-    <div class="attr">
-        {#if showLabel}
-        <label>{label}:</label>
-        {/if}
-        
-        <input type="number" min="2000" max="2050" bind:value={year} on:change={onChange} />
-
-        <select bind:value={month} on:change={onChange}>
-            <option value=""></option>
-            {#each {length: 12} as _, i}
-            <option value="{zeroPad(i+1, 2)}">{zeroPad(i+1, 2)}</option>
-            {/each}
-        </select>
-
-        <select bind:value={day} on:change={onChange}>
-            <option value=""></option>
-            {#each {length: 31} as _, i}
-            <option value="{zeroPad(i+1, 2)}">{zeroPad(i+1, 2)}</option>
-            {/each}
-        </select>
-
-    </div>
-    -->
-
 </section>
 
-
 <style>
-.datepicker {
-    padding: 4px;
-    font-family: sans-serif;
-    font-size: 100%;
-}
+    section div {
+        padding: .5rem;
+        margin: 0;
+        box-sizing: border-box;
+        align-items: center;
+        display: flex;
+        align-content: flex-start;
+        flex-flow: row wrap;
+    }
+
+    div.label-wrapper {
+        width: 20%;
+    }
+
+    div.input-wrapper {
+        width: 80%;
+    }
+
+    input {
+        width: 100%;
+    }
 </style>

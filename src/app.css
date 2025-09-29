@@ -1,0 +1,65 @@
+:root {
+    --sv-border: 1px solid black;
+}
+
+input[type="text"], input[type="number"], input[type="date"] {
+    border: 1px solid black;
+    height: 1rem;
+    padding: 1rem;
+    font-size: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+textarea {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 100%;
+    outline: none;
+}
+
+button.btn {
+    background: linear-gradient(0deg, hsl(145, 83%, 28%) 0%, hsl(145, 83%, 38%) 100%);
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    padding: 3px 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+button.btn:hover {
+    background: linear-gradient(0deg, hsl(145, 83%, 33%) 0%, hsl(145, 83%, 43%) 100%);
+}
+
+button.btn.large {
+    padding: 6px 15px;
+    font-size: 100%;
+    border-right: 1px solid rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+}
+
+button.btn-warning {
+    background: linear-gradient(0deg, hsl(29, 83%, 40%) 0%, hsl(29, 83%, 50%) 100%) !important;
+}
+button.btn-warning:hover {
+    background: linear-gradient(0deg, hsl(29, 83%, 45%) 0%, hsl(29, 83%, 55%) 100%) !important;
+}
+
+button.btn-secondary {
+    background: linear-gradient(0deg, hsl(194, 70%, 48%) 0%, hsl(194, 70%, 60%) 100%) !important;
+}
+button.btn-secondary:hover {
+    background: linear-gradient(0deg, hsl(194, 70%, 54%) 0%, hsl(194, 70%, 66%) 100%) !important;
+}
+
+
+
+div.bbox{
+    background: white;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.25);
+}

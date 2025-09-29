@@ -1,57 +1,31 @@
-<script>
-export let attr = '';
-export let componentConfig = {};
-let people;
-export { people as value };
-export let label = 'People';
+<script lang="ts">
+    import Schema from "@/lib/schemas";
+    import Person from "./Person.svelte";
 
-import Schemas from '@/lib/schemas.js';
-import Person from '@/components/isa/generic/Person.svelte';
+    let {
+        attr = '',
+        componentConfig = {},
+        label = 'People',
+        value: people = $bindable(),
+    } = $props();
 
-const addPerson = async () => {
-    let emptyPerson = await Schemas.getObjectFromSchema('person');
-    people = [...people, emptyPerson];
-}
+    if (!label) {
+        label = attr;
+    }
 
-if (componentConfig.label) {
-    label = componentConfig.label;
-}
+    let __person__ = label==='Authors' ? 'Author' : 'Person';
 
-let __person__ = 'person';
-if (label === 'Authors') {
-    __person__ = 'Author';
-}
-
-function onRemovePerson(event) {
-    people.splice(event.detail.index, 1);
-    people = [...people];
-    //dispatch('change');
-}
-
+    function addPerson() {
+        people = [...people, Schema.getObjectFromSchema('person')];
+    }
 </script>
 
 <section>
-
-    <div class="attr">
+    <div>
         <h3>{label}</h3>
-
-        {#each people as person, index}
-        <Person on:change on:removePerson={onRemovePerson} bind:person countPeople={people.length} {componentConfig} {index} />
+        {#each people as _, i}
+            <Person bind:value={people[i]} countPeople={people.length} />
         {/each}
-
-        <button class="btn" on:click|preventDefault={() => addPerson()}>Add {__person__}</button>
+        <button class="btn" onclick={addPerson}>Add {__person__}</button>
     </div>
-
 </section>
-
-
-<style>
-section {
-    /*background: rgba(0,0,0,0.05);*/
-    margin-bottom: 10px;
-}
-h3 {
-    margin: 0 0 10px 0;
-    font-weight: 500;
-}
-</style>
