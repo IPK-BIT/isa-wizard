@@ -13,6 +13,7 @@
     import ComponentWrapper from "./ComponentWrapper.svelte";
     import People from "../isa/generic/People.svelte";
     import type { Hook } from "@/lib/types";
+  import Protocol from "../isa/generic/Protocol.svelte";
 
     const fieldTypes: Record<string, any> = {
         'text': String,
@@ -23,6 +24,7 @@
 
     const componentTypes: Record<string, any> = {
         'people': People,
+        'protocol': Protocol,
     }
 
     function executeHook(idx: number) {
