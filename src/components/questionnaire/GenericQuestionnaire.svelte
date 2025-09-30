@@ -65,7 +65,7 @@
     }
 
     function handleKeypress(event: KeyboardEvent) {
-        console.log(event);
+        // console.log(event);
     }
 </script>
 
