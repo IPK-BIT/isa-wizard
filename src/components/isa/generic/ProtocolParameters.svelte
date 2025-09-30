@@ -29,19 +29,19 @@
   }
 
   let tmp: Parameter;
+  let countParameters = $state(0);
   function addParameter(parameter: Parameter) {
     if (protocolParameters.find((p: any) => p.parameterName.termAccession === parameter.iri)) {
       console.error(`Parameter with iri: ${parameter.iri} already added!`);
       return;
     }
 
-    console.log("add: ", parameter);
-
     const paramSchema = _getParameter(parameter.label);
     paramSchema.parameterName.termSource = parameter.ontology_name;
     paramSchema.parameterName.termAccession = parameter.iri;
 
     protocolParameters = [...protocolParameters, paramSchema];
+    countParameters++;
 
     //             {
     //               "@id": "",
@@ -64,15 +64,16 @@
   <h3>Protocol Parameters</h3>
 
   <div>
+    {#key countParameters}
     <AutocompleteWidget
       api={"https://api.terminology.tib.eu/api/"}
       parameter={"fieldList=description,label,iri,short_form,ontology_name&collection=dataplant&type=class"}
       singleSelection={true}
       selectionChangedEvent={(selectedOptions: Parameter[]) => {
         tmp = selectedOptions[0]; // only one parameter because of singleSelection = true
-        console.log(selectedOptions);
       }}
     />
+    {/key}
 
     <button type="button" class="btn btn-secondary" onclick={() => addParameter(tmp)}>Add Parameters</button>
 
