@@ -5,15 +5,9 @@
 
   let { attr = "", componentConfig = {}, label = "Protocol", value: protocol = $bindable() } = $props();
 
-let nameObj = {
-  label: "Name",
-  attr: '',
-  value: protocol[0].name,
-}
-
 </script>
 
-<pre>{JSON.stringify(protocol)}</pre>
+<pre>{JSON.stringify(protocol[0].parameters)}</pre>
 
 <String label={"Name"} attr="name" bind:value={protocol[0].name} />
 
@@ -21,7 +15,7 @@ let nameObj = {
 
 <String label={"URI"} attr="uri" bind:value={protocol[0].uri} />
 
-<ProtocolParameters bind:value={protocol.parameters} />
+<ProtocolParameters bind:value={protocol[0].parameters} />
 
 <String label={"Version"} attr="" bind:value={protocol[0].version} />
 
