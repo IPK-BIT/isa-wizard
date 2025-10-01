@@ -41,7 +41,7 @@
     paramSchema.parameterName.termAccession = parameter.iri;
 
     protocolParameters = [...protocolParameters, paramSchema];
-    countParameters++;
+    countParameters++; // This will trigger rerendering from Autocomplete widget
 
     //             {
     //               "@id": "",
@@ -75,7 +75,7 @@
     />
     {/key}
 
-    <button type="button" class="btn btn-secondary" onclick={() => addParameter(tmp)}>Add Parameters</button>
+    <button type="button" class="btn btn-secondary" onclick={() => addParameter(tmp)}>Add Parameter</button>
 
     {#each protocolParameters, i}
       <ProtocolParameter remove={(index: number) => removeParameter(index)} index={i} bind:value={protocolParameters[i]} />

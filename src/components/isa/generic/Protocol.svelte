@@ -7,8 +7,6 @@
 
 </script>
 
-<pre>{JSON.stringify(protocol[0].parameters)}</pre>
-
 <String label={"Name"} attr="name" bind:value={protocol[0].name} />
 
 <Textarea label={"Description"} attr="description" bind:value={protocol[0].description} />
