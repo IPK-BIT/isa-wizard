@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ProtocolComponents from "./ProtocolComponents.svelte";
   import ProtocolParameters from "./ProtocolParameters.svelte";
   import String from "./String.svelte";
   import Textarea from "./Textarea.svelte";
@@ -14,6 +15,8 @@
 <String label={"URI"} attr="uri" bind:value={protocol[0].uri} />
 
 <ProtocolParameters bind:value={protocol[0].parameters} />
+
+<ProtocolComponents bind:value={protocol[0].components} />
 
 <String label={"Version"} attr="" bind:value={protocol[0].version} />
 
