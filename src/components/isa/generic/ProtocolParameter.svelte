@@ -32,7 +32,6 @@
     });
 
     if (values.length > 0) {
-      console.log(values);
       return values;
     } else {
       return [];
@@ -48,13 +47,11 @@
     ontologySchema.termAccession = unit.short_form;
     commentSchema.value = ontologySchema;
 
-    console.log(protocolParameter);
     protocolParameter.comments = [...protocolParameter.comments, commentSchema];
-    
   }
 
   function removeUnit(){
-    // because only one unit exists in this component, we can simply delete first unit we find in comments
+    // because only one unit should exist in this component, we can simply remove first unit we find in comments
     const unitIndex = protocolParameter.comments.findIndex((c: {name: string}) => c.name === 'unit');
     if(unitIndex){
       protocolParameter.comments = [

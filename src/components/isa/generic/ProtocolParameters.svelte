@@ -48,7 +48,6 @@
     protocolParameters = [...protocolParameters.slice(0, index), ...protocolParameters.slice(index + 1)];
   }
 
-  $inspect(selectInput);
 </script>
 
 <div id="parameters" class="parameters-container">
