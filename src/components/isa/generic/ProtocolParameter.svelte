@@ -1,19 +1,21 @@
 <script lang="ts">
   import Schema from "@/lib/schemas";
   import Svelecte from "svelecte";
+  import { onMount } from "svelte";
 
   interface OntologyResult {
-    label: string;
-    value: string;
-    description: string[];
-    iri: string;
-    ontology_name: string;
-    short_form: string;
+    label?: string;
+    value?: string;
+    description?: string[];
+    iri?: string;
+    ontology_name?: string;
+    short_form?: string;
   }
 
   let { value: protocolParameter = $bindable(), remove, index } = $props();
 
   let selectedValue: OntologyResult | null = $state(null);
+  let unit = $derived(protocolParameter?.comments.find((c: {name: string, value: any[]}) => c.name === 'unit'));
 
   function handleFetch(data: { response: { docs: OntologyResult[] } }) {
     let results = data.response.docs;
@@ -51,7 +53,19 @@
     
   }
 
-  $inspect(selectedValue);
+  function removeUnit(){
+    // because only one unit exists in this component, we can simply delete first unit we find in comments
+    const unitIndex = protocolParameter.comments.findIndex((c: {name: string}) => c.name === 'unit');
+    if(unitIndex){
+      protocolParameter.comments = [
+        ...protocolParameter.comments.slice(0, unitIndex),
+        ...protocolParameter.comments.slice(unitIndex + 1),
+      ];
+    }else{
+      console.error('No unit found to remove');
+    }
+  }
+
 </script>
 
 <div class="container">
@@ -68,13 +82,14 @@
     </label>
   </div>
   <div class="search-unit">
-    {#if selectedValue}
+    {#if unit}
       <div class="">
-        <span><strong>Unit:</strong> {`${selectedValue.label} > ${selectedValue.short_form}`}</span>
+        <span><strong>Unit:</strong> {`${unit.value.annotationValue} > ${unit.value.termAccession}`}</span>
         <button
           class="btn btn-warning"
           onclick={() => {
             selectedValue = null;
+            removeUnit();  
           }}>Remove</button
         >
       </div>

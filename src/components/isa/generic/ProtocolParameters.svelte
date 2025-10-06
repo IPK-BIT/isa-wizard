@@ -28,7 +28,7 @@
     return parameter;
   }
 
-  let tmp: Parameter;
+  let selectInput: Parameter | null = $state(null);
   let countParameters = $state(0);
   function addParameter(parameter: Parameter) {
     if (protocolParameters.find((p: any) => p.parameterName.termAccession === parameter.iri)) {
@@ -42,22 +42,13 @@
 
     protocolParameters = [...protocolParameters, paramSchema];
     countParameters++; // This will trigger rerendering from Autocomplete widget
-
-    //             {
-    //               "@id": "",
-    //               "name": "unit",
-    //               "value": {
-    //                 "@id": "",
-    //                 "annotationValue": "",
-    //                 "termSource": "",
-    //                 "termAccession": "",
-    //                 "comments": []
-    //               }
   }
 
   function removeParameter(index: number) {
     protocolParameters = [...protocolParameters.slice(0, index), ...protocolParameters.slice(index + 1)];
   }
+
+  $inspect(selectInput);
 </script>
 
 <div id="parameters" class="parameters-container">
@@ -72,12 +63,12 @@
       parameter={"fieldList=description,label,iri,short_form,ontology_name&collection=dataplant&type=class"}
       singleSelection={true}
       selectionChangedEvent={(selectedOptions: Parameter[]) => {
-        tmp = selectedOptions[0]; // only one parameter because of singleSelection = true
+        selectInput = selectedOptions[0] ?? null; // only one parameter at idx=0 because of singleSelection = true
       }}
     />
     {/key}
 
-    <button type="button" class="btn btn-secondary" onclick={() => addParameter(tmp)}>Add Parameter</button>
+    <button type="button" class="btn btn-secondary" disabled={selectInput === null} onclick={() => {if(selectInput) addParameter(selectInput)}}>Add Parameter</button>
 
     {#each protocolParameters, i}
       <ProtocolParameter remove={(index: number) => removeParameter(index)} index={i} bind:value={protocolParameters[i]} />
@@ -105,5 +96,11 @@
 button {
   max-width: 150px;
 }
+
+button.btn:disabled {
+  background: lightgray !important;
+  cursor: not-allowed;
+}
+
 
 </style>
