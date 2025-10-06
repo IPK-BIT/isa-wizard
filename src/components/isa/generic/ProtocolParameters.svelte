@@ -61,7 +61,9 @@
 </script>
 
 <div id="parameters" class="parameters-container">
-  <h3>Protocol Parameters</h3>
+  <p>
+    Protocol Parameters
+  </p>
 
   <div>
     {#key countParameters}
@@ -83,4 +85,25 @@
   </div>
 </div>
 
-<!-- <String label={"Protocol Parameters"} attr="parameters" /> -->
+<style>
+.parameters-container {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  padding: 8px;
+}
+
+.parameters-container p, div {
+  padding: 8px;
+}
+
+.parameters-container div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+button {
+  max-width: 150px;
+}
+
+</style>
