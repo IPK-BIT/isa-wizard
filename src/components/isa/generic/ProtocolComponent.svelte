@@ -4,6 +4,7 @@
   import String from "../generic/String.svelte";
   import OntologyAnnotation from "../generic/OntologyAnnotation.svelte";
   import Schema from "@/lib/schemas";
+  import OntologySvelect from "./OntologySvelect.svelte";
 
   let { value: component = $bindable(), index, remove } = $props();
   let selectedValue = $state(null);
@@ -52,7 +53,11 @@
 
   function removeComponentType() {
     component.componentType = {};
+    result = null;
   }
+
+  let result = $state();
+  $inspect("rsult in parent: ", result);
 </script>
 
 <div class="component-container">
@@ -67,13 +72,21 @@
     <p>Component Type</p>
     <div>
       {#if !componentType || Object.keys(componentType).length === 0}
-        <Svelecte
+        <OntologySvelect
+        bind:searchResult = {result}
+        onChangeCallback = {() => addComponentType(result)}
+        
+        >
+
+        </OntologySvelect>
+
+        <!-- <Svelecte
           placeholder="Search unit"
           bind:value={selectedValue}
           fetch="https://api.terminology.tib.eu/api/select?q=[query]&fieldList=description,label,iri,ontology_name,type,short_form"
           fetchCallback={handleFetch}
           onChange={() => (selectedValue ? addComponentType(selectedValue) : console.log("No selected Value"))}
-        ></Svelecte>
+        ></Svelecte> -->
       {:else}
         <div class="type-container">
           <p>{componentType.annotationValue} ({componentType.termAccession})</p>

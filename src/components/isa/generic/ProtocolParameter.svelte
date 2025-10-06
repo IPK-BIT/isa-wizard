@@ -1,4 +1,6 @@
 <script lang="ts">
+  import OntologySvelect from './OntologySvelect.svelte';
+
   import Schema from "@/lib/schemas";
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
@@ -58,10 +60,14 @@
         ...protocolParameter.comments.slice(0, unitIndex),
         ...protocolParameter.comments.slice(unitIndex + 1),
       ];
+      result = null;
     }else{
       console.error('No unit found to remove');
     }
   }
+
+  let result = $state();
+  $inspect(result);
 
 </script>
 
@@ -91,32 +97,13 @@
         >
       </div>
     {:else}
-      <Svelecte
-        placeholder="Search unit"
-        bind:value={selectedValue}
-        fetch="https://api.terminology.tib.eu/api/select?q=[query]&fieldList=description,label,iri,ontology_name,type,short_form"
-        fetchCallback={handleFetch}
-        onChange={() => selectedValue ? addUnit(selectedValue) : console.log('No selected Value')}
-      >
-        {#snippet option(opt, inputValue)}
-          {@const ontology = opt as OntologyResult}
-          <div class="unit-container">
-            <div class="ontology-label">
-              {ontology.label}
-              [{ontology.ontology_name}]
-            </div>
-            <div class="ontology-description">
-              {#if ontology.description}
-                {ontology.description}
-              {/if}
-            </div>
+<OntologySvelect
+    bind:searchResult = {result} 
+    onChangeCallback = {() => addUnit(result)}
 
-            <div class="ontology-iri">
-              {ontology.iri}
-            </div>
-          </div>
-        {/snippet}
-      </Svelecte>
+>
+
+</OntologySvelect>
     {/if}
   </div>
   <div class="remove-btn">
