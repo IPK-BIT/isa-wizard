@@ -156,13 +156,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr auto;
     grid-template-rows: auto;
-    background-color: red;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
   .container > div {
     display: flex;
     align-items: center;
-    background-color: #f1f1f1;
-    border: 1px solid black;
     padding: 5px;
     text-align: center;
   }
