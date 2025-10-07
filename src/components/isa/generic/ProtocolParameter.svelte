@@ -1,49 +1,21 @@
 <script lang="ts">
-  import OntologySvelect from './OntologySvelect.svelte';
+  import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
 
   import Schema from "@/lib/schemas";
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
 
-  interface OntologyResult {
-    label?: string;
-    value?: string;
-    description?: string[];
-    iri?: string;
-    ontology_name?: string;
-    short_form?: string;
-  }
+
 
   let { value: protocolParameter = $bindable(), remove, index } = $props();
 
   let selectedValue: OntologyResult | null = $state(null);
-  let unit = $derived(protocolParameter?.comments.find((c: {name: string, value: any[]}) => c.name === 'unit'));
+  let unit = $derived(protocolParameter?.comments.find((c: { name: string; value: any[] }) => c.name === "unit"));
 
-  function handleFetch(data: { response: { docs: OntologyResult[] } }) {
-    let results = data.response.docs;
-    let values = results.map((result: OntologyResult) => {
-      return {
-        label: result.label,
-        value: result,
-        description: result.description?.[0] ?? null,
-        iri: result.iri,
-        ontology_name: result.ontology_name,
-        short_form: result.short_form,
-        text: `${result.label} > ${result.short_form}`,
-      };
-    });
-
-    if (values.length > 0) {
-      return values;
-    } else {
-      return [];
-    }
-  }
-
-  function addUnit(unit: OntologyResult){
-    const commentSchema = Schema.getObjectFromSchema('comment');
+  function addUnit(unit: OntologyResult) {
+    const commentSchema = Schema.getObjectFromSchema("comment");
     commentSchema.name = "unit";
-    const ontologySchema = Schema.getObjectFromSchema('ontology_annotation');
+    const ontologySchema = Schema.getObjectFromSchema("ontology_annotation");
     ontologySchema.annotationValue = unit.label;
     ontologySchema.termSource = unit.ontology_name;
     ontologySchema.termAccession = unit.short_form;
@@ -52,23 +24,19 @@
     protocolParameter.comments = [...protocolParameter.comments, commentSchema];
   }
 
-  function removeUnit(){
+  function removeUnit() {
     // because only one unit should exist in this component, we can simply remove first unit we find in comments
-    const unitIndex = protocolParameter.comments.findIndex((c: {name: string}) => c.name === 'unit');
-    if(unitIndex){
-      protocolParameter.comments = [
-        ...protocolParameter.comments.slice(0, unitIndex),
-        ...protocolParameter.comments.slice(unitIndex + 1),
-      ];
+    const unitIndex = protocolParameter.comments.findIndex((c: { name: string }) => c.name === "unit");
+    if (unitIndex) {
+      protocolParameter.comments = [...protocolParameter.comments.slice(0, unitIndex), ...protocolParameter.comments.slice(unitIndex + 1)];
       result = null;
-    }else{
-      console.error('No unit found to remove');
+    } else {
+      console.error("No unit found to remove");
     }
   }
 
-  let result = $state();
+  let result = $state(null);
   $inspect(result);
-
 </script>
 
 <div class="container">
@@ -92,24 +60,17 @@
           class="btn btn-warning"
           onclick={() => {
             selectedValue = null;
-            removeUnit();  
+            removeUnit();
+            result = null;
           }}>Remove</button
         >
       </div>
     {:else}
-<OntologySvelect
-    bind:searchResult = {result} 
-    onChangeCallback = {() => addUnit(result)}
-
->
-
-</OntologySvelect>
+      <OntologySvelect bind:searchResult={result} onChangeCallback={() => addUnit(result)}></OntologySvelect>
     {/if}
   </div>
   <div class="remove-btn">
-    <button type="button" class="btn btn-warning" onclick={() => remove(index)}
-      >Remove</button
-    >
+    <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
   </div>
 </div>
 

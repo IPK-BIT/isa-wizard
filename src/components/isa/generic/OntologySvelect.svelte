@@ -3,13 +3,22 @@
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
 
-  interface OntologyResult {
+  export interface OntologyResult {
     label?: string;
     value?: string;
     description?: string[];
     iri?: string;
     ontology_name?: string;
     short_form?: string;
+  }
+
+  interface Props {
+    value?: any;
+    placeholder?: string;
+    searchResult: OntologyResult | null;
+    fetchUrl?: string;
+    fetchCallback?: any;
+    onChangeCallback: any;
   }
 
   let {
@@ -19,7 +28,7 @@
     fetchUrl = "https://api.terminology.tib.eu/api/select?q=[query]&fieldList=description,label,iri,ontology_name,type,short_form",
     fetchCallback = handleFetch,
     onChangeCallback = () =>{console.log("hey")},
-  } = $props();
+  }: Props = $props();
 
   let selectedValue: OntologyResult | null = $state(null);
 
@@ -73,7 +82,7 @@
   <div class="type-container">
     <p>{searchResult.label} ({searchResult.short_form})</p>
     <div class="button-container">
-      <button class="btn btn-warning" aria-label="remove component type" onclick={() => (searchResult = undefined)}> X </button>
+      <button class="btn btn-warning" aria-label="remove component type" onclick={() => (searchResult = null)}> X </button>
     </div>
   </div>
 {/if}
