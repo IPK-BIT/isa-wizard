@@ -16,7 +16,8 @@
     searchResult: OntologyResult | string | null;
     fetchUrl?: string;
     fetchCallback?: any;
-    onChangeCallback: any;
+    onChangeCallback?: any;
+    renderer?: any;
   }
 
   let {
@@ -26,6 +27,7 @@
     fetchUrl = "https://api.terminology.tib.eu/api/select?q=[query]&fieldList=description,label,iri,ontology_name,type,short_form",
     fetchCallback = handleFetch,
     onChangeCallback,
+    renderer,
   }: Props = $props();
 
   function handleFetch(data: { response: { docs: OntologyResult[] } }) {
@@ -37,7 +39,7 @@
         iri: result.iri,
         ontology_name: result.ontology_name,
         short_form: result.short_form,
-        text: `${result.label} > ${result.short_form}`,
+        text: `${result.label} (${result.short_form})`,
         value: result,
       };
     });
@@ -52,7 +54,7 @@
 </script>
  
 
-  <Svelecte {placeholder} bind:value={searchResult} fetch={fetchUrl} {fetchCallback} onChange={onChangeCallback}>
+  <Svelecte {placeholder} bind:value={searchResult} fetch={fetchUrl} {fetchCallback} onChange={onChangeCallback} renderer={renderer}>
     {#snippet option(opt, inputValue)}
       {@const ontology = opt as OntologyResult}
       <div class="unit-container">

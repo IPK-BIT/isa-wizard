@@ -5,6 +5,7 @@ window.config = {
         layoutMode: 'standalone', // standalone | plugin
         initialView: 'init', // init, wizard, form
         showQuestionnaireProgressBar: true,
+        showConsole: true,
     },
 
     export: [

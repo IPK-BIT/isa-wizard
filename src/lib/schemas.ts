@@ -103,7 +103,6 @@ export default class Schema {
         return investigationWithPrefill;
     }
 
-
     static addPrefill(investigation: any, prefill: any[]) {
         if (prefill) {
             for (let item of prefill) {
@@ -144,5 +143,21 @@ export default class Schema {
     static getPerson(values: any[]) {
         let person = Schema.getObjectFromSchema('person');
         return Object.assign(person, values);
+    }
+
+     static createCharacteristicObject(key, value) {
+        let emptyCharacteristic = Schema.getObjectFromSchema('material_attribute_value');
+        emptyCharacteristic.value = value;
+
+        let emptyOntologyAnnotation = Schema.getObjectFromSchema('ontology_annotation');
+        emptyOntologyAnnotation.annotationValue = key;
+        let emptyCategory = Schema.getObjectFromSchema('material_attribute');
+        emptyCategory.characteristicType = emptyOntologyAnnotation;
+        emptyCharacteristic.category = emptyCategory;
+
+        emptyOntologyAnnotation = Schema.getObjectFromSchema('ontology_annotation');
+        emptyCharacteristic.unit = null;
+
+        return emptyCharacteristic;
     }
 }

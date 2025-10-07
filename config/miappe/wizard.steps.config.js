@@ -227,6 +227,91 @@ window.steps = [
         //     }
         // ]
     },
+     {
+        hooks: [
+            {
+                type: 'protocol',
+                state: {
+                    mapping: 'studies[0].protocols',
+                    count: 2
+                },
+                // parameters: {
+                //     protocolName: 'Growth',
+                //     protocolVersion: 'MIAPPE v1.1',
+                //     protocolType: {
+                //         "@id": "",
+                //         "annotationValue": "plant growth protocol",
+                //         "termSource": "DPBO",
+                //         "termAccession": "DPBO:1000164",
+                //         "comments": []
+                //       },
+                //     // protocolDescription: 'How the plants were grown up.',
+                //     protocolParameters: [ 
+                //         {
+                //             "@id": "",
+                //             "annotationValue": "Light intensity",
+                //             "termSource": "MIAPPE",
+                //             "termAccession": "MIAPPE:0101",
+                //             "comments": []
+                //         }, {
+                //             "@id": "",
+                //             "annotationValue": "temperature day",
+                //             "termSource": "DPBO",
+                //             "termAccession": "DPBO:0000007",
+                //             "comments": []
+                //         },{
+                //             "@id": "",
+                //             "annotationValue": "temperature night",
+                //             "termSource": "DPBO",
+                //             "termAccession": "DPBO:0000008",
+                //             "comments": []
+                //         }
+                //     ]
+                // }
+            }
+        ],
+        title: 'Please provide a brief summary of the Germination Conditions.',
+        component: "protocol",
+                jsonPath: 'studies[0].protocols',
+        componentConfig: {
+            showComments: false,
+            label: 'Protocols'
+        }
+        // fields: [
+        //     {
+        //         label: 'Growth description',
+        //         type: 'textarea',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].description'
+        //         },
+        //         explanation: 'DM-67'
+        //     },
+        //     {
+        //         label: 'Protocol URI',
+        //         type: 'text',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].uri'
+        //         },
+        //         explanation: 'DM-66'
+        //     },
+        //     {
+        //         label: 'Protocol Parameters',
+        //         type: 'parameters',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].parameters'
+        //         },
+        //         explanation: 'DM-68'
+        //     },
+        //     {
+        //         label: 'Protocol Components',
+        //         type: 'components',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].components'
+        //         },
+        //         explanation: 'DM-69'
+        //     }
+        // ]
+    },
     {
         title: 'Please upload the Material used in your Study.',
         component: 'StudyProcesses',
@@ -343,6 +428,7 @@ window.steps = [
             }
         ]
     },
+    
     {
         title: 'Please upload the results of your Study.',
         component: 'AssayProcesses',

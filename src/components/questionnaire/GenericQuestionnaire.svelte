@@ -14,6 +14,7 @@
     import People from "../isa/generic/People.svelte";
     import type { Hook } from "@/lib/types";
   import Protocol from "../isa/generic/Protocol.svelte";
+  import StudyProcesses from "../isa/generic/StudyProcesses.svelte";
 
     const fieldTypes: Record<string, any> = {
         'text': String,
@@ -25,6 +26,7 @@
     const componentTypes: Record<string, any> = {
         'people': People,
         'protocol': Protocol,
+        'StudyProcesses': StudyProcesses,
     }
 
     function executeHook(idx: number) {

@@ -15,6 +15,8 @@
 
     import { isaObj, isaStr } from "./stores/isa";
 
+    let show = $state(true);
+
 </script>
 
 {#if getAppState() === AppState.Init}
@@ -46,10 +48,14 @@
             </div>
         </div>
 
-        {#if config.general.layoutMode === 'standalone'}
+        {#if config.general.layoutMode === 'standalone' && config.general.showConsole}
         <div class="rightcol">
+           
             <div class="json bbox">
+                 <button onclick={() => show = !show}>Show ISA</button>
+                 {#if show}
                 <textarea bind:value={$isaStr}></textarea>
+                {/if}
             </div>            
         </div>
         {/if}
