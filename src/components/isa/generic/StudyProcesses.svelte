@@ -81,8 +81,8 @@
                         factorValue.category.factorName = column_mapping[c].value.label;
                         factorValue.category.factorType = Schemas.getObjectFromSchema("ontology_annotation");
                         factorValue.category.factorType.annotationValue = column_mapping[c].value.label;
-                        factorValue.category.factorType.termSource = column_mapping[c].value.ontology;
-                        factorValue.category.factorType.termAccession = column_mapping[c].value.value;
+                        factorValue.category.factorType.termSource = column_mapping[c].value.ontology_name;
+                        factorValue.category.factorType.termAccession = column_mapping[c].value.short_form;
                         factorValue.value = row.get(c);
                         sample.factorValues = [...sample.factorValues, factorValue];
                     })
