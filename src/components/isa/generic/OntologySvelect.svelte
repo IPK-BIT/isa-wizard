@@ -1,7 +1,5 @@
 <script lang="ts">
-  import Schema from "@/lib/schemas";
   import Svelecte from "svelecte";
-  import { onMount } from "svelte";
 
   export interface OntologyResult {
     label?: string;
@@ -15,7 +13,7 @@
   interface Props {
     value?: any;
     placeholder?: string;
-    searchResult: OntologyResult | null;
+    searchResult: OntologyResult | string | null;
     fetchUrl?: string;
     fetchCallback?: any;
     onChangeCallback: any;
@@ -27,22 +25,20 @@
     searchResult = $bindable(),
     fetchUrl = "https://api.terminology.tib.eu/api/select?q=[query]&fieldList=description,label,iri,ontology_name,type,short_form",
     fetchCallback = handleFetch,
-    onChangeCallback = () =>{console.log("hey")},
+    onChangeCallback,
   }: Props = $props();
-
-  let selectedValue: OntologyResult | null = $state(null);
 
   function handleFetch(data: { response: { docs: OntologyResult[] } }) {
     let results = data.response.docs;
     let values = results.map((result: OntologyResult) => {
       return {
         label: result.label,
-        value: result,
         description: result.description?.[0] ?? null,
         iri: result.iri,
         ontology_name: result.ontology_name,
         short_form: result.short_form,
         text: `${result.label} > ${result.short_form}`,
+        value: result,
       };
     });
 
@@ -54,8 +50,8 @@
   }
 
 </script>
+ 
 
-{#if !searchResult}
   <Svelecte {placeholder} bind:value={searchResult} fetch={fetchUrl} {fetchCallback} onChange={onChangeCallback}>
     {#snippet option(opt, inputValue)}
       {@const ontology = opt as OntologyResult}
@@ -69,45 +65,14 @@
             {ontology.description}
           {/if}
         </div>
-
         <div class="ontology-iri">
           {ontology.iri}
         </div>
       </div>
     {/snippet}
   </Svelecte>
-{/if}
-
-{#if searchResult}
-  <div class="type-container">
-    <p>{searchResult.label} ({searchResult.short_form})</p>
-    <div class="button-container">
-      <button class="btn btn-warning" aria-label="remove component type" onclick={() => (searchResult = null)}> X </button>
-    </div>
-  </div>
-{/if}
 
 <style>
-  .button-container {
-    display: flex;
-    justify-content: flex-end;
-    padding: 4px 0px;
-  }
-
-  .type-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .type-container button {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .unit-container {
     display: flex;
     flex-direction: column;

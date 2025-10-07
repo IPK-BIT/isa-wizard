@@ -1,11 +1,6 @@
 <script lang="ts">
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
-
   import Schema from "@/lib/schemas";
-  import Svelecte from "svelecte";
-  import { onMount } from "svelte";
-
-
 
   let { value: protocolParameter = $bindable(), remove, index } = $props();
 
@@ -66,7 +61,7 @@
         >
       </div>
     {:else}
-      <OntologySvelect bind:searchResult={result} onChangeCallback={() => addUnit(result)}></OntologySvelect>
+      <OntologySvelect bind:searchResult={result} onChangeCallback={() => {if(result) addUnit(result)}}></OntologySvelect>
     {/if}
   </div>
   <div class="remove-btn">
