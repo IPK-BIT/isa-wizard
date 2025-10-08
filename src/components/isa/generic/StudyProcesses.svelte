@@ -103,8 +103,8 @@
             for (let parameter of protocol.parameters) {
                 let parameteValue = Schemas.getObjectFromSchema('process_parameter_value');
                 parameteValue.category = parameter;
-                parameteValue.value = parameter.comments.find(c => c.name == 'value').value;
-                parameteValue.unit = parameter.comments.find(c => c.name == 'unit').value;
+                parameteValue.value = parameter.comments.find((c: any) => c.name == 'value').value;
+                parameteValue.unit = parameter.comments.find((c: any) => c.name == 'unit').value;
                 process.parameterValues = [...process.parameterValues, parameteValue];
             }
 
