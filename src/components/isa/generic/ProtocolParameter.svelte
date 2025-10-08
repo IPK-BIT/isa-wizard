@@ -70,31 +70,6 @@
 </div>
 
 <style>
-  .unit-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .ontology-label {
-    font-weight: bold;
-  }
-
-  .ontology-description {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    -webkit-box-align: start;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ontology-iri {
-    font-size: 0.8em;
-    color: #666;
-  }
-
   .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr auto;

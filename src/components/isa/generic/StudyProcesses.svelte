@@ -2,20 +2,16 @@
     import Schemas from "@/lib/schemas";
     import TableUpload from "../generic/TableUpload.svelte";
     import { isaObj } from "@/stores/isa";
-    // import { cons } from "@nfdi4plants/arctrl/fable_modules/fable-library.4.5.0/List";
-
-    // export let componentConfig;
-    // export let jsonPath;
-     // export let value;
+  import type DataFrame from "dataframe-js";
 
     let {componentConfig, value=$bindable() } = $props();
 
-    function loadTable(e) {
-        console.log("Table loaded", e);
-        let column_mapping = e.column_mapping;
-        let dataframe = e.dataframe;
+    function loadTable(data: {column_mapping: any, dataframe: DataFrame}) {
+        console.log("Table loaded", data);
+        let column_mapping = data.column_mapping;
+        let dataframe = data.dataframe;
 
-        let rowProcesses = [];
+        let rowProcesses: any[] = [];
         // @ts-ignore
         $isaObj.studies[0].protocols.forEach((protocol, i) => {
             let isFirst = i == 0, 
@@ -43,7 +39,7 @@
             let factorColumns = dataframe.listColumns().filter(c => column_mapping[c].type == 'factor');
             
 
-            for (let row of dataframe) {
+            for (let row of dataframe as any) {
                 let source = Schemas.getObjectFromSchema("source");
                 let sample = Schemas.getObjectFromSchema("sample");
 
@@ -136,7 +132,7 @@
 
 {#if !(value.processSequence.length>0)}
     <TableUpload
-        approve={(event) => loadTable(event)}
+        approve={(data: any) => loadTable(data)}
     />
 {:else}
     <div class="justify-end">
