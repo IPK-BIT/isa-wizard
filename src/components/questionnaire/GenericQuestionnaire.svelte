@@ -15,6 +15,8 @@
     import type { Hook } from "@/lib/types";
   import Protocol from "../isa/generic/Protocol.svelte";
   import StudyProcesses from "../isa/generic/StudyProcesses.svelte";
+  import AssayProcesses from "../isa/generic/AssayProcesses.svelte";
+  import { onMount } from "svelte";
 
     const fieldTypes: Record<string, any> = {
         'text': String,
@@ -27,6 +29,8 @@
         'people': People,
         'protocol': Protocol,
         'StudyProcesses': StudyProcesses,
+        'AssayProcesses': AssayProcesses,
+
     }
 
     function executeHook(idx: number) {
@@ -67,8 +71,18 @@
     }
 
     function handleKeypress(event: KeyboardEvent) {
-        // console.log(event);
+        console.log('key press: ', event.key);
+        if(event.key === "ArrowRight"){
+            next();
+        }else if (event.key === "ArrowLeft"){
+            prev();
+        }
     }
+
+    onMount(() => {
+        window.addEventListener('keydown', handleKeypress);
+        return () => window.removeEventListener('keydown', handleKeypress);
+    })
 </script>
 
 <section>
@@ -77,7 +91,7 @@
     <p class="question">{steps[currentStep].title}</p>
     
     <div class="input-wrapper">
-        <div onkeypress={handleKeypress} role="button" tabindex="0" aria-pressed="false">
+        <div role="button" tabindex="0" aria-pressed="false">
             {#key currentStep}
                 {#if steps[currentStep].text}
                     {#each steps[currentStep].text as paragraph}
