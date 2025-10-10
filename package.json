@@ -32,8 +32,7 @@
     "gridjs": "^5.1.0",
     "gridjs-svelte": "^2.1.1",
     "jsonschema": "^1.4.1",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2",
+    "lodash": "^4.17.21",
     "read-excel-file": "^5.5.3",
     "svelecte": "^3.12.0"
   }

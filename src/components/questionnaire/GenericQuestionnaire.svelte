@@ -1,7 +1,7 @@
 <script>
     
-import get from 'lodash.get';
-import set from 'lodash.set';
+import get from 'lodash/get';
+import set from 'lodash/set';
 
 import { setContext, onMount, afterUpdate, tick, createEventDispatcher } from 'svelte';
 

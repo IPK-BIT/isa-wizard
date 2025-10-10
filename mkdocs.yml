@@ -1,9 +1,17 @@
-site_name: MIAPPE Wizard
-repo_url: https://github.com/IPK-BIT/miappe-wizard.git
-repo_name: miappe-wizard
+site_name: ISA Wizard
+repo_url: https://github.com/IPK-BIT/isa-wizard.git
+repo_name: isa-wizard
 nav:
   - Home: index.md
-  - Configuration: configuration.md
+  - Administrator Guide: 
+    - configuration/index.md
+    - configuration/basic.md
+    - configuration/steps.md
+    - configuration/explanations.md
+  - User Guide:
+    - examples/index.md
+  - Developer Guide:
+    - developer/index.md
 theme:
   name: material
   logo: assets/logo.png
@@ -12,8 +20,14 @@ theme:
     primary: green
     accent: lime
   features:
+    - navigation.tabs
     - navigation.sections
+    - navigation.indexes
 markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
