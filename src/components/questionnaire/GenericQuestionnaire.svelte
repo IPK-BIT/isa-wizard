@@ -71,7 +71,6 @@
     }
 
     function handleKeypress(event: KeyboardEvent) {
-        console.log('key press: ', event.key);
         if(event.key === "ArrowRight"){
             next();
         }else if (event.key === "ArrowLeft"){
