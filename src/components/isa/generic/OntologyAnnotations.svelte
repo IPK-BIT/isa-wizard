@@ -1,5 +1,6 @@
 <script lang="ts">
-    export let ontologyAnnotations: Array<Object>;
+    let ontologyAnnotations;
+    export { ontologyAnnotations as value };
     export let ontology;
 
     import { createEventDispatcher } from 'svelte';

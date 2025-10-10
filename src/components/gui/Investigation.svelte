@@ -1,5 +1,7 @@
 <script>
 import { isaObj } from '@/stores/isa.js';
+    import { simpleGuiBreadcrumb, simpleGuiLevel } from '@/stores/wizard';
+    import Breadcrumb from './Breadcrumb.svelte';
 
 function personORCID(person) {
     let orcid = person.comments.find(comment => comment.value.includes('orcid.org'));
@@ -10,10 +12,22 @@ function personORCID(person) {
     }
 }
 
+function openStudy(elem) {
+    $simpleGuiLevel = {
+        type: 'Study',
+        jsonPath: `studies[${elem}]`
+    }
+    $simpleGuiBreadcrumb = [
+        { name: $isaObj.title?$isaObj.title:'Untitled Investigation', fn: () => $simpleGuiLevel = { type: 'Investigation', jsonPath: '' } },
+        { name: $isaObj.studies[elem].title ? $isaObj.studies[elem].title : 'Untitled study', fn: () => $simpleGuiLevel = { type: 'Study', jsonPath: `studies[${elem}]` } }
+    ];
+}
+
 </script>
 
 <section>
     <h3>Investigation</h3>
+    <Breadcrumb/>
 
     <table id="investigation">
         <tr>
@@ -99,8 +113,11 @@ function personORCID(person) {
             <td>Studies</td>
             <td>
                 {#if $isaObj.studies.length > 0}
-                {#each $isaObj.studies as study}
-                <a href="">{study.title ? study.title : 'Untitled study'}</a><br />
+                {#each $isaObj.studies as study, i}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <a class="link" on:click={()=>openStudy(i)}>{study.title ? study.title : 'Untitled study'}</a><br />
                 {/each}
                 {:else}
                 None
@@ -169,6 +186,16 @@ p.value {
     margin: 0;
     padding: 0;
     font-size: 1.2em;
+}
+
+a.link {
+    color: hsl(145, 83%, 33%);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a.link:hover {
+    color: hsl(145, 83%, 43%);
 }
 
 </style>

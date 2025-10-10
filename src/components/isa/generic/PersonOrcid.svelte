@@ -58,7 +58,13 @@ async function handleFetch(query) {
 
         let newItem = {
             id: 'https://orcid.org/'+item['orcid-id'],
-            name: searchResultItem.join(', ')
+            name: searchResultItem.join(', '),
+            firstName: item['given-names'],
+            lastName: item['family-names'],
+            affiliation: item['institution-name'][0] || '',
+            email: item['email'] || '',
+            phone: item['phone'] || '',
+            address: item['address'] || '',
         }
 
         return newItem;
@@ -68,8 +74,8 @@ async function handleFetch(query) {
 }
 
 function onChange() {
-    comments = [...comments, {name:'Person ID', value: orcid}];
-    dispatch('change');
+    comments = [...comments, {name:'Person ID', value: orcid.id}];
+    dispatch('change', {value: orcid});
 }
 
 function remove() {
@@ -80,7 +86,9 @@ function remove() {
 function init() {
     let orcidComment = comments.find(comment => comment.value.includes('orcid.org'));
     if (orcidComment) {
-        orcid = orcidComment.value;
+        orcid = {
+            id: orcidComment.value
+        };
     }
 }
 
@@ -89,6 +97,12 @@ onMount(() => {
     init();
 });
 
+function orcidRenderer(item, _isSelection, _inputValue) {
+    return _isSelection
+        ? `${item.firstName} ${item.lastName} (${item.id})`
+        : `<div style="display: flex; justify-content: space-between;"><span>${item.firstName} ${item.lastName}, ${item.affiliation}</span><span>${item.id}</span></div>`;
+}
+
 </script>
 
 <section style="position: relative;">
@@ -96,14 +110,15 @@ onMount(() => {
     <h5 style="margin-bottom: 10px; padding: 0;">ORCID of this person</h5>
 
     {#if orcid}
-    <a target="_blank" href="{orcid}">{orcid}</a> <button on:click|preventDefault={() => remove()} class="btn btn-warning" style="position: absolute; top: 8px; right: 10px; margin:0;">Remove ORCID</button>
+    <a target="_blank" href="{orcid.id}">{orcid.id}</a> <button on:click|preventDefault={() => remove()} class="btn btn-warning" style="position: absolute; top: 8px; right: 10px; margin:0;">Remove ORCID</button>
     {:else}
 
     <Svelecte name="selection"
         bind:value={orcid}
-        valueAsObject={false}
+        valueAsObject={true}
         placeholder="Search for people on ORCID.org by typing in their name"
         fetch={handleFetch}
+        renderer={orcidRenderer}
         on:change={onChange}
     />
     {/if}

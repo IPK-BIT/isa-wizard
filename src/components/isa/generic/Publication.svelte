@@ -35,8 +35,6 @@ async function onChange() {
     <div class="attr entity">
         <!--<h4>Publication</h4>-->
 
-        <input type="text" on:change use:explanationAction data-attr="title" bind:value={publication.title} placeholder="Publication title"> <br />
-
         <div class="pure-g">
             <div class="pure-u-1-2" style="padding-right: 15px;">
                 <input type="text" on:change={onChange} use:explanationAction data-attr="doi" bind:value={publication.doi} placeholder="DOI">
@@ -45,6 +43,8 @@ async function onChange() {
                 <input type="text" on:change use:explanationAction data-attr="pubMedID" bind:value={publication.pubMedID} placeholder="PubMed ID">
             </div>
         </div>
+
+        <input type="text" on:change use:explanationAction data-attr="title" bind:value={publication.title} placeholder="Publication title"> <br />
 
         <input type="text" on:change use:explanationAction data-attr="authorList" bind:value={publication.authorList} placeholder="Author list">
 
@@ -65,7 +65,7 @@ section {
     border: 1px solid rgb(150,150,150);
     padding: 10px;
     margin-bottom: 20px;
-    background: rgb(240,240,240);background: rgb(240,240,240);
+    /* background: rgb(240,240,240);background: rgb(240,240,240); */
 }
 
 input {

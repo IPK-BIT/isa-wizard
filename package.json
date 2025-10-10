@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base=/isa-wizard/",
+    "build:prod": "vite build",
     "postbuild": "npm run copy",
     "preview": "vite preview",
     "__copy__": "copyfiles -u 1 data/**/* dist/data/",

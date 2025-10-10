@@ -1,4 +1,6 @@
 <script>
+    import { config } from '@/stores/config';
+
     export let label = '';
     export let isaLevel = null;
     export let attr;
@@ -18,27 +20,36 @@
     }
     
     async function handleFetch(query) {
-        const response = await fetch('https://swate-alpha.nfdi4plants.org/api/IOntologyAPIv3/searchTerm', {
-            method: 'POST',
+        let params = new URLSearchParams({
+            q: query,
+            rows: "20",
+            lang: 'en',
+            schema: 'collection',
+            classification: 'DataPLANT'
+        });
+        // const response = await fetch('https://swate-alpha.nfdi4plants.org/api/IOntologyAPIv3/searchTerm', {
+        const response = await fetch(`${config.general.terminologyService}/select?`+params.toString() , {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify([{
-                query: query,
-                ontology: null,
-                limit: 10,
-                searchMode: null,
-                parentTermId: null                
-            }])
+            // body: JSON.stringify([{
+            //     query: query,
+            //     ontology: null,
+            //     limit: 10,
+            //     searchMode: null,
+            //     parentTermId: null                
+            // }])
         });
         const data = await response.json();
-        return data.map(option => {
+        let terms = data.response.docs.map(option => {
             return {
-                value: option.Accession,
-                label: option.Name,
-                ontology: option.FK_Ontology
+                value: option.obo_id,
+                label: option.label,
+                ontology: option.ontology_prefix
             }
         });
+        return Array.from(new Map(terms.map(term => [term.value, term])).values());
     }
     let selection;
 

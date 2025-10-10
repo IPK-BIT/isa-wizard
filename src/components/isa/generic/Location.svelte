@@ -25,7 +25,7 @@
     }
     async function geocode() {
         // For development purposes, switch to self-hosted version of nominatim
-        let response = await fetch(`https://plant-commons.ipk-gatersleben.de//search?q=${location}&format=jsonv2`);
+        let response = await fetch(`https://brapi4psi.ipk-gatersleben.de/search?q=${location}&format=jsonv2`);
         let data = await response.json();
         if (data.length > 0) {
             //TODO: Placement of the coordinates in the ISA object is hardcoded

@@ -28,8 +28,6 @@ import study_schema from '@/lib/schemas/study_schema.json';
 
 const ajv = new Ajv({ allErrors: true });
 
-
-
 const mapping = {
     assay: assay_schema,
     comment: comment_schema,
@@ -81,6 +79,10 @@ export default class Schemas {
         }
         return this.cache[identifier];
     }*/
+
+    static getSchema(identifier) {
+        return mapping[identifier];
+    }
 
     static getObjectFromSchema(identifier) {
         //let schema = await Schemas.getSchema(identifier);

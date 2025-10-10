@@ -4,7 +4,7 @@ export let config;
 import { setConfig } from './stores/config';
 setConfig(config);
 
-import { wizard } from '@/stores/wizard';
+import { simpleGuiBreadcrumb, simpleGuiLevel, wizard } from '@/stores/wizard';
 
 import '@fontsource/roboto';
 import '@fontsource/roboto/500.css';
@@ -15,7 +15,7 @@ import InitView from '@/components/InitView.svelte';
 import Explanation from '@/components/Explanation.svelte';
 import TreeView from '@/components/treeview/TreeView.svelte';
 
-import Investigation from '@/components/isa/investigation/Investigation.svelte';
+import Investigation from '@/components/form/Investigation.svelte';
 import GenericQuestionnaire from '@/components/questionnaire/GenericQuestionnaire.svelte';
 import Forms from '@/components/Forms.svelte';
 
@@ -36,6 +36,7 @@ let showJson = false;
 
 // FIXME: there is same duplicate code in InitView.svelte => needs centralization e.g. via EventBus
 import Schemas from './lib/schemas';
+    import Entity from './components/form/Entity.svelte';
 if (config.general?.initialView === 'questionnaire') {
     if (Object.keys($isaObj).length == 0) {
         let emptyInvestigation = Schemas.getMiappeInvestigation(config.prefill);
@@ -53,6 +54,29 @@ partialview.subscribe($ => {
 
 function showGui() {
     $appstate = appstate.GUI;
+    $simpleGuiLevel = {
+        type: 'Investigation',
+        jsonPath: ''
+    };
+    $simpleGuiBreadcrumb = [{
+        name: $isaObj.title ? $isaObj.title : 'Untitled Investigation',
+        fn: () => $simpleGuiLevel = { type: 'Investigation', jsonPath: '' }
+    }];
+}
+
+function showStudy(i) {
+    $appstate = appstate.GUI;
+    $simpleGuiLevel = {
+        type: 'Study',
+        jsonPath: `${$simpleGuiLevel.jsonPath}.studies[${i}]`
+    };
+    $simpleGuiBreadcrumb = [{
+        name: $isaObj.title ? $isaObj.title : 'Untitled Investigation',
+        fn: () => $simpleGuiLevel = { type: 'Investigation', jsonPath: '' }
+    }, {
+        name: $isaObj.studies[i].title ? $isaObj.studies[i].title : 'Untitled Study',
+        fn: () => $simpleGuiLevel = { type: 'Study', jsonPath: `${$simpleGuiLevel.jsonPath}.studies[${i}]` }
+    }];
 }
     
 </script>
@@ -79,11 +103,24 @@ function showGui() {
             
             {#if $appstate !== appstate.WIZARD}
             <div class="bbox" style="margin-bottom: 20px;">
-                <a href="#" on:click|preventDefault={showGui}>Investigation</a>
+                <div style="display: flex; flex-direction: column; gap: .5rem;">
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <!-- svelte-ignore a11y-missing-attribute -->
+                    <a class="link" on:click|preventDefault={showGui}>{$isaObj.title?$isaObj.title:'Untitled Investigation'}</a>
+                    <span>Studies ({$isaObj.studies.length})</span>
+                    <ul style="margin:0;">
+                        {#each $isaObj.studies as study, idx}
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <!-- svelte-ignore a11y-missing-attribute -->
+                        <li><a class="link" on:click|preventDefault={()=>showStudy(idx)}>{study.title?study.title:'Untitled Study'}</a></li>
+                        {/each}
+                    </ul>
+                </div>
             </div>
             
-            
-            <TreeView />
+            <!-- <TreeView /> -->
             {/if}
             
             {#if $appstate === appstate.WIZARD && config?.general?.showQuestionnaireProgressBar}
@@ -95,8 +132,19 @@ function showGui() {
                 </div>
             </div>
             {/if}
-            
-            
+
+            {#if $appstate === appstate.WIZARD && config?.general?.showStepExplanation}
+            <div class="bbox" style="margin-top: 20px;">
+                <p>Step Explanation:</p>
+                <div class="expl">
+                    <span>
+                        {config.steps[$wizard.currentStep].explanation?'' + config.steps[$wizard.currentStep].explanation : 'No explanation available.'}
+                    </span>
+                </div>
+            </div>
+            {/if}
+
+
         </div>
         {/if}
         
@@ -105,7 +153,14 @@ function showGui() {
             <div class="bbox">
                 
             {#if $appstate === appstate.FORM}
-            <Investigation bind:value={$isaObj} />
+            <!-- <Investigation bind:value={$isaObj} /> -->
+             <h2>Under Construction. Use with caution</h2>
+             <Entity
+                type="investigation_schema.json#"
+                bind:value={$isaObj}
+                showLabel={false}
+                idx={null}
+            />
             {:else if $appstate === appstate.WIZARD}
             <GenericQuestionnaire on:closeWizard={() => {$appstate = appstate.GUI;}} />
             {:else if $appstate === appstate.LEVEL}
@@ -222,6 +277,15 @@ div.content.grid {
     /*background: rgb(220,220,220);*/
 }
 
+.expl {
+    padding: 10px;
+    background: rgb(240,240,240);
+    border: 1px solid rgb(200,200,200);
+    border-radius: 4px;
+    margin-top: 10px;
+    text-align: justify;
+}
+
 :global(div.bbox) {
     background: white;
     border-radius: 6px;
@@ -275,6 +339,12 @@ textarea:focus-visible {
 :global(label) {
     display: inline-block;
     width: 250px;
+}
+
+.link {
+    color: hsl(145, 83%, 28%);
+    cursor: pointer;
+    text-decoration: none;
 }
 
 </style>

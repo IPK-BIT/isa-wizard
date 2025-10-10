@@ -36,7 +36,7 @@
                 let json = JSON.parse(lines);
                 $isaObj = json;
                 isaObj.addProxies();
-                $appstate = appstate.FORM;
+                $appstate = appstate.GUI;
             }
 
             let fr = new FileReader();

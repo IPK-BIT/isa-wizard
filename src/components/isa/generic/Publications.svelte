@@ -24,33 +24,12 @@ import Publication from '@/components/isa/generic/Publication.svelte';
 const addPublication = async () => {
     let emptyPublication = await Schemas.getObjectFromSchema('publication');
     publications = [...publications, emptyPublication];
-
-    set($isaObj, jsonPath, publications);
-    $isaObj = $isaObj;
-}
-
-function onChange() {
-    set($isaObj, jsonPath, publications);
-    $isaObj = $isaObj;
 }
 
 function onRemovePublication(event) {
     publications.splice(event.detail.index, 1);
     publications = [...publications];
-    set($isaObj, jsonPath, publications);
-    $isaObj = $isaObj;
-    //dispatch('change');
-
 }
-
-onMount(() => {
-    /*if (jsonPath) {
-        console.log(jsonPath);
-        console.log($isaObj);
-        publications = get($isaObj, jsonPath);
-        console.log(publications);
-    }*/
-});
 
 </script>
 
@@ -61,7 +40,7 @@ onMount(() => {
 
         {#if publications.length > 0}
         {#each publications as publication, index}
-        <Publication on:removePublication={onRemovePublication} on:change={onChange} bind:publication {index} />
+        <Publication on:removePublication={onRemovePublication} on:change bind:publication {index} />
         {/each}
         {:else}
         <p><i>No publications have yet been created.</i></p>

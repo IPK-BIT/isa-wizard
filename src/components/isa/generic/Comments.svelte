@@ -40,7 +40,7 @@ function onRemoveComment(event) {
         <p><i>No comments have yet been created.</i></p>
         {/if}
 
-        <button class="add" on:click|preventDefault={() => addComment()}>add comment</button>
+        <button class="btn add" on:click|preventDefault={() => addComment()}>Add Comment</button>
     </div>
 
 </section>
@@ -50,9 +50,10 @@ function onRemoveComment(event) {
     section {
         margin-top: 10px;
         margin-bottom: 10px;
-        background: rgba(0,0,0,0.05);
+        border: 1px solid rgb(150,150,150);
+        /* background: rgba(0,0,0,0.05);
         border-radius: 8px;
-        box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
+        box-shadow: 3px 3px 3px rgba(0,0,0,0.1); */
     }
     h3 {
         display: inline;

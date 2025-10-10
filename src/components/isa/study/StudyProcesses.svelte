@@ -2,74 +2,121 @@
     import Schemas from "@/lib/schemas";
     import TableUpload from "../generic/TableUpload.svelte";
     import { isaObj } from "@/stores/isa";
+    import { cons } from "@nfdi4plants/arctrl/fable_modules/fable-library.4.5.0/List";
 
     export let componentConfig;
     // export let jsonPath;
     export let value;
 
     function loadTable(e) {
+        console.log("Table loaded", e.detail);
         let column_mapping = e.detail.column_mapping;
         let dataframe = e.detail.dataframe;
 
-        let process = Schemas.getObjectFromSchema("process");
-        process["name"] = "Growth";
-        
+        let rowProcesses = [];
         // @ts-ignore
-        process["executesProtocol"] = $isaObj.studies[0].protocols.find(p=>p.name == "Growth");
-        for (let parameter of process["executesProtocol"].parameters) {
-            let parameteValue = Schemas.getObjectFromSchema('process_parameter_value');
-            parameteValue['category'] = parameter;
-            parameteValue['value'] = parameter.comments.find(c=>c.name == 'value').value;
-            parameteValue['unit'] = parameter.comments.find(c=>c.name == 'unit').value;
-            process["parameterValues"] = [...process["parameterValues"], parameteValue];
-        }
-        console.log(column_mapping);
+        $isaObj.studies[0].protocols.forEach((protocol, i) => {
+            let isFirst = i == 0, 
+                // @ts-ignore
+                isLast = i == $isaObj.studies[0].protocols.length - 1;
+            let process = Schemas.getObjectFromSchema("process");
+            process['@id'] = '#Process_' + protocol.name.replace(/\s+/g, '_');
+            process.name = protocol.name;
+            process.executesProtocol = protocol;
 
-        for (let row of dataframe) {
-            console.log(row)
-            let source = Schemas.getObjectFromSchema("source");
-            let sample = Schemas.getObjectFromSchema("sample");
+            if (!isFirst) {
+                process.previousProcess = {'@id': rowProcesses[rowProcesses.length - 1]['@id']};
+            }
+            if (!isLast) {
+                // @ts-ignore Name of the next process is not available yet, but can be derived from the next protocol name
+                process.nextProcess = {'@id': '#Process_' + $isaObj.studies[0].protocols[i + 1].name.replace(/\s+/g, '_')};
+            }
 
-            for (let key of dataframe.listColumns()) {
-                if (column_mapping[key].type == "ignore") {
-                    continue;
-                }
-                if (column_mapping[key].type == "input") {
-                    source.name = row.get(key);
-                } else if (column_mapping[key].type == "output") {
-                    sample.name = row.get(key);
-                } else if (column_mapping[key].type == "characteristic") {
-                    let characteristic = Schemas.createCharacteristicObject(column_mapping[key].value.label, row.get(key));
-                    characteristic.category.characteristicType.termSource = column_mapping[key].value.ontology;
-                    characteristic.category.characteristicType.termAccession = column_mapping[key].value.value;
-                    source.characteristics = [...source.characteristics, characteristic];
-                } else if (column_mapping[key].type == "factor") {
-                    let factorValue = Schemas.getObjectFromSchema("factor_value");
-                    factorValue.category = Schemas.getObjectFromSchema("factor");
-                    factorValue.category.factorName = column_mapping[key].value.label;
-                    factorValue.category.factorType = Schemas.getObjectFromSchema("ontology_annotation");
-                    factorValue.category.factorType.annotationValue = column_mapping[key].value.label;
-                    factorValue.category.factorType.termSource = column_mapping[key].value.ontology;
-                    factorValue.category.factorType.termAccession = column_mapping[key].value.value;
-                    factorValue.value = row.get(key);
-                    sample.factorValues = [...sample.factorValues, factorValue];
-                }
-            }
-            if (!value.materials.sources.find(s=>s.name == source.name) && source.name) {
-                value.materials.sources = [...value.materials.sources, source];                
-            }
-            if (!value.materials.samples.find(s=>s.name == sample.name) && sample.name) {
-                value.materials.samples = [...value.materials.samples, sample];
-            }
+            process.inputs = [];
+            process.outputs = [];
+
+            let inputColumn = dataframe.listColumns().find(c => column_mapping[c].type == 'input');
+            let characteristicColumns = dataframe.listColumns().filter(c => column_mapping[c].type == 'characteristic');
+            let outputColumn = dataframe.listColumns().find(c => column_mapping[c].type == 'output');
+            let factorColumns = dataframe.listColumns().filter(c => column_mapping[c].type == 'factor');
             
-            if (source.name) {
-                process["inputs"] = [...process["inputs"], source];
+
+            for (let row of dataframe) {
+                let source = Schemas.getObjectFromSchema("source");
+                let sample = Schemas.getObjectFromSchema("sample");
+
+                if (isFirst) {
+                    source['@id'] = '#Source_' + row.get(inputColumn).replace(/\s+/g, '_');
+                    source.name = row.get(inputColumn);
+
+                    characteristicColumns.forEach(c => {
+                        console.log("Characteristic column", column_mapping[c], row.get(c));
+                        let characteristic = Schemas.createCharacteristicObject(column_mapping[c].value.label, row.get(c));
+                        characteristic.category.characteristicType.termSource = column_mapping[c].value.ontology;
+                        characteristic.category.characteristicType.termAccession = column_mapping[c].value.value;
+                        source.characteristics = [...source.characteristics, characteristic];
+                    });
+
+                    // @ts-ignore
+                    if (!$isaObj.studies[0].materials.sources.find(s => s['@id'] === source['@id'])) {
+                        // @ts-ignore
+                        $isaObj.studies[0].materials.sources = [...$isaObj.studies[0].materials.sources, source];
+                    }
+                } else {
+                    // @ts-ignore
+                    source['@id'] = '#Source_' + row.get(inputColumn).replace(/\s+/g, '_') + "-" + $isaObj.studies[0].protocols[i-1].name.replace(/\s+/g, '_');
+                    // @ts-ignore
+                    source.name = row.get(inputColumn) + "-" + $isaObj.studies[0].protocols[i-1].name;
+                }
+                if (isLast) {
+                    sample['@id'] = '#Sample_' + row.get(outputColumn).replace(/\s+/g, '_');
+                    sample.name = row.get(outputColumn);
+
+                    factorColumns.forEach(c => {
+                        console.log("Factor column", column_mapping[c], row.get(c));
+                        let factorValue = Schemas.getObjectFromSchema("factor_value");
+                        factorValue.category = Schemas.getObjectFromSchema("factor");
+                        factorValue.category.factorName = column_mapping[c].value.label;
+                        factorValue.category.factorType = Schemas.getObjectFromSchema("ontology_annotation");
+                        factorValue.category.factorType.annotationValue = column_mapping[c].value.label;
+                        factorValue.category.factorType.termSource = column_mapping[c].value.ontology;
+                        factorValue.category.factorType.termAccession = column_mapping[c].value.value;
+                        factorValue.value = row.get(c);
+                        sample.factorValues = [...sample.factorValues, factorValue];
+                    })
+
+                    // @ts-ignore
+                    if (!$isaObj.studies[0].materials.samples.find(s => s['@id'] === sample['@id'])) {
+                        // @ts-ignore
+                        $isaObj.studies[0].materials.samples = [...$isaObj.studies[0].materials.samples, sample];
+                    }
+                } else {
+                    // @ts-ignore
+                    sample['@id'] = '#Sample_' + row.get(inputColumn).replace(/\s+/g, '_') + "-" + $isaObj.studies[0].protocols[i].name.replace(/\s+/g, '_');
+                    // @ts-ignore
+                    sample.name = row.get(inputColumn) + "-" + $isaObj.studies[0].protocols[i].name;
+                }
+                process.inputs = [...process.inputs, source];
+                process.outputs = [...process.outputs, sample];
+
+                // console.log("Process", source, sample);
             }
-            if (sample.name) {
-                process["outputs"] = [...process["outputs"], sample];
+
+            for (let parameter of protocol.parameters) {
+                let parameteValue = Schemas.getObjectFromSchema('process_parameter_value');
+                parameteValue.category = parameter;
+                parameteValue.value = parameter.comments.find(c => c.name == 'value').value;
+                parameteValue.unit = parameter.comments.find(c => c.name == 'unit').value;
+                process.parameterValues = [...process.parameterValues, parameteValue];
             }
-        }        
-        value.processSequence = [...value.processSequence, process];
+
+
+            rowProcesses.push(process);
+        });
+
+        console.log("Row processes", rowProcesses);
+        // @ts-ignore
+        $isaObj.studies[0].processSequence = [...$isaObj.studies[0].processSequence, ...rowProcesses];
     }
 
     function resetProcess() {
@@ -96,40 +143,49 @@
         <table>
             <thead>
                 <tr>
-                    <th>Source Name</th>
-                    {#if value.processSequence[0].inputs.length > 0}
-                    {#each value.processSequence[0].inputs[0].characteristics as characteristic}
-                        <th>{characteristic.category.characteristicType.annotationValue}</th>
+                    {#each value.processSequence as process}
+                        {#if Object.keys(process.previousProcess).length===0}
+                        <th>Source Name</th>
+                        {:else}
+                        <th>{process.executesProtocol.name} Input</th>
+                        {/if}
+                        {#if process.inputs.length > 0}
+                        {#each process.inputs[0].characteristics as characteristic}
+                            <th>{characteristic.category.characteristicType.annotationValue} {characteristic.category.characteristicType.termAccession?'('+characteristic.category.characteristicType.termAccession+')':''}</th>
+                        {/each}
+                        {/if}
+                        {#if Object.keys(process.nextProcess).length===0}
+                        <th>Sample Name</th>
+                        {#if process.outputs.length > 0}
+                        {#each process.outputs[0].factorValues as factorValue}
+                            <th>{factorValue.category.factorType.annotationValue} {factorValue.category.factorType.termAccession?'('+factorValue.category.factorType.termAccession+')':''}</th>
+                        {/each}
+                        {/if}
+                        {/if}
                     {/each}
-                    {/if}
-                    <th>Sample Name</th>
-                    {#if value.processSequence[0].outputs.length > 0}
-                    {#each value.processSequence[0].outputs[0].factorValues as factorValue}
-                        <th>{factorValue.category.factorName}</th>
-                    {/each}
-                    {/if}
                 </tr>
             </thead>
             <tbody>
                 {#each value.processSequence[0].inputs as input, idx}
                     {#if idx >= page * pageSize && idx < (page + 1) * pageSize}
-                        <tr>
-                            <!-- {#each input as cell}
-                                <td>{cell}</td>
-                            {/each} -->
-                            <td>{input.name}</td>
-                            {#each input.characteristics as characteristic}
+                    <tr>
+                        {#each value.processSequence as process}
+                            <td>{process.inputs[idx].name}</td>
+                            {#each process.inputs[idx].characteristics as characteristic}
                                 <td>{characteristic.value}</td>
                             {/each}
-                            {#if value.processSequence[0].outputs[idx]}
-                            <td>{value.processSequence[0].outputs[idx].name}</td>
-                            {#each value.processSequence[0].outputs[idx].factorValues as factorValue}
+                            {#if Object.keys(process.nextProcess).length===0}
+                            {#if process.outputs[idx]}
+                            <td>{process.outputs[idx].name}</td>
+                            {#each process.outputs[idx].factorValues as factorValue}
                             <td>{factorValue.value}</td>
                             {/each}
                             {:else}
                             <td>{" "}</td>
                             {/if}
-                        </tr>
+                            {/if}
+                        {/each} 
+                    </tr>
                     {/if}
                 {/each}
             </tbody>

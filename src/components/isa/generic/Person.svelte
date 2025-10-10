@@ -37,6 +37,17 @@ function removePerson() {
     dispatch('removePerson', {index} );
 }
 
+function onChange(e) {
+    let p = e.detail.value;
+    person.firstName = p.firstName;
+    person.lastName = p.lastName;
+    person.affiliation = p.affiliation;
+    person.email = p.email;
+    person.phone = p.phone;
+    person.address = p.address;
+    dispatch('change');
+}
+
 let orcid;
 
 $: orcid = getOrcid(person);
@@ -76,14 +87,15 @@ $: orcid = getOrcid(person);
                 </div>
                 <div class="pure-u-3-24" style="text-align: right;">
                     <button class="btn btn-secondary" style="width: 60px;" on:click={() => mode = 'edit'}>Edit</button> <br />
-                    {#if countPeople > 1}
+                    <!-- {#if countPeople > 1} -->
                     <button class="btn btn-warning" style="margin-top: 10px; width: 60px;" on:click={removePerson}>Delete</button>
-                    {/if}
+                    <!-- {/if} -->
                 </div>
             </div>
 
         {:else}
 
+            <PersonOrcid on:change={onChange} bind:comments={person.comments} />
             <div class="pure-g">
                 <div class="pure-u-1-3">
                     <input on:change type="text" bind:value={person.firstName} placeholder="First name" style="width: 100%;"> 
@@ -104,7 +116,6 @@ $: orcid = getOrcid(person);
 
             <!--<OntologyAnnotations on:change bind:ontologyAnnotations={person.roles} ontology={ontologyMapping['Person.role']} />-->
 
-            <PersonOrcid on:change bind:comments={person.comments} />
 
             <PersonRoles on:change bind:roles={person.roles} ontology={ontologyMapping['Person.role']} mode="edit" />
 
@@ -114,9 +125,9 @@ $: orcid = getOrcid(person);
 
             <div style="display: flow-root; height: 40px; padding-top: 20px;">
                 
-                {#if countPeople > 1}
+                <!-- {#if countPeople > 1} -->
                 <button class="btn btn-warning" style="float: right; margin-left: 30px;" on:click={removePerson}>Remove {person.firstName}</button>
-                {/if}
+                <!-- {/if} -->
 
                 <button class="btn btn-secondary" style="float: right;" on:click={() => mode = 'view'}>Stop editing</button>
             </div>
