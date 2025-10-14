@@ -20,7 +20,7 @@
     institutions: string[];
   }
 
-  let { value: person = $bindable(), countPeople = 1 } = $props();
+  let { value: person = $bindable(), countPeople = 1, index, removePerson } = $props();
 
   let mode: "view" | "edit" = $state("view");
 
@@ -96,6 +96,7 @@
     person.email =
       selection.emails.length > 0 ? selection.emails.join(",") : ""; // Show only one email?
   }
+
 </script>
 
 <section>
@@ -137,7 +138,7 @@
             }}>Edit</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning">Delete</button>
+            <button class="btn btn-warning" onclick={() => removePerson(index)}>Delete</button>
           {/if}
         </div>
       </div>
@@ -208,7 +209,7 @@
             }}>Stop Editing</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning">Remove {person.firstName}</button>
+            <button class="btn btn-warning" onclick={() => removePerson(index)}>Remove {person.firstName}</button>
           {/if}
         </div>
       </div>
