@@ -2,13 +2,14 @@
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
   import OntologyAnnotation from "./OntologyAnnotation.svelte";
+  import PersonRoles from "./PersonRoles.svelte";
 
   interface FetchORCID {
     "expanded-result": Array<{
       "orcid-id": string;
       "given-names": string;
       "family-names": string;
-      "email": string;
+      email: string;
       "institution-name": Array<string>;
     }>;
   }
@@ -20,7 +21,12 @@
     institutions: string[];
   }
 
-  let { value: person = $bindable(), countPeople = 1, index, removePerson } = $props();
+  let {
+    value: person = $bindable(),
+    countPeople = 1,
+    index,
+    removePerson,
+  } = $props();
 
   let mode: "view" | "edit" = $state("view");
 
@@ -76,7 +82,7 @@
           institutions: item["institution-name"],
         };
       });
-      console.log("ORCID results:", results);
+      // console.log("ORCID results:", results);
       return results;
     } else {
       console.log("No ORCID results found");
@@ -85,7 +91,7 @@
   }
 
   /**
-   * Set given values from selected ORCID Object to person 
+   * Set given values from selected ORCID Object to person
    * @param selection - ORCID Selection with information about selected person
    */
   function handleSelectORCID(selection: SelectionORCID) {
@@ -95,6 +101,8 @@
       selection.institutions.length > 0 ? selection.institutions.at(0) : ""; // Show only most recent institution?
     person.email =
       selection.emails.length > 0 ? selection.emails.join(",") : ""; // Show only one email?
+      person.address = ''; // reset adress
+      person.phone = ''; // reset phone
   }
 
 </script>
@@ -128,7 +136,7 @@
             ORCID: <a target="_blank" href={orcid}>{orcid}</a>
           {/if}
 
-          Contributions
+          <PersonRoles bind:roles={person.roles} mode="view" />
         </div>
         <div class="controls">
           <button
@@ -138,13 +146,42 @@
             }}>Edit</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning" onclick={() => removePerson(index)}>Delete</button>
+            <button class="btn btn-warning" onclick={() => removePerson(index)}
+              >Delete</button
+            >
           {/if}
         </div>
       </div>
     {:else}
       <div class="person-editor">
         <div>
+          <div class="orcid-container">
+            {#if orcid}
+              <div class="orcid-wrapper">
+                <span>{orcid}</span>
+                <button
+                  class="btn btn-warning"
+                  onclick={() => {
+                    orcid = "";
+                  }}>Remove</button
+                >
+              </div>
+            {:else}
+              <Svelecte
+                placeholder="ORCID"
+                bind:value={orcid}
+                valueAsObject={false}
+                fetch="https://pub.orcid.org/v3.0/expanded-search/?q=[query]"
+                fetchProps={{
+                  headers: { "Content-Type": "application/vnd.orcid+json" },
+                }}
+                fetchCallback={handleOrcidFetch}
+                onChange={(selection: SelectionORCID) =>
+                  handleSelectORCID(selection)}
+              />
+            {/if}
+          </div>
+
           <div class="name">
             <input
               placeholder="First Name"
@@ -175,30 +212,10 @@
             />
             <input placeholder="Email" type="text" bind:value={person.email} />
             <input placeholder="Phone" type="text" bind:value={person.phone} />
-            {#if orcid}
-              <div class="orcid-wrapper">
-                <span>{orcid}</span>
-                <button
-                  class="btn btn-warning"
-                  onclick={() => {
-                    orcid = "";
-                  }}>Remove</button
-                >
-              </div>
-            {:else}
-              <Svelecte
-                placeholder="ORCID"
-                bind:value={orcid}
-                valueAsObject={false}
-                fetch="https://pub.orcid.org/v3.0/expanded-search/?q=[query]"
-                fetchProps={{
-                  headers: { "Content-Type": "application/vnd.orcid+json" },
-                }}
-                fetchCallback={handleOrcidFetch}
-                onChange={(selection: SelectionORCID) => handleSelectORCID(selection)}
-              />
-            {/if}
-            <OntologyAnnotation />
+          </div>
+
+          <div class="contribution-container">
+            <PersonRoles bind:roles={person.roles} />
           </div>
         </div>
         <div class="controls">
@@ -209,7 +226,9 @@
             }}>Stop Editing</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning" onclick={() => removePerson(index)}>Remove {person.firstName}</button>
+            <button class="btn btn-warning" onclick={() => removePerson(index)}
+              >Remove {person.firstName}</button
+            >
           {/if}
         </div>
       </div>
@@ -294,5 +313,9 @@
     padding: 0.5rem;
     border: 1px solid black;
     border-radius: 4px;
+  }
+
+  div.orcid-container {
+    padding: 8px 0px;
   }
 </style>
