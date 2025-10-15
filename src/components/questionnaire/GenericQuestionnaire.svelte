@@ -13,27 +13,30 @@
     import ComponentWrapper from "./ComponentWrapper.svelte";
     import People from "../isa/generic/People.svelte";
     import type { Hook } from "@/lib/types";
-  import Protocol from "../isa/generic/Protocol.svelte";
-  import StudyProcesses from "../isa/generic/StudyProcesses.svelte";
-  import AssayProcesses from "../isa/generic/AssayProcesses.svelte";
-  import { onMount } from "svelte";
-  import Publications from "../isa/generic/Publications.svelte";
+    import Protocol from "../isa/generic/Protocol.svelte";
+    import StudyProcesses from "../isa/generic/StudyProcesses.svelte";
+    import AssayProcesses from "../isa/generic/AssayProcesses.svelte";
+    import { onMount } from "svelte";
+    import Publications from "../isa/generic/Publications.svelte";
+    import Location from "@/components/isa/generic/Location.svelte";
+    import RORPicker from "../isa/generic/ROR_Picker.svelte";
 
     const fieldTypes: Record<string, any> = {
-        'text': String,
-        'textarea': Textarea,
-        'date': Date,
-        'license': License,
-    }
+        text: String,
+        textarea: Textarea,
+        date: Date,
+        license: License,
+        location: Location,
+        ror: RORPicker,
+    };
 
     const componentTypes: Record<string, any> = {
-        'people': People,
-        'protocol': Protocol,
-        'StudyProcesses': StudyProcesses,
-        'AssayProcesses': AssayProcesses,
-        'Publications': Publications
-
-    }
+        people: People,
+        protocol: Protocol,
+        StudyProcesses: StudyProcesses,
+        AssayProcesses: AssayProcesses,
+        Publications: Publications,
+    };
 
     function executeHook(idx: number) {
         if (steps[idx] && steps[idx].hooks && Array.isArray(steps[idx].hooks)) {
@@ -42,7 +45,7 @@
                     let studies = isaObj.keyed(hook.state.mapping);
                     if (hook.state.count && get(studies).length < hook.state.count) {
                         let toAdd = hook.state.count - get(studies).length;
-                        for (let i=0; i<Math.max(toAdd, 0); i++) {
+                        for (let i = 0; i < Math.max(toAdd, 0); i++) {
                             studies.update((n: Array<any>) => {
                                 n.push(Schema.getObjectFromSchema(hook.type));
                                 return n;
@@ -73,64 +76,62 @@
     }
 
     function handleKeypress(event: KeyboardEvent) {
-        if(event.key === "ArrowRight"){
+        if (event.key === "ArrowRight") {
             next();
-        }else if (event.key === "ArrowLeft"){
+        } else if (event.key === "ArrowLeft") {
             prev();
         }
     }
 
     onMount(() => {
-        window.addEventListener('keydown', handleKeypress);
-        return () => window.removeEventListener('keydown', handleKeypress);
-    })
+        window.addEventListener("keydown", handleKeypress);
+        return () => window.removeEventListener("keydown", handleKeypress);
+    });
 </script>
 
 <section>
-
-    <h2>Step {currentStep+1} of {steps.length}</h2>
+    <h2>Step {currentStep + 1} of {steps.length}</h2>
     <p class="question">{steps[currentStep].title}</p>
-    
+
     <div class="input-wrapper">
         <div role="button" tabindex="0" aria-pressed="false">
             {#key currentStep}
                 {#if steps[currentStep].text}
                     {#each steps[currentStep].text as paragraph}
-                    <p>{paragraph}</p>
+                        <p>{paragraph}</p>
                     {/each}
                 {/if}
 
                 {#if steps[currentStep].fields}
                     {#each steps[currentStep].fields as field}
-                    {#if field.isaMapping.commentName}
-                        <CommentWrapper component={fieldTypes[field.type]} jsonPath={field.isaMapping.jsonPath} field={field} />
-                    {:else}
-                        <FieldWrapper component={fieldTypes[field.type]} jsonPath={field.isaMapping.jsonPath} field={field} />
-                    {/if}
+                        {#if field.isaMapping.commentName}
+                            <CommentWrapper component={fieldTypes[field.type]} jsonPath={field.isaMapping.jsonPath} {field} />
+                        {:else}
+                            <FieldWrapper component={fieldTypes[field.type]} jsonPath={field.isaMapping.jsonPath} {field} />
+                        {/if}
                     {/each}
                 {/if}
-            
+
                 {#if steps[currentStep].component}
-                    <ComponentWrapper 
-                        component={componentTypes[steps[currentStep].component]} 
-                        jsonPath={steps[currentStep].jsonPath} 
-                        componentConfig={steps[currentStep].componentConfig} 
+                    <ComponentWrapper
+                        component={componentTypes[steps[currentStep].component]}
+                        jsonPath={steps[currentStep].jsonPath}
+                        componentConfig={steps[currentStep].componentConfig}
                     />
                 {/if}
             {/key}
         </div>
     </div>
 
-
     <div class="controls">
         {#if currentStep > 0}
-        <button class="btn large" onclick={prev}>Previous</button>
+            <button class="btn large" onclick={prev}>Previous</button>
         {/if}
 
         {#if currentStep < steps.length - 1}
-        <button class="btn large float-right" onclick={next}>Next</button>
+            <button class="btn large float-right" onclick={next}>Next</button>
         {:else}
-        <button class="btn large float-right">Finish</button>
+            <button class="btn large float-right">Finish</button>
         {/if}
     </div>
 </section>
@@ -160,6 +161,6 @@
         font-weight: 500;
         font-size: 115%;
         color: rgb(30, 30, 30);
-        margin-bottom: .5rem;
+        margin-bottom: 0.5rem;
     }
 </style>

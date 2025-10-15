@@ -87,59 +87,59 @@ window.steps = [
                 },
                 explanation: 'DM-12'
             },
-            // {
-            //     label: 'Location',
-            //     type: 'location',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Experimental Site'
-            //     },
-            //     explanation: 'DM-18'
-            // },
-            // {
-            //     label: 'Location Latitude',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Latitude'
-            //     },
-            //     explanation: 'DM-19'
-            // },
-            // {
-            //     label: 'Location Longitude',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Longitude'
-            //     },
-            //     explanation: 'DM-20'
-            // },
-            // {
-            //     label: 'ROR ID of your Institution',
-            //     type: 'ror',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Contact Institution ROR'
-            //     }
-            // },
-            // {
-            //     label: 'Institution Contact Address',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Contact Institution'
-            //     },
-            //     explanation: 'DM-16'
-            // },
-            // {
-            //     label: 'Country',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Country'
-            //     },
-            //     explanation: 'DM-17'
-            // }
+              {
+                label: 'Location',
+                type: 'location',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Experimental Site'
+                },
+                explanation: 'DM-18'
+            },
+            {
+                label: 'Location Latitude',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Latitude'
+                },
+                explanation: 'DM-19'
+            },
+            {
+                label: 'Location Longitude',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Longitude'
+                },
+                explanation: 'DM-20'
+            },
+            {
+                label: 'ROR ID of your Institution',
+                type: 'ror',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Contact Institution ROR'
+                }
+            },
+            {
+                label: 'Institution Contact Address',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Contact Institution'
+                },
+                explanation: 'DM-16'
+            },
+            {
+                label: 'Country',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Country'
+                },
+                explanation: 'DM-17'
+            }
         ]
     },  
     {
