@@ -17,6 +17,7 @@
   import StudyProcesses from "../isa/generic/StudyProcesses.svelte";
   import AssayProcesses from "../isa/generic/AssayProcesses.svelte";
   import { onMount } from "svelte";
+  import Publications from "../isa/generic/Publications.svelte";
 
     const fieldTypes: Record<string, any> = {
         'text': String,
@@ -30,6 +31,7 @@
         'protocol': Protocol,
         'StudyProcesses': StudyProcesses,
         'AssayProcesses': AssayProcesses,
+        'Publications': Publications
 
     }
 
