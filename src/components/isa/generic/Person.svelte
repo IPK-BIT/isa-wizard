@@ -1,7 +1,6 @@
 <script lang="ts">
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
-  import OntologyAnnotation from "./OntologyAnnotation.svelte";
   import PersonRoles from "./PersonRoles.svelte";
 
   interface FetchORCID {
@@ -21,12 +20,7 @@
     institutions: string[];
   }
 
-  let {
-    value: person = $bindable(),
-    countPeople = 1,
-    index,
-    removePerson,
-  } = $props();
+  let { value: person = $bindable(), countPeople = 1, index, removePerson } = $props();
 
   let mode: "view" | "edit" = $state("view");
 
@@ -43,7 +37,7 @@
   let orcid: string = $derived(
     person.comments.find((c: { name: string; value: string }) => {
       return c.name === "Person ID";
-    })?.value || ""
+    })?.value || "",
   );
 
   $effect(() => {
@@ -54,18 +48,13 @@
           return c.name === "Person ID";
         })?.value
     ) {
-      let idx = person.comments.findIndex(
-        (c: { name: string; value: string }) => {
-          return c.name === "Person ID";
-        }
-      );
+      let idx = person.comments.findIndex((c: { name: string; value: string }) => {
+        return c.name === "Person ID";
+      });
       if (idx !== -1) {
         person.comments[idx].value = orcid;
       } else {
-        person.comments = [
-          ...person.comments,
-          { name: "Person ID", value: orcid },
-        ];
+        person.comments = [...person.comments, { name: "Person ID", value: orcid }];
       }
     }
   });
@@ -97,14 +86,11 @@
   function handleSelectORCID(selection: SelectionORCID) {
     person.firstName = selection.name ?? "";
     person.lastName = selection.familyName ?? "";
-    person.affiliation =
-      selection.institutions.length > 0 ? selection.institutions.at(0) : ""; // Show only most recent institution?
-    person.email =
-      selection.emails.length > 0 ? selection.emails.join(",") : ""; // Show only one email?
-      person.address = ''; // reset adress
-      person.phone = ''; // reset phone
+    person.affiliation = selection.institutions.length > 0 ? selection.institutions.at(0) : ""; // Show only most recent institution?
+    person.email = selection.emails.length > 0 ? selection.emails.join(",") : ""; // Show only one email?
+    person.address = ""; // reset adress
+    person.phone = ""; // reset phone
   }
-
 </script>
 
 <section>
@@ -146,9 +132,7 @@
             }}>Edit</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning" onclick={() => removePerson(index)}
-              >Delete</button
-            >
+            <button class="btn btn-warning" onclick={() => removePerson(index)}>Delete</button>
           {/if}
         </div>
       </div>
@@ -176,40 +160,19 @@
                   headers: { "Content-Type": "application/vnd.orcid+json" },
                 }}
                 fetchCallback={handleOrcidFetch}
-                onChange={(selection: SelectionORCID) =>
-                  handleSelectORCID(selection)}
+                onChange={(selection: SelectionORCID) => handleSelectORCID(selection)}
               />
             {/if}
           </div>
 
           <div class="name">
-            <input
-              placeholder="First Name"
-              type="text"
-              bind:value={person.firstName}
-            />
-            <input
-              placeholder="Mid Initials"
-              type="text"
-              bind:value={person.midInitials}
-            />
-            <input
-              placeholder="Last Name"
-              type="text"
-              bind:value={person.lastName}
-            />
+            <input placeholder="First Name" type="text" bind:value={person.firstName} />
+            <input placeholder="Mid Initials" type="text" bind:value={person.midInitials} />
+            <input placeholder="Last Name" type="text" bind:value={person.lastName} />
           </div>
           <div style="gap: .5rem; display: flex; flex-direction: column;">
-            <input
-              placeholder="Affiliation"
-              type="text"
-              bind:value={person.affiliation}
-            />
-            <input
-              placeholder="Address"
-              type="text"
-              bind:value={person.address}
-            />
+            <input placeholder="Affiliation" type="text" bind:value={person.affiliation} />
+            <input placeholder="Address" type="text" bind:value={person.address} />
             <input placeholder="Email" type="text" bind:value={person.email} />
             <input placeholder="Phone" type="text" bind:value={person.phone} />
           </div>
@@ -226,9 +189,7 @@
             }}>Stop Editing</button
           >
           {#if countPeople > 1}
-            <button class="btn btn-warning" onclick={() => removePerson(index)}
-              >Remove {person.firstName}</button
-            >
+            <button class="btn btn-warning" onclick={() => removePerson(index)}>Remove {person.firstName}</button>
           {/if}
         </div>
       </div>
