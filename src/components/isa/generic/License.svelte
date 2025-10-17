@@ -1,54 +1,51 @@
 <script lang="ts">
     import Svelecte from "svelecte";
 
-    let {
-        label = '',
-        isaLevel = '',
-        attr,
-        value = $bindable(),
-        showLabel = true,
-        focus = false
-    } = $props();
+    let { label = "", isaLevel = "", attr, value: license = $bindable(), showLabel = true, focus = false } = $props();
 
     if (!label) {
         label = attr;
     }
 
-    let license = $state(value || '');
-    $effect(() => {
-        value = license;
-    });
+    let searchResult = $derived(license === "" ? null : license); // fix svelecte warning because empty string is not identified as null
 
-    async function handleFetch(response: {licenses: Array<any>}) {
+    async function handleFetch(response: { licenses: Array<any> }) {
         return response.licenses.map((license: any) => {
             return {
                 text: license.name,
-                value: license.licenseId
-            }
+                value: license.licenseId,
+            };
         });
     }
-
 </script>
 
 <section>
     <div>
         <div class="label-wrapper">
             {#if showLabel}
-            <label for="input-{label}">{label}</label>
+                <label for="input-{label}">{label}</label>
             {/if}
         </div>
         <div class="input-wrapper">
-            {#if value}
-            <div>
-                <span>{value}</span>
-                <button class="btn btn-warning" onclick={() => { value = ''; license = '';}}>Remove</button>
-            </div>
+            {#if license}
+                <div>
+                    <span>{license}</span>
+                    <button
+                        class="btn btn-warning"
+                        onclick={() => {
+                            license = "";
+                        }}>Remove</button
+                    >
+                </div>
             {:else}
-            <Svelecte
-                bind:value={license}
-                fetch='https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json'
-                fetchCallback={handleFetch}
-            />
+                <Svelecte
+                    bind:value={searchResult}
+                    fetch="https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
+                    fetchCallback={handleFetch}
+                    onChange={() => {
+                        if (searchResult) license = searchResult;
+                    }}
+                />
             {/if}
         </div>
     </div>
@@ -56,7 +53,7 @@
 
 <style>
     section div {
-        padding: .5rem;
+        padding: 0.5rem;
         margin: 0;
         box-sizing: border-box;
         align-items: center;

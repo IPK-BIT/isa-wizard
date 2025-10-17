@@ -3,6 +3,8 @@
 
     let { value: rorid = $bindable(), label = "" } = $props();
 
+    let searchResult = $derived(rorid === "" ? null : rorid); // fix svelecte warning because empty string is not identified as null
+
     function handleFetch(data: { items: any[] }) {
         console.log(data.items);
         let items = data.items;
@@ -17,8 +19,6 @@
                 ror: i.id,
             };
         });
-
-        console.log(results);
 
         if (results.length > 0) {
             return results;
@@ -44,10 +44,13 @@
             </div>
         {:else}
             <Svelecte
-                bind:value={rorid}
+                bind:value={searchResult}
                 placeholder="Search for your institute by its name..."
                 fetch={"https://api.ror.org/v2/organizations?query=[query]"}
                 fetchCallback={handleFetch}
+                onChange={() => {
+                    if (searchResult) rorid = searchResult;
+                }}
             >
                 {#snippet option(opt, inputValue)}
                     <div class="">
