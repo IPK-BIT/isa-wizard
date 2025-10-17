@@ -31,7 +31,6 @@
   }
 
   let result = $state(null);
-  $inspect(result);
 </script>
 
 <div class="container">
@@ -61,7 +60,12 @@
         >
       </div>
     {:else}
-      <OntologySvelect bind:searchResult={result} onChangeCallback={() => {if(result) addUnit(result)}}></OntologySvelect>
+      <OntologySvelect
+        bind:searchResult={result}
+        onChangeCallback={() => {
+          if (result) addUnit(result);
+        }}
+      ></OntologySvelect>
     {/if}
   </div>
   <div class="remove-btn">

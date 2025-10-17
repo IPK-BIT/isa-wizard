@@ -20,6 +20,9 @@
     import Publications from "../isa/generic/Publications.svelte";
     import Location from "@/components/isa/generic/Location.svelte";
     import RORPicker from "../isa/generic/ROR_Picker.svelte";
+    import OntologySvelect from "../isa/generic/OntologySvelect.svelte";
+    import OntologyAnnotation from "../isa/generic/OntologyAnnotation.svelte";
+    import TextSelect from "../isa/generic/TextSelect.svelte";
 
     const fieldTypes: Record<string, any> = {
         text: String,
@@ -28,6 +31,8 @@
         license: License,
         location: Location,
         ror: RORPicker,
+        ontology_annotation: OntologyAnnotation,
+        "text-select": TextSelect,
     };
 
     const componentTypes: Record<string, any> = {

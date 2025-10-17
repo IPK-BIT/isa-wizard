@@ -1,6 +1,4 @@
-<script lang="ts">
-  import Svelecte from "svelecte";
-
+<script module>
   export interface OntologyResult {
     label?: string;
     value?: string;
@@ -9,6 +7,10 @@
     ontology_name?: string;
     short_form?: string;
   }
+</script>
+
+<script lang="ts">
+  import Svelecte from "svelecte";
 
   interface Props {
     value?: any;
@@ -50,29 +52,27 @@
       return [];
     }
   }
-
 </script>
- 
 
-  <Svelecte {placeholder} bind:value={searchResult} fetch={fetchUrl} {fetchCallback} onChange={onChangeCallback} renderer={renderer}>
-    {#snippet option(opt, inputValue)}
-      {@const ontology = opt as OntologyResult}
-      <div class="unit-container">
-        <div class="ontology-label">
-          {ontology.label}
-          [{ontology.ontology_name}]
-        </div>
-        <div class="ontology-description">
-          {#if ontology.description}
-            {ontology.description}
-          {/if}
-        </div>
-        <div class="ontology-iri">
-          {ontology.iri}
-        </div>
+<Svelecte {placeholder} bind:value={searchResult} fetch={fetchUrl} {fetchCallback} onChange={onChangeCallback} {renderer}>
+  {#snippet option(opt, inputValue)}
+    {@const ontology = opt as OntologyResult}
+    <div class="unit-container">
+      <div class="ontology-label">
+        {ontology.label}
+        [{ontology.ontology_name}]
       </div>
-    {/snippet}
-  </Svelecte>
+      <div class="ontology-description">
+        {#if ontology.description}
+          {ontology.description}
+        {/if}
+      </div>
+      <div class="ontology-iri">
+        {ontology.iri}
+      </div>
+    </div>
+  {/snippet}
+</Svelecte>
 
 <style>
   .unit-container {
