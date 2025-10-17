@@ -1,4 +1,5 @@
 <script>
+    import { explanationAction } from "@/actions/explanation";
     import { isaObj } from "@/stores/isa";
     import { getContext } from "svelte";
 
@@ -25,7 +26,7 @@
     <p class="padding">{label}</p>
 
     <div class="padding input-container">
-        <input data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={location} />
+        <input data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={location} use:explanationAction={attr} />
         {#if location}
             <button aria-label="geocode button" class="btn" title="Geocode" onclick={geocode}>
                 <svg

@@ -1,5 +1,8 @@
 <script lang="ts">
+    import { explanationAction } from "@/actions/explanation";
+    import { explanationStore } from "@/stores/ExplanationStore.svelte";
     import Svelecte from "svelecte";
+    import { onMount } from "svelte";
 
     let { label = "", isaLevel = "", attr, value: license = $bindable(), showLabel = true, focus = false } = $props();
 
@@ -17,6 +20,14 @@
             };
         });
     }
+
+    onMount(() => {
+        // because Svelecte Componenet cant use use:... action must be manually added
+        const svelecteElement = document.getElementById("svelecte-" + attr);
+        if (svelecteElement) {
+            explanationAction(svelecteElement, attr);
+        }
+    });
 </script>
 
 <section>
@@ -39,6 +50,7 @@
                 </div>
             {:else}
                 <Svelecte
+                    inputId={"svelecte-" + attr}
                     bind:value={searchResult}
                     fetch="https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
                     fetchCallback={handleFetch}

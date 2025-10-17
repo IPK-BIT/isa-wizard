@@ -1,35 +1,29 @@
 <script lang="ts">
-    let {
-        label = '',
-        isaLevel = '',
-        attr,
-        value = $bindable(),
-        showLabel = true,
-        focus = false
-    } = $props();
+    import { explanationAction } from "@/actions/explanation";
+
+    let { label = "", isaLevel = "", attr, value = $bindable(), showLabel = true, focus = false } = $props();
 
     if (!label) {
         label = attr;
     }
-
 </script>
 
 <section>
     <div>
         <div class="label-wrapper">
             {#if showLabel}
-            <label for="input-{label}">{label}</label>
+                <label for="input-{label}">{label}</label>
             {/if}
         </div>
         <div class="input-wrapper">
-            <input type="text" id="input-{label}" bind:value={value} />
+            <input type="text" id="input-{label}" bind:value use:explanationAction={attr} />
         </div>
     </div>
 </section>
 
 <style>
     section div {
-        padding: .5rem;
+        padding: 0.5rem;
         margin: 0;
         box-sizing: border-box;
         align-items: center;

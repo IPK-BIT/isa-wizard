@@ -2,7 +2,7 @@
   import Schemas from "@/lib/schemas";
   import ProtocolComponent from "./ProtocolComponent.svelte";
 
-  let { value: components = $bindable(), label = true } = $props();
+  let { value: components = $bindable(), label = true, attr } = $props();
 
   function addComponent() {
     let component = Schemas.getObjectFromSchema("protocol_component");
@@ -19,20 +19,18 @@
     <p>Protocol Components</p>
   {/if}
   <div>
-  <button class="btn btn-secondary" onclick={addComponent}>Add Component</button>
-  {#each components as component, i}     
-    <ProtocolComponent bind:value={components[i]} index={i} remove={(index: number) => removeComponent(index)} />
-  {/each}
+    <button class="btn btn-secondary" onclick={addComponent}>Add Component</button>
+    {#each components as component, i}
+      <ProtocolComponent bind:value={components[i]} index={i} remove={(index: number) => removeComponent(index)} />
+    {/each}
   </div>
 </section>
-
 
 <style>
   .container {
     display: grid;
     grid-template-columns: 20% 80%;
     padding: 8px;
-    
   }
 
   .container p,
@@ -47,7 +45,7 @@
     justify-content: center;
   }
 
-  .btn{
+  .btn {
     max-width: 150px;
     max-height: 25px;
   }

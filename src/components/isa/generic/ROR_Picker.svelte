@@ -1,12 +1,13 @@
 <script lang="ts">
+    import { explanationAction } from "@/actions/explanation";
     import Svelecte from "svelecte";
+    import { onMount } from "svelte";
 
-    let { value: rorid = $bindable(), label = "" } = $props();
+    let { value: rorid = $bindable(), label = "", attr } = $props();
 
     let searchResult = $derived(rorid === "" ? null : rorid); // fix svelecte warning because empty string is not identified as null
 
     function handleFetch(data: { items: any[] }) {
-        console.log(data.items);
         let items = data.items;
         let results = items.map((i) => {
             let names = Array.isArray(i.names) ? i.names.map((name) => name.value) : i.names;
@@ -30,6 +31,13 @@
     function remove() {
         rorid = "";
     }
+
+    onMount(() => {
+        const svelecteInput = document.getElementById("svelecte-" + attr);
+        if (svelecteInput) {
+            explanationAction(svelecteInput, attr);
+        }
+    });
 </script>
 
 <section class="grid padding">
@@ -44,6 +52,7 @@
             </div>
         {:else}
             <Svelecte
+                inputId={"svelecte-" + attr}
                 bind:value={searchResult}
                 placeholder="Search for your institute by its name..."
                 fetch={"https://api.ror.org/v2/organizations?query=[query]"}

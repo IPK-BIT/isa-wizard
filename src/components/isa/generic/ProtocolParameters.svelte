@@ -1,11 +1,7 @@
 <script lang="ts">
   import Schema from "@/lib/schemas";
-  import String from "./String.svelte";
-  import { onMount } from "svelte";
   import ProtocolParameter from "./ProtocolParameter.svelte";
   import AutocompleteWidget from "@/components/ts4nfdi/AutocompleteWidget.svelte";
-  import { SvelteMap, SvelteSet } from "svelte/reactivity";
-  import { isaObj } from "@/stores/isa";
 
   interface Parameter {
     label: string;
@@ -14,7 +10,7 @@
     type: string;
   }
 
-  let { value: protocolParameters = $bindable() } = $props();
+  let { value: protocolParameters = $bindable(), attr } = $props();
 
   function _getParameter(parameterName: string) {
     let parameter = Schema.getObjectFromSchema("protocol_parameter");
@@ -47,27 +43,31 @@
   function removeParameter(index: number) {
     protocolParameters = [...protocolParameters.slice(0, index), ...protocolParameters.slice(index + 1)];
   }
-
 </script>
 
 <div id="parameters" class="parameters-container">
-  <p>
-    Protocol Parameters
-  </p>
+  <p>Protocol Parameters</p>
 
   <div>
     {#key countParameters}
-    <AutocompleteWidget
-      api={"https://api.terminology.tib.eu/api/"}
-      parameter={"fieldList=description,label,iri,short_form,ontology_name&collection=dataplant&type=class"}
-      singleSelection={true}
-      selectionChangedEvent={(selectedOptions: Parameter[]) => {
-        selectInput = selectedOptions[0] ?? null; // only one parameter at idx=0 because of singleSelection = true
-      }}
-    />
+      <AutocompleteWidget
+        api={"https://api.terminology.tib.eu/api/"}
+        parameter={"fieldList=description,label,iri,short_form,ontology_name&collection=dataplant&type=class"}
+        singleSelection={true}
+        selectionChangedEvent={(selectedOptions: Parameter[]) => {
+          selectInput = selectedOptions[0] ?? null; // only one parameter at idx=0 because of singleSelection = true
+        }}
+      />
     {/key}
 
-    <button type="button" class="btn btn-secondary" disabled={selectInput === null} onclick={() => {if(selectInput) addParameter(selectInput)}}>Add Parameter</button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      disabled={selectInput === null}
+      onclick={() => {
+        if (selectInput) addParameter(selectInput);
+      }}>Add Parameter</button
+    >
 
     {#each protocolParameters, i}
       <ProtocolParameter remove={(index: number) => removeParameter(index)} index={i} bind:value={protocolParameters[i]} />
@@ -76,30 +76,29 @@
 </div>
 
 <style>
-.parameters-container {
-  display: grid;
-  grid-template-columns: 20% 80%;
-  padding: 8px;
-}
+  .parameters-container {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    padding: 8px;
+  }
 
-.parameters-container p, div {
-  padding: 8px;
-}
+  .parameters-container p,
+  div {
+    padding: 8px;
+  }
 
-.parameters-container div {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+  .parameters-container div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-button {
-  max-width: 150px;
-}
+  button {
+    max-width: 150px;
+  }
 
-button.btn:disabled {
-  background: lightgray !important;
-  cursor: not-allowed;
-}
-
-
+  button.btn:disabled {
+    background: lightgray !important;
+    cursor: not-allowed;
+  }
 </style>

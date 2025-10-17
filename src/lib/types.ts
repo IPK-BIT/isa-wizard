@@ -12,7 +12,10 @@ export type Config = {
         name?: string
     },
     steps?: any[],
-    prefill?: any[]
+    prefill?: any[],
+    explanations?: any[],
+    checklist?: Object,
+    export?: any[],
 }
 
 export type Hook = {

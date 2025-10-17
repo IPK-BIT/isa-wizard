@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Explanation from "./components/layout/Explanation.svelte";
+
     let config = $props();
 
     import Header from "./components/layout/Header.svelte";
@@ -31,6 +33,7 @@
                 {:else if getAppState() === AppState.Form}
                     <p>Tree</p>
                 {/if}
+                <Explanation />
             </div>
         {/if}
         <div class="middlecol">
