@@ -23,6 +23,8 @@
     import OntologySvelect from "../isa/generic/OntologySvelect.svelte";
     import OntologyAnnotation from "../isa/generic/OntologyAnnotation.svelte";
     import TextSelect from "../isa/generic/TextSelect.svelte";
+    import ProtocolParameters from "../isa/generic/ProtocolParameters.svelte";
+    import ProtocolComponents from "../isa/generic/ProtocolComponents.svelte";
 
     const fieldTypes: Record<string, any> = {
         text: String,
@@ -33,6 +35,8 @@
         ror: RORPicker,
         ontology_annotation: OntologyAnnotation,
         "text-select": TextSelect,
+        parameters: ProtocolParameters,
+        components: ProtocolComponents,
     };
 
     const componentTypes: Record<string, any> = {
