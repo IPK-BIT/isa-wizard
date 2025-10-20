@@ -1,6 +1,5 @@
 <script lang="ts">
   import { DataFrame } from "dataframe-js";
-  import TableAnnotation from "./TableAnnotation.svelte";
   import { onMount } from "svelte";
   import { SvelteSet } from "svelte/reactivity";
   import OntologySvelect from "./OntologySvelect.svelte";
@@ -46,7 +45,7 @@
 
   let column_mapping: any = $state({});
 
-   let isValid = $state(false),
+  let isValid = $state(false),
     hasInput = $state(false),
     oneInput = $state(false),
     hasOutput = $state(false),
@@ -67,10 +66,7 @@
       } else if (type === "output") {
         outputCount++;
       }
-      if (
-        (type === "characteristic" && mapping[key].value === null) ||
-        (type === "factor" && mapping[key].value === null)
-      ) {
+      if ((type === "characteristic" && mapping[key].value === null) || (type === "factor" && mapping[key].value === null)) {
         invalidOntologies.add(key);
       }
     });
@@ -80,18 +76,12 @@
     hasOutput = outputCount >= 1;
     oneOutput = outputCount === 1;
 
-    isValid =
-      hasInput &&
-      oneInput &&
-      hasOutput &&
-      oneOutput &&
-      invalidOntologies.size === 0;
+    isValid = hasInput && oneInput && hasOutput && oneOutput && invalidOntologies.size === 0;
   }
 
   onMount(() => {
     validate(column_mapping);
   });
-
 </script>
 
 <div>
@@ -106,119 +96,108 @@
 </div>
 
 {#if dataframe}
-        
-<div class="table-container">
-  <div class="table-header grid">
-    <div class="highlight">Column</div>
-    <div class="highlight">Example Value</div>
-    <div class="highlight">Column Mapping</div>
-  </div>
-  {#each dataframe.listColumns() as column}
-    <div class="grid row-container">
-      <div class="highlight">{column}</div>
-      <div class="highlight">{dataframe.getRow(0).get(column)}</div>
-      <div class="highlight">
-         {column_mapping[column].type.charAt(0).toUpperCase() + column_mapping[column].type.slice(1)}
-         {#if column_mapping[column].value}
+  <div class="table-container">
+    <div class="table-header grid">
+      <div class="highlight">Column</div>
+      <div class="highlight">Example Value</div>
+      <div class="highlight">Column Mapping</div>
+    </div>
+    {#each dataframe.listColumns() as column}
+      <div class="grid row-container">
+        <div class="highlight">{column}</div>
+        <div class="highlight">{dataframe.getRow(0).get(column)}</div>
+        <div class="highlight">
+          {column_mapping[column].type.charAt(0).toUpperCase() + column_mapping[column].type.slice(1)}
+          {#if column_mapping[column].value}
             [{column_mapping[column].value?.label}]
-         {/if}
-    </div>
+          {/if}
+        </div>
 
-      <div class="option-container">
-        <button
-          class="btn"
-          class:disabled={column_mapping[column].type !== "ignore"}
-          onclick={() => {
-            column_mapping[column] = { type: "ignore", value: null };
-            validate(column_mapping);
-          }}>Ignore</button
-        >
-        <button
-          class="btn"
-          class:disabled={column_mapping[column].type !== "input"}
-          onclick={() => {
-            column_mapping[column] = { type: "input", value: null };
-            validate(column_mapping);
-          }}>Input</button
-        >
-        <button
-          class="btn"
-          class:disabled={column_mapping[column].type !== "output"}
-          onclick={() => {
-            column_mapping[column] = { type: "output", value: null };
-            validate(column_mapping);
-          }}>Output</button
-        >
-        <button
-          class="btn"
-          class:disabled={column_mapping[column].type !== "characteristic"}
-          onclick={() => {
-            column_mapping[column] = { type: "characteristic", value: null };
-            validate(column_mapping);
-          }}>Characteristic</button
-        >
-        <button
-          class="btn"
-          class:disabled={column_mapping[column].type !== "factor"}
-          onclick={() => {
-            column_mapping[column] = { type: "factor", value: null };
-            validate(column_mapping);
-          }}>Factor</button
-        >
-      </div>
-
-      <div
-        class="ontology-row"
-        class:red-border={invalidOntologies.has(column)}
-      >
-        {#if column_mapping[column].type === "characteristic" || column_mapping[column].type === "factor"}
-          <span>Column Meaning</span>
-          <OntologySvelect
-            bind:searchResult={column_mapping[column].value}
-            placeholder="e.g. Organism"
-            onChangeCallback={() => {
-              invalidOntologies.delete(column);
+        <div class="option-container">
+          <button
+            class="btn"
+            class:disabled={column_mapping[column].type !== "ignore"}
+            onclick={() => {
+              column_mapping[column] = { type: "ignore", value: null };
               validate(column_mapping);
-            }}
-          ></OntologySvelect>
-        {/if}
+            }}>Ignore</button
+          >
+          <button
+            class="btn"
+            class:disabled={column_mapping[column].type !== "input"}
+            onclick={() => {
+              column_mapping[column] = { type: "input", value: null };
+              validate(column_mapping);
+            }}>Input</button
+          >
+          <button
+            class="btn"
+            class:disabled={column_mapping[column].type !== "output"}
+            onclick={() => {
+              column_mapping[column] = { type: "output", value: null };
+              validate(column_mapping);
+            }}>Output</button
+          >
+          <button
+            class="btn"
+            class:disabled={column_mapping[column].type !== "characteristic"}
+            onclick={() => {
+              column_mapping[column] = { type: "characteristic", value: null };
+              validate(column_mapping);
+            }}>Characteristic</button
+          >
+          <button
+            class="btn"
+            class:disabled={column_mapping[column].type !== "factor"}
+            onclick={() => {
+              column_mapping[column] = { type: "factor", value: null };
+              validate(column_mapping);
+            }}>Factor</button
+          >
+        </div>
+
+        <div class="ontology-row" class:red-border={invalidOntologies.has(column)}>
+          {#if column_mapping[column].type === "characteristic" || column_mapping[column].type === "factor"}
+            <span>Column Meaning</span>
+            <OntologySvelect
+              bind:searchResult={column_mapping[column].value}
+              placeholder="e.g. Organism"
+              onChangeCallback={() => {
+                invalidOntologies.delete(column);
+                validate(column_mapping);
+              }}
+            ></OntologySvelect>
+          {/if}
+        </div>
       </div>
-    </div>
-  {/each}
-</div>
+    {/each}
+  </div>
 
-<div class="protocol-container">
-  
-</div>
+  <div class="protocol-container"></div>
 
-<div class="validate-container">
-  <ul style="color: red;">
-    {#if !hasInput}
-      <li>Please define an Input!</li>
-    {:else if !oneInput}
-      <li>Please define only one Input!</li>
-    {/if}
-    {#if !hasOutput}
-      <li>Please define an Output!</li>
-    {:else if !oneOutput}
-      <li>Please define only one Output!</li>
-    {/if}
-    {#if invalidOntologies.size > 0}
-      {#each invalidOntologies.values() as name}
-        <li>Please provide an value for: {name}</li>
-      {/each}
-    {/if}
-  </ul>
+  <div class="validate-container">
+    <ul style="color: red;">
+      {#if !hasInput}
+        <li>Please define an Input!</li>
+      {:else if !oneInput}
+        <li>Please define only one Input!</li>
+      {/if}
+      {#if !hasOutput}
+        <li>Please define an Output!</li>
+      {:else if !oneOutput}
+        <li>Please define only one Output!</li>
+      {/if}
+      {#if invalidOntologies.size > 0}
+        {#each invalidOntologies.values() as name}
+          <li>Please provide an value for: {name}</li>
+        {/each}
+      {/if}
+    </ul>
 
     <div class="btn-container">
-    <button
-      disabled={!isValid}
-      class:disabled={!isValid}
-      class="btn btn-primary"
-      onclick={() => approve({dataframe, column_mapping})}>Approve</button
-    >
+      <button disabled={!isValid} class:disabled={!isValid} class="btn btn-primary" onclick={() => approve({ dataframe, column_mapping })}>Approve</button>
+    </div>
   </div>
-</div>
 {/if}
 
 <style>
@@ -243,9 +222,9 @@
     text-align: center;
   }
 
-    .validate-container {
+  .validate-container {
     padding: 16px 0px;
-        display: flex;
+    display: flex;
     justify-content: space-between;
   }
 
@@ -253,7 +232,7 @@
     width: 150px;
     height: 50px;
   }
- 
+
   .red-border {
     border: 1px solid red;
   }
@@ -315,11 +294,7 @@
   }
 
   button.btn.disabled {
-    background: linear-gradient(
-      0deg,
-      hsl(0, 0%, 70%) 0%,
-      hsl(0, 0%, 85%) 100%
-    ) !important;
+    background: linear-gradient(0deg, hsl(0, 0%, 70%) 0%, hsl(0, 0%, 85%) 100%) !important;
     color: black;
   }
 </style>
