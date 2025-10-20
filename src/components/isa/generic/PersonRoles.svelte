@@ -1,4 +1,4 @@
-<script module>
+<script lang="ts" module>
   let rolesAvailable: any[] = $state([]);
   const mapAccessionToLabel = new Map();
 

@@ -1,4 +1,4 @@
-<script module>
+<script lang="ts" module>
     export interface OntologySchema {
         "@id": string;
         annotationValue: string;
