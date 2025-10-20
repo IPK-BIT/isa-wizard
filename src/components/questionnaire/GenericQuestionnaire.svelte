@@ -56,7 +56,13 @@
                         let toAdd = hook.state.count - get(studies).length;
                         for (let i = 0; i < Math.max(toAdd, 0); i++) {
                             studies.update((n: Array<any>) => {
-                                n.push(Schema.getObjectFromSchema(hook.type));
+                                const schema = Schema.getObjectFromSchema(hook.type);
+                                if(hook.parameters){
+                                    Object.keys(hook.parameters).forEach((parameter) => {
+                                        schema[parameter] = hook.parameters[parameter];
+                                    });
+                                }
+                                n.push(schema);
                                 return n;
                             });
                         }

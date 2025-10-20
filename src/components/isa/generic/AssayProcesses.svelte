@@ -13,7 +13,9 @@
     imageFileSize?: string; // The size of the image in Bytes.
   }
 
-  let brapiURL = $state("https://test-server.brapi.org/brapi/v2/");
+    let { componentConfig={} } = $props();
+
+  let brapiURL = $derived(componentConfig.brapiBaseURL);
   let allStudies: Study[] = $state([]); // all available studies
   let selectedStudy: Study | null = $state(null);
   let allImages: Image[] = $state([]); // all images fetched from BrAPI server for the selected study
@@ -23,6 +25,8 @@
   let page = 0;
 
   let errorLog = $state(""); // This is for showing errors which can occur when fetching data from BrAPI server
+
+
 
   /**
    * Fetching data from the specified URL
@@ -66,7 +70,7 @@
    */
   async function loadImages() {
     // If BrAPI Server supports GET /images/studyDbId => uncomment the line below
-    // const images = await fetchBrapiData(`images/${selectedStudy}`);
+    // const images = await fetchBrapiData(`images?studyDbId=${selectedStudy}`);
     const images = await fetchBrapiData("images");
     allImages = images;
     visibleImages = allImages.slice(0, PAGE_SIZE);

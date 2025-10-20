@@ -87,7 +87,7 @@ window.steps = [
                 },
                 explanation: 'DM-12'
             },
-              {
+            {
                 label: 'Location',
                 type: 'location',
                 isaMapping: {
@@ -141,7 +141,7 @@ window.steps = [
                 explanation: 'DM-17'
             }
         ]
-    },  
+    },
     {
         hooks: [
             {
@@ -150,44 +150,64 @@ window.steps = [
                     mapping: 'studies[0].protocols',
                     count: 1
                 },
-                // parameters: {
-                //     protocolName: 'Growth',
-                //     protocolVersion: 'MIAPPE v1.1',
-                //     protocolType: {
-                //         "@id": "",
-                //         "annotationValue": "plant growth protocol",
-                //         "termSource": "DPBO",
-                //         "termAccession": "DPBO:1000164",
-                //         "comments": []
-                //       },
-                //     // protocolDescription: 'How the plants were grown up.',
-                //     protocolParameters: [ 
-                //         {
-                //             "@id": "",
-                //             "annotationValue": "Light intensity",
-                //             "termSource": "MIAPPE",
-                //             "termAccession": "MIAPPE:0101",
-                //             "comments": []
-                //         }, {
-                //             "@id": "",
-                //             "annotationValue": "temperature day",
-                //             "termSource": "DPBO",
-                //             "termAccession": "DPBO:0000007",
-                //             "comments": []
-                //         },{
-                //             "@id": "",
-                //             "annotationValue": "temperature night",
-                //             "termSource": "DPBO",
-                //             "termAccession": "DPBO:0000008",
-                //             "comments": []
-                //         }
-                //     ]
-                // }
+                parameters: {
+                    name: 'Growth',
+                    version: 'MIAPPE v1.1',
+                    protocolType: {
+                        "@id": "",
+                        "annotationValue": "plant growth protocol",
+                        "termSource": "DPBO",
+                        "termAccession": "DPBO:1000164",
+                        "comments": []
+                    },
+                    // protocolDescription: 'How the plants were grown up.',
+                    parameters: [
+
+                        // {
+                        //     parameterName: {
+                        //         "@id": "",
+                        //         "annotationValue": "Light intensity",
+                        //         "termSource": "MIAPPE",
+                        //         "termAccession": "MIAPPE:0101",
+                        //         "comments": []
+                        //     }, comments: [
+                        //         {
+                        //             "@id": "",
+                        //             "name": "value",
+                        //             "value": ""
+                        //         },
+                        //         {
+                        //             "@id": "",
+                        //             "name": "deletable",
+                        //             "value": "false"
+                        //         }, {
+                        //             "@id": "",
+                        //             "name": "unit",
+                        //             "value": ""
+                        //         }
+                        //     ]
+                        // }
+                        
+                        // , {
+                        //     "@id": "",
+                        //     "annotationValue": "temperature day",
+                        //     "termSource": "DPBO",
+                        //     "termAccession": "DPBO:0000007",
+                        //     "comments": []
+                        // },{
+                        //     "@id": "",
+                        //     "annotationValue": "temperature night",
+                        //     "termSource": "DPBO",
+                        //     "termAccession": "DPBO:0000008",
+                        //     "comments": []
+                        // }
+                    ]
+                }
             }
         ],
         title: 'Please provide a brief summary of the Growth Conditions.',
         component: "protocol",
-                jsonPath: 'studies[0].protocols',
+        jsonPath: 'studies[0].protocols',
         componentConfig: {
             showComments: false,
             label: 'Protocols'
@@ -245,7 +265,7 @@ window.steps = [
                     count: 1
                 },
                 parameters: {
-                    
+
                 }
             }
         ],
@@ -294,15 +314,15 @@ window.steps = [
                     count: 2
                 },
                 parameters: {
-                    protocolName: 'Phenotyping',
-                    protocolVersion: 'MIAPPE v1.1',
-                    protocolType: {
-                        "@id": "",
-                        "annotationValue": "phenotyping",
-                        "termSource": "DPBO",
-                        "termAccession": "DPBO:1000224",
-                        "comments": []
-                      },
+                    name: 'Imaging',
+                    version: 'MIAPPE v1.1',
+                    // protocolType: {
+                    //     "@id": "",
+                    //     "annotationValue": "phenotyping",
+                    //     "termSource": "DPBO",
+                    //     "termAccession": "DPBO:1000224",
+                    //     "comments": []
+                    //   },
                     // protocolParameters: ['Phenotyping method']
                 }
             }
@@ -343,14 +363,14 @@ window.steps = [
             }
         ]
     },
-    
+
     {
         title: 'Please upload the results of your Study.',
         component: 'AssayProcesses',
         level: 'Assay',
         jsonPath: 'studies[0].assays[0]',
         componentConfig: {
-
+            brapiBaseURL: "https://test-server.brapi.org/brapi/v2/"
         }
     }
 ];

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
   import Schema from "@/lib/schemas";
 
@@ -31,6 +32,13 @@
   }
 
   let result = $state(null);
+
+  onMount(() => {
+    console.log(protocolParameter);
+    if(!protocolParameter.comments){
+
+    }
+  })
 </script>
 
 <div class="container">
@@ -68,9 +76,15 @@
       ></OntologySvelect>
     {/if}
   </div>
+
   <div class="remove-btn">
+      {#if protocolParameter.comments[1].value === "true"}
     <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
+      {:else}
+    <i>predefined</i>
+  {/if}
   </div>
+
 </div>
 
 <style>
