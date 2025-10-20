@@ -14,6 +14,8 @@
         let rowProcesses: any[] = [];
         // @ts-ignore
         $isaObj.studies[0].protocols.forEach((protocol, i) => {
+            // filter auf ausgewaehlter protocols 
+            // abgleich mit Namen 
             let isFirst = i == 0, 
                 // @ts-ignore
                 isLast = i == $isaObj.studies[0].protocols.length - 1;
