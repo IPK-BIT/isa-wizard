@@ -4,7 +4,18 @@
   import { SvelteSet } from "svelte/reactivity";
   import OntologySvelect from "./OntologySvelect.svelte";
 
-  let { approve } = $props();
+  let { approve, value: studies = $bindable() } = $props();
+
+  let selectedProtocols: any[] = $state([]);
+  function selectProtocol(protocol: any) {
+    const protocolIdx = selectedProtocols.findIndex((p) => p.name === protocol.name);
+    if (protocolIdx !== -1) {
+      selectedProtocols.splice(protocolIdx, 1);
+    } else {
+      selectedProtocols.push(protocol);
+    }
+    validate(column_mapping);
+  }
 
   function handleFileDrop(event: any) {
     event.preventDefault();
@@ -49,7 +60,8 @@
     hasInput = $state(false),
     oneInput = $state(false),
     hasOutput = $state(false),
-    oneOutput = $state(false);
+    oneOutput = $state(false),
+    protocolSelected = $state(false);
 
   let invalidOntologies = $state(new SvelteSet());
 
@@ -75,8 +87,9 @@
     oneInput = inputCount === 1;
     hasOutput = outputCount >= 1;
     oneOutput = outputCount === 1;
+    protocolSelected = selectedProtocols.length > 0;
 
-    isValid = hasInput && oneInput && hasOutput && oneOutput && invalidOntologies.size === 0;
+    isValid = hasInput && oneInput && hasOutput && oneOutput && invalidOntologies.size === 0 && protocolSelected;
   }
 
   onMount(() => {
@@ -173,7 +186,19 @@
     {/each}
   </div>
 
-  <div class="protocol-container"></div>
+  {#if studies.protocols && studies.protocols.length > 0}
+    <div class="protocol-container">
+      <div>Please specify which protocols where used:</div>
+      <div>
+        {#each studies.protocols as protocol}
+          <label class="protocol-label">
+            <input type="checkbox" value={protocol.name} onchange={() => selectProtocol(protocol)} />
+            Protocol: {protocol.name}
+          </label>
+        {/each}
+      </div>
+    </div>
+  {/if}
 
   <div class="validate-container">
     <ul style="color: red;">
@@ -192,15 +217,31 @@
           <li>Please provide an value for: {name}</li>
         {/each}
       {/if}
+      {#if !protocolSelected}
+        <li>Please select at least one protocol!</li>
+      {/if}
     </ul>
 
     <div class="btn-container">
-      <button disabled={!isValid} class:disabled={!isValid} class="btn btn-primary" onclick={() => approve({ dataframe, column_mapping })}>Approve</button>
+      <button disabled={!isValid} class:disabled={!isValid} class="btn btn-primary" onclick={() => approve({ dataframe, column_mapping, selectedProtocols })}>Approve</button>
     </div>
   </div>
 {/if}
 
 <style>
+  .protocol-container {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 12px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .protocol-label {
+    display: flex;
+    gap: 4px;
+  }
+
   label {
     display: flex;
     justify-content: end;
