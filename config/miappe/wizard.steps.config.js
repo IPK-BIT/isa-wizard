@@ -187,7 +187,7 @@ window.steps = [
                         //         }
                         //     ]
                         // }
-                        
+
                         // , {
                         //     "@id": "",
                         //     "annotationValue": "temperature day",
@@ -370,7 +370,7 @@ window.steps = [
         level: 'Assay',
         jsonPath: 'studies[0].assays[0]',
         componentConfig: {
-            brapiBaseURL: "https://test-server.brapi.org/brapi/v2/"
+            brapiBaseURL: "https://mira.ipk-gatersleben.de/test/brapi/v2/"
         }
     }
 ];
