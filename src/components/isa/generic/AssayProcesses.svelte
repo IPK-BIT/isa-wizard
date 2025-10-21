@@ -25,11 +25,9 @@
   let loading: boolean = $state(false);
   const PAGE_SIZE = 8; // controls how many image cards are shown initially before Load More Button gets visible
   let page = 0;
-  let approve = $state(false);
+  let approve = $derived.by(() => (value.processSequence.length > 0 ? true : false)); // If processes are in ISA String, then table should be loaded (approve = true)
 
   let errorLog = $state(""); // This is for showing errors which can occur when fetching data from BrAPI server
-
-  // $inspect(allImages);
 
   /**
    * Fetching data from the specified URL
@@ -79,10 +77,7 @@
     visibleImages = allImages.slice(0, PAGE_SIZE);
   }
 
-  /**
-   * Load more images
-   */
-  function loadMore() {
+  function loadMoreImages() {
     page += 1;
     const next = allImages.slice(0, (page + 1) * PAGE_SIZE);
     visibleImages = next;
@@ -96,6 +91,10 @@
       allImages.push(...(await fetchBrapiData("images")));
     }
     visibleImages = allImages.slice(0, PAGE_SIZE);
+  }
+
+  function reset() {
+    approve = false;
   }
 </script>
 
@@ -155,7 +154,7 @@
 
         <div class="button-container">
           {#if visibleImages.length < allImages.length}
-            <button class="btn btn-secondary" onclick={loadMore}>Load more</button>
+            <button class="btn btn-secondary" onclick={loadMoreImages}>Load more</button>
           {/if}
         </div>
       </div>
@@ -178,7 +177,7 @@
     {/if}
   </div>
 {:else}
-  <ImageProcesses {value} {allImages} />
+  <ImageProcesses bind:value {allImages} {reset} />
 {/if}
 
 <style>

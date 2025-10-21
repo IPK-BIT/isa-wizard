@@ -1,29 +1,42 @@
 <script lang="ts">
+  import { config } from "@/lib/appstate.svelte";
   import Schemas from "@/lib/schemas";
-  import TableUpload from "../generic/TableUpload.svelte";
-  import { isaObj } from "@/stores/isa";
   import { onMount } from "svelte";
 
-  let { componentConfig = {}, value = $bindable(), allImages } = $props();
+  interface ImageDataBRAPI {
+    imageURL: string;
+    observationUnitDbId: string;
+  }
 
-  $inspect(value);
-  $inspect(allImages);
+  let { componentConfig = {}, value = $bindable(), allImages, reset } = $props();
+  let page = $state(0),
+    pageSize = $state(5);
 
   onMount(() => {
-    let process = Schemas.getObjectFromSchema("process");
-    // process["name"] = "Phenotyping"; ???
+    loadTable();
+  });
 
-    allImages.forEach((img) => {
+  $inspect(config);
+
+  /**
+   * Loads all process sequences and connects inputs (ObservationUnitDbId) with outputs (ImageURL)
+   * Works only with Images from a BRAPI Server
+   */
+  function loadTable() {
+    let process = Schemas.getObjectFromSchema("process");
+    process["name"] = "Imaging"; // Hier immer Imaging als Protocol???
+
+    allImages.forEach((img: ImageDataBRAPI) => {
       const sampleName = img.observationUnitDbId;
       const imageURL = img.imageURL;
 
       let sample = Schemas.getObjectFromSchema("sample");
       let data = Schemas.getObjectFromSchema("data");
-      if (!value.materials.samples.find((s) => s.name == sample.name) && sample.name) {
+      if (!value.materials.samples.find((s: any) => s.name == sample.name) && sample.name) {
         value.materials.samples = [...value.materials.samples, sample];
       }
 
-      if (!value.dataFiles.find((d) => d.name == data.name) && data.name) {
+      if (!value.dataFiles.find((d: any) => d.name == data.name) && data.name) {
         value.dataFiles = [...value.dataFiles, data];
       }
 
@@ -40,80 +53,19 @@
       }
     });
     value.processSequence = [...value.processSequence, process];
-  });
-
-  function loadTable(e) {
-    let column_mapping = e.detail.column_mapping;
-    let dataframe = e.detail.dataframe;
-
-    let process = Schemas.getObjectFromSchema("process");
-    process["name"] = "Phenotyping";
-
-    // @ts-ignore
-    process["executesProtocol"] = $isaObj.studies[0].protocols.find((p) => p.name == "Phenotyping");
-    for (let parameter of process["executesProtocol"].parameters) {
-      let parameteValue = Schemas.getObjectFromSchema("process_parameter_value");
-      parameteValue["category"] = parameter;
-      parameteValue["value"] = parameter.comments.find((c) => c.name == "value").value;
-      parameteValue["unit"] = parameter.comments.find((c) => c.name == "unit").value;
-      process["parameterValues"] = [...process["parameterValues"], parameteValue];
-    }
-
-    for (let row of dataframe) {
-      let sample = Schemas.getObjectFromSchema("sample");
-      let data = Schemas.getObjectFromSchema("data");
-
-      console.log(row);
-      for (let key of dataframe.listColumns()) {
-        if (column_mapping[key].type == "ignore") {
-          continue;
-        }
-        if (column_mapping[key].type == "input") {
-          sample["name"] = row.get(key);
-        } else if (column_mapping[key].type == "output") {
-          data["name"] = row.get(key);
-          data["type"] = "Raw Data File";
-        } else if (column_mapping[key].type == "characteristic") {
-          let characteristic = Schemas.createCharacteristicObject(column_mapping[key].value.label, row.get(key));
-          characteristic.category.characteristicType.termSource = column_mapping[key].value.ontology;
-          characteristic.category.characteristicType.termAccession = column_mapping[key].value.value;
-          sample.characteristics = [...sample.characteristics, characteristic];
-        }
-      }
-      if (!value.materials.samples.find((s) => s.name == sample.name) && sample.name) {
-        value.materials.samples = [...value.materials.samples, sample];
-      }
-
-      if (!value.dataFiles.find((d) => d.name == data.name) && data.name) {
-        value.dataFiles = [...value.dataFiles, data];
-      }
-
-      if (sample.name) {
-        process["inputs"] = [...process["inputs"], sample];
-      }
-
-      if (data.name) {
-        process["outputs"] = [...process["outputs"], data];
-      }
-    }
-    value.processSequence = [...value.processSequence, process];
   }
-
-  let page = 0,
-    pageSize = 5;
 
   function resetProcess() {
     value.processSequence = [];
     value.materials.samples = [];
     value.dataFiles = [];
+    reset();
   }
 </script>
 
-{#if value.processSequence.length == 0}
-  <TableUpload on:approve={(e) => loadTable(e)} />
-{:else}
+{#if value.processSequence.length > 0}
   <div class="justify-end">
-    <button class="btn btn-secondary" on:click={resetProcess}>Reset</button>
+    <button class="btn btn-secondary" onclick={resetProcess}>Reset</button>
   </div>
   <div class="table-responsive">
     <table>
@@ -132,9 +84,6 @@
         {#each value.processSequence[0].inputs as input, idx}
           {#if idx >= page * pageSize && idx < (page + 1) * pageSize}
             <tr>
-              <!-- {#each input as cell}
-                                <td>{cell}</td>
-                            {/each} -->
               <td>{input.name}</td>
               {#each input.characteristics as characteristic}
                 <td>{characteristic.value}</td>
@@ -151,8 +100,8 @@
     </table>
   </div>
   <div class="pagination">
-    <button on:click={() => (page = 0)} disabled={page == 0}>First</button>
-    <button on:click={() => page--} disabled={page == 0}>Previous</button>
+    <button onclick={() => (page = 0)} disabled={page == 0}>First</button>
+    <button onclick={() => page--} disabled={page == 0}>Previous</button>
     <select bind:value={pageSize}>
       <option value={5}>5</option>
       <option value={10}>10</option>
@@ -160,10 +109,12 @@
       <option value={50}>50</option>
       <option value={100}>100</option>
     </select>
-    <button on:click={() => page++} disabled={page >= Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1}>Next</button>
-    <button on:click={() => (page = Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1)} disabled={page >= Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1}>Last</button>
+    <button onclick={() => page++} disabled={page >= Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1}>Next</button>
+    <button onclick={() => (page = Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1)} disabled={page >= Math.ceil(value.processSequence[0].inputs.length / pageSize) - 1}>Last</button>
     <span>Page {page + 1} of {Math.ceil(value.processSequence[0].inputs.length / pageSize)}</span>
   </div>
+{:else}
+  <p>loading...</p>
 {/if}
 
 <style>
