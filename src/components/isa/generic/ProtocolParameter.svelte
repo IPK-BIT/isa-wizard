@@ -35,10 +35,9 @@
 
   onMount(() => {
     console.log(protocolParameter);
-    if(!protocolParameter.comments){
-
+    if (!protocolParameter.comments) {
     }
-  })
+  });
 </script>
 
 <div class="container">
@@ -78,13 +77,12 @@
   </div>
 
   <div class="remove-btn">
-      {#if protocolParameter.comments[1].value === "true"}
-    <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
-      {:else}
-    <i>predefined</i>
-  {/if}
+    {#if protocolParameter.comments.find((c) => c.name === "deletable").value[1]?.value === "true"}
+      <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
+    {:else}
+      <i>predefined</i>
+    {/if}
   </div>
-
 </div>
 
 <style>
