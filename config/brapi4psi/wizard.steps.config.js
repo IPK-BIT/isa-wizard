@@ -477,7 +477,7 @@ window.steps = [
                 label: 'Phenotyping description',
                 type: 'textarea',
                 isaMapping: {
-                    jsonPath: 'studies[0].protocols[1].description'
+                    jsonPath: 'studies[0].protocols[3].description'
                 },
                 explanation: 'DM-67'
             },
@@ -485,7 +485,7 @@ window.steps = [
                 label: 'Protocol URI',
                 type: 'text',
                 isaMapping: {
-                    jsonPath: 'studies[0].protocols[1].uri'
+                    jsonPath: 'studies[0].protocols[3].uri'
                 },
                 explanation: 'DM-66'
             },
@@ -493,7 +493,7 @@ window.steps = [
                 label: 'Protocol Parameters',
                 type: 'parameters',
                 isaMapping: {
-                    jsonPath: 'studies[0].protocols[1].parameters'
+                    jsonPath: 'studies[0].protocols[3].parameters'
                 },
                 explanation: 'DM-68'
             },
@@ -501,7 +501,7 @@ window.steps = [
                 label: 'Protocol Components',
                 type: 'components',
                 isaMapping: {
-                    jsonPath: 'studies[0].protocols[1].components'
+                    jsonPath: 'studies[0].protocols[3].components'
                 },
                 explanation: 'DM-69'
             }
