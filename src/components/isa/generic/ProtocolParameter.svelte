@@ -33,7 +33,12 @@
     ontologySchema.termAccession = unit.short_form;
     commentSchema.value = ontologySchema;
 
-    protocolParameter.comments = [...protocolParameter.comments, commentSchema];
+    // If unit already exists (steps.config) replace with new Schema, otherwise add new comment
+    if (unitIdx !== -1) {
+      protocolParameter.comments[unitIdx] = commentSchema;
+    } else {
+      protocolParameter.comments = [...protocolParameter.comments, commentSchema];
+    }
   }
 
   /**
@@ -65,7 +70,7 @@
     </label>
   </div>
   <div class="search-unit">
-    {#if unitIdx !== -1}
+    {#if unitIdx !== -1 && protocolParameter.comments[unitIdx].value && protocolParameter.comments[unitIdx].value}
       <div class="">
         <span
           ><strong>Unit:</strong>
