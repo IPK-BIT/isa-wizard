@@ -1,13 +1,29 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
   import Schema from "@/lib/schemas";
+
+  interface CommentISA {
+    "@id": string;
+    name: string;
+    value: any;
+  }
 
   let { value: protocolParameter = $bindable(), remove, index } = $props();
 
   let selectedValue: OntologyResult | null = $state(null);
-  let unit = $derived(protocolParameter?.comments.find((c: { name: string; value: any[] }) => c.name === "unit"));
+  // Derive indexes from ISA JSON because its easier to create bidirectional binding with direct array bindings instead of manipulating Objects like valueObj.value
+  let unitIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "unit"));
+  let deletableIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "deletable"));
+  let valueIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "value"));
 
+  // The Svelecte selected search result is saved here
+  let searchResult = $state(null);
+
+  /**
+   * Creates a new Comment Schema with a ontology annotation Schema as a value
+   * The created Unit will be added to the ISA JSON String for this protocolParameter
+   * @param unit
+   */
   function addUnit(unit: OntologyResult) {
     const commentSchema = Schema.getObjectFromSchema("comment");
     commentSchema.name = "unit";
@@ -20,24 +36,17 @@
     protocolParameter.comments = [...protocolParameter.comments, commentSchema];
   }
 
+  /**
+   * Slice out the unit comment from protocolParameter.comments with the derived unit index
+   */
   function removeUnit() {
-    // because only one unit should exist in this component, we can simply remove first unit we find in comments
-    const unitIndex = protocolParameter.comments.findIndex((c: { name: string }) => c.name === "unit");
-    if (unitIndex) {
-      protocolParameter.comments = [...protocolParameter.comments.slice(0, unitIndex), ...protocolParameter.comments.slice(unitIndex + 1)];
-      result = null;
+    if (unitIdx !== -1) {
+      protocolParameter.comments = [...protocolParameter.comments.slice(0, unitIdx), ...protocolParameter.comments.slice(unitIdx + 1)];
+      searchResult = null;
     } else {
       console.error("No unit found to remove");
     }
   }
-
-  let result = $state(null);
-
-  onMount(() => {
-    console.log(protocolParameter);
-    if (!protocolParameter.comments) {
-    }
-  });
 </script>
 
 <div class="container">
@@ -50,34 +59,40 @@
   <div class="value">
     <label
       >Value:
-      <input type="text" bind:value={protocolParameter.comments[0].value} />
+      {#if valueIdx !== -1}
+        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
+      {/if}
     </label>
   </div>
   <div class="search-unit">
-    {#if unit}
+    {#if unitIdx !== -1}
       <div class="">
-        <span><strong>Unit:</strong> {`${unit.value.annotationValue} > ${unit.value.termAccession}`}</span>
+        <span
+          ><strong>Unit:</strong>
+          {`${protocolParameter.comments[unitIdx].value.annotationValue} > ${protocolParameter.comments[unitIdx].value.termAccession}`}</span
+        >
         <button
           class="btn btn-warning"
           onclick={() => {
             selectedValue = null;
             removeUnit();
-            result = null;
+            searchResult = null;
           }}>Remove</button
         >
       </div>
     {:else}
       <OntologySvelect
-        bind:searchResult={result}
+        placeholder={"Search unit..."}
+        bind:searchResult
         onChangeCallback={() => {
-          if (result) addUnit(result);
+          if (searchResult) addUnit(searchResult);
         }}
       ></OntologySvelect>
     {/if}
   </div>
 
   <div class="remove-btn">
-    {#if protocolParameter.comments.find((c) => c.name === "deletable").value[1]?.value === "true"}
+    {#if deletableIdx === -1}
       <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
     {:else}
       <i>predefined</i>
