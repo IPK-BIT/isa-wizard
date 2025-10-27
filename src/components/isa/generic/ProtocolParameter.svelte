@@ -2,7 +2,7 @@
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
   import Schema from "@/lib/schemas";
 
-  interface CommentISA {
+  interface CommentSchema {
     "@id": string;
     name: string;
     value: any;
@@ -12,9 +12,20 @@
 
   let selectedValue: OntologyResult | null = $state(null);
   // Derive indexes from ISA JSON because its easier to create bidirectional binding with direct array bindings instead of manipulating Objects like valueObj.value
-  let unitIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "unit"));
-  let deletableIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "deletable"));
-  let valueIdx = $derived(protocolParameter?.comments.findIndex((c: CommentISA) => c.name === "value"));
+  let unitIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "unit"));
+  let deletableIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "deletable"));
+  let valueIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "value"));
+
+  let valueIsOntologyIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "valueIsOntology"));
+  let valueIsOntology = $derived.by(() => {
+    console.log("call");
+    if (valueIsOntologyIdx !== -1) {
+      return protocolParameter.comments[valueIsOntologyIdx].value === true ? true : false;
+    } else {
+      console.log("default, not defined");
+      return false; // not defined -> default = false
+    }
+  });
 
   // The Svelecte selected search result is saved here
   let searchResult = $state(null);
@@ -61,14 +72,19 @@
       {protocolParameter.parameterName.annotationValue}
     </p>
   </div>
+
   <div class="value">
-    <label
-      >Value:
-      {#if valueIdx !== -1}
-        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
+    <label>
+      {#if valueIsOntologyIdx !== -1}
+        <input type="checkbox" bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
       {/if}
+      Value
     </label>
+    {#if valueIdx !== -1 && !valueIsOntology}
+      <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
+    {/if}
   </div>
+
   <div class="search-unit">
     {#if unitIdx !== -1 && protocolParameter.comments[unitIdx].value && protocolParameter.comments[unitIdx].value}
       <div class="">
@@ -97,10 +113,10 @@
   </div>
 
   <div class="remove-btn">
-    {#if deletableIdx === -1}
-      <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
-    {:else}
+    {#if deletableIdx !== -1 && protocolParameter.comments[deletableIdx].value === false}
       <i>predefined</i>
+    {:else if deletableIdx === -1 || protocolParameter.comments[deletableIdx].value === true}
+      <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
     {/if}
   </div>
 </div>
@@ -108,7 +124,7 @@
 <style>
   .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr auto auto;
     grid-template-rows: auto;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
@@ -126,6 +142,8 @@
   .value {
     grid-column: 3;
     grid-row: 1;
+    display: flex;
+    gap: 4px;
   }
 
   .search-unit {
