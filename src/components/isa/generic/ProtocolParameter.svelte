@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount, untrack } from "svelte";
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
   import Schema from "@/lib/schemas";
 
@@ -18,51 +19,116 @@
 
   let valueIsOntologyIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "valueIsOntology"));
   let valueIsOntology = $derived.by(() => {
-    console.log("call");
     if (valueIsOntologyIdx !== -1) {
       return protocolParameter.comments[valueIsOntologyIdx].value === true ? true : false;
     } else {
-      console.log("default, not defined");
       return false; // not defined -> default = false
     }
   });
+  let checkedValue = $derived.by(() => {
+    return !valueIsOntology;
+  });
 
   // The Svelecte selected search result is saved here
-  let searchResult = $state(null);
+  let searchResult: OntologyResult | null = $state(null);
+
+  onMount(() => {
+    if (valueIsOntologyIdx === -1) {
+      // Create Comment, so that user can define if Value is an ontology
+      const commentSchema = Schema.getObjectFromSchema("comment");
+      commentSchema.name = "valueIsOntology";
+      commentSchema.value = false;
+      protocolParameter.comments = [...protocolParameter.comments, commentSchema];
+    }
+  });
 
   /**
-   * Creates a new Comment Schema with a ontology annotation Schema as a value
-   * The created Unit will be added to the ISA JSON String for this protocolParameter
+   * Called from the Svelecte Component if a unit is selected and add it with the createUnitComment Function
    * @param unit
    */
   function addUnit(unit: OntologyResult) {
+    const annotationValue = unit.label ?? "";
+    const termSource = unit.ontology_name ?? "";
+    const termAccession = unit.short_form ?? "";
+
+    createUnitCommment(annotationValue, termSource, termAccession);
+  }
+
+  /**
+   * Create a new Unit Comment based on the comment schema and with the ontology_annotation schema as a value
+   * If unit already exists (via steps.config) and value is not an ontology, replace with new Schema
+   * If value is no ontology, add the new unit comment schema
+   * If value is an ontology, replace the value with the ontology schema
+   * @param annotationValue
+   * @param termSource
+   * @param termAccession
+   */
+  function createUnitCommment(annotationValue: string, termSource: string, termAccession: string) {
     const commentSchema = Schema.getObjectFromSchema("comment");
     commentSchema.name = "unit";
     const ontologySchema = Schema.getObjectFromSchema("ontology_annotation");
-    ontologySchema.annotationValue = unit.label;
-    ontologySchema.termSource = unit.ontology_name;
-    ontologySchema.termAccession = unit.short_form;
+    ontologySchema.annotationValue = annotationValue;
+    ontologySchema.termSource = termSource;
+    ontologySchema.termAccession = termAccession;
     commentSchema.value = ontologySchema;
 
-    // If unit already exists (steps.config) replace with new Schema, otherwise add new comment
-    if (unitIdx !== -1) {
+    if (unitIdx !== -1 && !valueIsOntology) {
       protocolParameter.comments[unitIdx] = commentSchema;
-    } else {
+    } else if (!valueIsOntology) {
       protocolParameter.comments = [...protocolParameter.comments, commentSchema];
+    } else {
+      protocolParameter.comments[valueIdx].value = ontologySchema;
     }
   }
 
   /**
    * Slice out the unit comment from protocolParameter.comments with the derived unit index
+   * If valueIsOntology is true, the unit will be removed from the value comment and replaced with an empty string
    */
   function removeUnit() {
     if (unitIdx !== -1) {
       protocolParameter.comments = [...protocolParameter.comments.slice(0, unitIdx), ...protocolParameter.comments.slice(unitIdx + 1)];
       searchResult = null;
+    } else if (valueIsOntology) {
+      protocolParameter.comments[valueIdx].value = "";
     } else {
       console.error("No unit found to remove");
     }
   }
+
+  /**
+   * Typeguard to check if a given value is in valid Unit Form
+   * @param value
+   */
+  function valueIsUnit(value: any) {
+    const isUnit = typeof value === "object" && value !== null && typeof (value as any).annotationValue === "string" && typeof (value as any).termSource === "string" && typeof (value as any).termAccession === "string";
+    return isUnit;
+  }
+
+  /**
+   * Called when the checkbox is clicked to change if the value is an ontology
+   * If true, the unit comment will be deleted and the ontology annotation will be placed on the value comment
+   * If false, a unit Comment will be created with the value from the value comment (if it is a valid Unit)
+   * @param isOntology
+   */
+  function changeIsOntology(isOntology: boolean) {
+    if (isOntology) {
+      const unitValue = protocolParameter.comments[unitIdx]?.value;
+      if (valueIsUnit(unitValue)) {
+        protocolParameter.comments[valueIdx].value = unitValue;
+        removeUnit();
+      }
+    } else {
+      const parameterValue = protocolParameter.comments[valueIdx].value;
+      protocolParameter.comments[valueIdx].value = "";
+      if (valueIsUnit(parameterValue)) {
+        createUnitCommment(parameterValue.annotationValue, parameterValue.termSource, parameterValue.termAccession);
+      }
+    }
+  }
+
+  $inspect("is ontology ", valueIsOntology);
+  $inspect("inverted: ", checkedValue);
 </script>
 
 <div class="container">
@@ -75,32 +141,33 @@
 
   <div class="value">
     <label>
-      {#if valueIsOntologyIdx !== -1}
-        <input type="checkbox" bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
+      <strong>Value: </strong>
+      {#if valueIdx !== -1 && !valueIsOntology}
+        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
       {/if}
-      Value
     </label>
-    {#if valueIdx !== -1 && !valueIsOntology}
-      <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
-    {/if}
   </div>
 
   <div class="search-unit">
-    {#if unitIdx !== -1 && protocolParameter.comments[unitIdx].value && protocolParameter.comments[unitIdx].value}
+    {#if (valueIsOntology && valueIsUnit(protocolParameter.comments[valueIdx]?.value)) || (unitIdx !== -1 && protocolParameter.comments[unitIdx].value)}
       <div class="">
         <span
           ><strong>Unit:</strong>
-          {`${protocolParameter.comments[unitIdx].value.annotationValue} > ${protocolParameter.comments[unitIdx].value.termAccession}`}</span
-        >
-        <button
-          class="btn btn-warning"
-          onclick={() => {
-            selectedValue = null;
-            removeUnit();
-            searchResult = null;
-          }}>Remove</button
-        >
+          {#if valueIsOntology}
+            {`${protocolParameter.comments[valueIdx]?.value?.annotationValue} > ${protocolParameter.comments[valueIdx]?.value?.termAccession}`}
+          {:else}
+            {`${protocolParameter.comments[unitIdx]?.value?.annotationValue} > ${protocolParameter.comments[unitIdx]?.value?.termAccession}`}
+          {/if}
+        </span>
       </div>
+      <button
+        class="btn btn-warning removeUnit"
+        onclick={() => {
+          selectedValue = null;
+          removeUnit();
+          searchResult = null;
+        }}>X</button
+      >
     {:else}
       <OntologySvelect
         placeholder={"Search unit..."}
@@ -110,13 +177,19 @@
         }}
       ></OntologySvelect>
     {/if}
+    <label>
+      is Value
+      {#if valueIsOntologyIdx !== -1}
+        <input type="checkbox" onchange={() => changeIsOntology(valueIsOntology)} bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
+      {/if}
+    </label>
   </div>
 
   <div class="remove-btn">
     {#if deletableIdx !== -1 && protocolParameter.comments[deletableIdx].value === false}
       <i>predefined</i>
     {:else if deletableIdx === -1 || protocolParameter.comments[deletableIdx].value === true}
-      <button type="button" class="btn btn-warning" onclick={() => remove(index)}>Remove</button>
+      <button type="button" class="btn btn-warning button" onclick={() => remove(index)}>Remove</button>
     {/if}
   </div>
 </div>
@@ -140,23 +213,31 @@
     grid-row: 1;
   }
   .value {
-    grid-column: 3;
+    grid-column: 2;
     grid-row: 1;
+
     display: flex;
+    justify-items: center;
+    justify-content: space-between;
     gap: 4px;
   }
 
   .search-unit {
     grid-column: 1 / span 4;
     grid-row: 2;
+    display: flex;
   }
   .remove-btn {
     grid-column: 4;
     grid-row: 1;
   }
 
-  button {
+  .button {
     width: 100px;
     height: 25px;
+  }
+
+  .removeUnit {
+    margin-left: auto;
   }
 </style>
