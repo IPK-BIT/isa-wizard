@@ -11,7 +11,6 @@
 
   let { value: protocolParameter = $bindable(), remove, index } = $props();
 
-  let selectedValue: OntologyResult | null = $state(null);
   // Derive indexes from ISA JSON because its easier to create bidirectional binding with direct array bindings instead of manipulating Objects like valueObj.value
   let unitIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "unit"));
   let deletableIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "deletable"));
@@ -26,8 +25,8 @@
     }
   });
 
-  // The Svelecte selected search result is saved here
-  let searchResult: OntologyResult | null = $state(null);
+  let searchResult: OntologyResult | null = $state(null); // The Svelecte selected search result is saved here
+  let saveValue = $state(""); // Save value input here for the user in case he unintentionally checks is Value Box
 
   onMount(() => {
     if (valueIsOntologyIdx === -1) {
@@ -112,14 +111,14 @@
     if (isOntology) {
       const unitValue = protocolParameter.comments[unitIdx]?.value;
       if (valueIsUnit(unitValue)) {
-        protocolParameter.comments[valueIdx].value = unitValue;
+        protocolParameter.comments[valueIdx].value = unitValue; // Unit => Value
         removeUnit();
       }
     } else {
       const parameterValue = protocolParameter.comments[valueIdx].value;
-      protocolParameter.comments[valueIdx].value = "";
+      protocolParameter.comments[valueIdx].value = saveValue; // Restore old Value
       if (valueIsUnit(parameterValue)) {
-        createUnitCommment(parameterValue.annotationValue, parameterValue.termSource, parameterValue.termAccession);
+        createUnitCommment(parameterValue.annotationValue, parameterValue.termSource, parameterValue.termAccession); // Value => Unit
       }
     }
   }
@@ -137,7 +136,7 @@
     <label>
       {#if valueIdx !== -1 && !valueIsOntology}
         <strong>Value: </strong>
-        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
+        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} onchange={() => (saveValue = protocolParameter.comments[valueIdx].value)} />
       {/if}
     </label>
   </div>
@@ -164,7 +163,6 @@
       <button
         class="btn btn-warning removeUnit"
         onclick={() => {
-          selectedValue = null;
           removeUnit();
           searchResult = null;
         }}>X</button

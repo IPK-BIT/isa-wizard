@@ -270,7 +270,12 @@ window.steps = [
                                 {
                                     "@id": "",
                                     "name": "value",
-                                    "value": ""
+                                    "value": {
+
+                                        "annotationValue": "low",
+                                        "termSource": "sweet",
+                                        "termAccession": "Low",
+                                    }
                                 },
                                 {
                                     "@id": "",
@@ -291,11 +296,11 @@ window.steps = [
                         },
                         {
                             parameterName: {
-                                  "@id": "",
-                            "annotationValue": "temperature day",
-                            "termSource": "DPBO",
-                            "termAccession": "DPBO:0000007",
-                            "comments": []
+                                "@id": "",
+                                "annotationValue": "temperature day",
+                                "termSource": "DPBO",
+                                "termAccession": "DPBO:0000007",
+                                "comments": []
                             }, comments: [
                                 {
                                     "@id": "",
@@ -315,11 +320,11 @@ window.steps = [
                         },
                         {
                             parameterName: {
-                                  "@id": "",
-                            "annotationValue": "temperature night",
-                            "termSource": "DPBO",
-                            "termAccession": "DPBO:0000008",
-                            "comments": []
+                                "@id": "",
+                                "annotationValue": "temperature night",
+                                "termSource": "DPBO",
+                                "termAccession": "DPBO:0000008",
+                                "comments": []
                             }, comments: [
                                 {
                                     "@id": "",
