@@ -25,9 +25,6 @@
       return false; // not defined -> default = false
     }
   });
-  let checkedValue = $derived.by(() => {
-    return !valueIsOntology;
-  });
 
   // The Svelecte selected search result is saved here
   let searchResult: OntologyResult | null = $state(null);
@@ -126,9 +123,6 @@
       }
     }
   }
-
-  $inspect("is ontology ", valueIsOntology);
-  $inspect("inverted: ", checkedValue);
 </script>
 
 <div class="container">
@@ -141,8 +135,8 @@
 
   <div class="value">
     <label>
-      <strong>Value: </strong>
       {#if valueIdx !== -1 && !valueIsOntology}
+        <strong>Value: </strong>
         <input type="text" bind:value={protocolParameter.comments[valueIdx].value} />
       {/if}
     </label>
@@ -150,7 +144,7 @@
 
   <div class="search-unit">
     {#if (valueIsOntology && valueIsUnit(protocolParameter.comments[valueIdx]?.value)) || (unitIdx !== -1 && protocolParameter.comments[unitIdx].value)}
-      <div class="">
+      <div class="unit-container">
         <span
           ><strong>Unit:</strong>
           {#if valueIsOntology}
@@ -159,7 +153,14 @@
             {`${protocolParameter.comments[unitIdx]?.value?.annotationValue} > ${protocolParameter.comments[unitIdx]?.value?.termAccession}`}
           {/if}
         </span>
+        <label>
+          is Value
+          {#if valueIsOntologyIdx !== -1}
+            <input type="checkbox" onchange={() => changeIsOntology(valueIsOntology)} bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
+          {/if}
+        </label>
       </div>
+
       <button
         class="btn btn-warning removeUnit"
         onclick={() => {
@@ -177,12 +178,6 @@
         }}
       ></OntologySvelect>
     {/if}
-    <label>
-      is Value
-      {#if valueIsOntologyIdx !== -1}
-        <input type="checkbox" onchange={() => changeIsOntology(valueIsOntology)} bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
-      {/if}
-    </label>
   </div>
 
   <div class="remove-btn">
@@ -239,5 +234,12 @@
 
   .removeUnit {
     margin-left: auto;
+  }
+
+  .unit-container {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
   }
 </style>
