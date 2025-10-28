@@ -16,8 +16,6 @@
     loadTable();
   });
 
-  $inspect(config);
-
   /**
    * Loads all process sequences and connects inputs (ObservationUnitDbId) with outputs (ImageURL)
    * Works only with Images from a BRAPI Server
