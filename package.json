@@ -21,6 +21,8 @@
     "vite": "^7.1.2"
   },
   "dependencies": {
+    "@fslab/fsspreadsheet": "^6.3.1",
+    "@nfdi4plants/arctrl": "^2.5.1",
     "ajv": "^8.17.1",
     "dataframe-js": "^1.4.4",
     "svelecte": "^5.3.0",

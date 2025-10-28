@@ -1,20 +1,15 @@
 <script>
-    export let component;
-    export let jsonPath = undefined;
-    export let componentConfig = {};
+  export let component;
+  export let jsonPath = undefined;
+  export let componentConfig = {};
 
-    import { isaObj } from '@/stores/isa';
+  import { isaObj } from "@/stores/isa";
 
-    let value;
+  let value;
 
-    if (jsonPath && isaObj.keyed) {
-        value = isaObj.keyed(jsonPath);
-    }
+  if (jsonPath && isaObj.keyed) {
+    value = isaObj.keyed(jsonPath);
+  }
 </script>
 
-<svelte:component 
-    this={component} 
-    bind:value={$value}
-    jsonPath={jsonPath}
-    {componentConfig}
-/>
+<svelte:component this={component} bind:value={$value} {jsonPath} {componentConfig} />
