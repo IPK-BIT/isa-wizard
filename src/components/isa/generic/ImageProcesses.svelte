@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { config } from "@/lib/appstate.svelte";
   import Schemas from "@/lib/schemas";
   import { onMount } from "svelte";
 
