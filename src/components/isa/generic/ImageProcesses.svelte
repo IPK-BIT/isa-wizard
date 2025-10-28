@@ -22,7 +22,7 @@
    */
   function loadTable() {
     let process = Schemas.getObjectFromSchema("process");
-    process["name"] = "Imaging"; // Hier immer Imaging als Protocol???
+    process["name"] = "Imaging"; // Fixed Protocol Name
 
     allImages.forEach((img: ImageDataBRAPI) => {
       const sampleName = img.observationUnitDbId;
