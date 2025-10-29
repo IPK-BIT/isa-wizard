@@ -17,9 +17,9 @@
   let valueIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "value"));
 
   let valueIsOntologyIdx = $derived(protocolParameter?.comments.findIndex((c: CommentSchema) => c.name === "valueIsOntology"));
-  let valueIsOntology = $derived.by(() => {
+  let valueIsOntology: boolean = $derived.by(() => {
     if (valueIsOntologyIdx !== -1) {
-      return protocolParameter.comments[valueIsOntologyIdx].value === true ? true : false;
+      return protocolParameter.comments[valueIsOntologyIdx].value === "true" ? true : false;
     } else {
       return false; // not defined -> default = false
     }
@@ -33,7 +33,7 @@
       // Create Comment, so that user can define if Value is an ontology
       const commentSchema = Schema.getObjectFromSchema("comment");
       commentSchema.name = "valueIsOntology";
-      commentSchema.value = false;
+      commentSchema.value = "false";
       protocolParameter.comments = [...protocolParameter.comments, commentSchema];
     }
   });
@@ -97,7 +97,12 @@
    * @param value
    */
   function valueIsUnit(value: any) {
-    const isUnit = typeof value === "object" && value !== null && typeof (value as any).annotationValue === "string" && typeof (value as any).termSource === "string" && typeof (value as any).termAccession === "string";
+    const isUnit =
+      typeof value === "object" &&
+      value !== null &&
+      typeof (value as any).annotationValue === "string" &&
+      typeof (value as any).termSource === "string" &&
+      typeof (value as any).termAccession === "string";
     return isUnit;
   }
 
@@ -136,7 +141,11 @@
     <label>
       {#if valueIdx !== -1 && !valueIsOntology}
         <strong>Value: </strong>
-        <input type="text" bind:value={protocolParameter.comments[valueIdx].value} onchange={() => (saveValue = protocolParameter.comments[valueIdx].value)} />
+        <input
+          type="text"
+          bind:value={protocolParameter.comments[valueIdx].value}
+          onchange={() => (saveValue = protocolParameter.comments[valueIdx].value)}
+        />
       {/if}
     </label>
   </div>
@@ -145,18 +154,29 @@
     {#if (valueIsOntology && valueIsUnit(protocolParameter.comments[valueIdx]?.value)) || (unitIdx !== -1 && protocolParameter.comments[unitIdx].value)}
       <div class="unit-container">
         <span
-          ><strong>Unit:</strong>
+          ><strong>{valueIsOntology ? "Value: " : "Unit: "}</strong>
           {#if valueIsOntology}
             {`${protocolParameter.comments[valueIdx]?.value?.annotationValue} > ${protocolParameter.comments[valueIdx]?.value?.termAccession}`}
           {:else}
             {`${protocolParameter.comments[unitIdx]?.value?.annotationValue} > ${protocolParameter.comments[unitIdx]?.value?.termAccession}`}
           {/if}
         </span>
-        <label>
-          is Value
+        <label class="checkbox-unit">
           {#if valueIsOntologyIdx !== -1}
-            <input type="checkbox" onchange={() => changeIsOntology(valueIsOntology)} bind:checked={protocolParameter.comments[valueIsOntologyIdx].value} />
+            <input
+              type="checkbox"
+              onchange={() => changeIsOntology(valueIsOntology)}
+              bind:checked={
+                () => protocolParameter.comments[valueIsOntologyIdx].value === "true",
+                (v) => {
+                  // {get, set} pair because simple binding is not possible with string values and boolean checkbox value
+                  valueIsOntology = v;
+                  protocolParameter.comments[valueIsOntologyIdx].value = v ? "true" : "false";
+                }
+              }
+            />
           {/if}
+          Ontology is Value
         </label>
       </div>
 
@@ -179,9 +199,9 @@
   </div>
 
   <div class="remove-btn">
-    {#if deletableIdx !== -1 && protocolParameter.comments[deletableIdx].value === false}
+    {#if deletableIdx !== -1 && protocolParameter.comments[deletableIdx].value === "false"}
       <i>predefined</i>
-    {:else if deletableIdx === -1 || protocolParameter.comments[deletableIdx].value === true}
+    {:else if deletableIdx === -1 || protocolParameter.comments[deletableIdx].value === "true"}
       <button type="button" class="btn btn-warning button" onclick={() => remove(index)}>Remove</button>
     {/if}
   </div>
@@ -236,8 +256,13 @@
 
   .unit-container {
     display: flex;
-    gap: 16px;
+    width: 100%;
     justify-content: center;
     align-items: center;
+  }
+
+  .checkbox-unit {
+    margin-left: auto;
+    padding: 0px 8px;
   }
 </style>

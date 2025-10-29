@@ -280,7 +280,7 @@ window.steps = [
                                 {
                                     "@id": "",
                                     "name": "deletable",
-                                    "value": false,
+                                    "value": "false",
                                 },
                                 {
                                     "@id": "",
@@ -290,7 +290,7 @@ window.steps = [
                                 {
                                     "@id": "",
                                     "name": "valueIsOntology",
-                                    "value": true,
+                                    "value": "true",
                                 }
                             ]
                         },
@@ -310,7 +310,7 @@ window.steps = [
                                 {
                                     "@id": "",
                                     "name": "deletable",
-                                    "value": false,
+                                    "value": "false",
                                 }, {
                                     "@id": "",
                                     "name": "unit",
@@ -334,7 +334,7 @@ window.steps = [
                                 {
                                     "@id": "",
                                     "name": "deletable",
-                                    "value": false,
+                                    "value": "false",
                                 }, {
                                     "@id": "",
                                     "name": "unit",
