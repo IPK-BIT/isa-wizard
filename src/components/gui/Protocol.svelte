@@ -1,13 +1,7 @@
 <script>
   import { wizardStore } from "@/stores/WizardStore.svelte";
-
-  // import { simpleGuiBreadcrumb, simpleGuiLevel } from "@/stores/wizard";
   import Breadcrumb from "./Breadcrumb.svelte";
   import { isaObj } from "@/stores/isa";
-
-  // let protocol;
-  // export { protocol as value };
-  // export let jsonPath;
 
   let { value: protocol, jsonPath } = $props();
 
@@ -20,15 +14,30 @@
     };
 
     wizardStore.simpleGuiBreadcrumb = [
-      { name: $isaObj.title ? $isaObj.title : "Untitled Investigation", fn: () => (wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" }) },
-      { name: $study.title ? $study.title : "Untitled Study", fn: () => (wizardStore.simpleGuiLevel = { type: "Study", jsonPath: `${wizardStore.simpleGuiLevel.jsonPath.split(".")[0]}` }) },
-      { name: `${protocol.name} Protocol`, fn: () => (wizardStore.simpleGuiLevel = { type: "Protocol", jsonPath: jsonPath }) },
+      {
+        name: $isaObj.title ? $isaObj.title : "Untitled Investigation",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" };
+        },
+      },
+      {
+        name: $study.title ? $study.title : "Untitled Study",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Study", jsonPath: `${wizardStore.simpleGuiLevel.jsonPath.split(".")[0]}` };
+        },
+      },
+      {
+        name: `${protocol.name} Protocol`,
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Protocol", jsonPath: jsonPath };
+        },
+      },
       { name: `${$study.processSequence[idx].name} Process`, fn: () => {} },
     ];
   }
 
-  $inspect(protocol);
-  $inspect($study.processSequence);
+  // $inspect(protocol);
+  // $inspect($study.processSequence);
 </script>
 
 <h3>Protocol</h3>
@@ -112,10 +121,9 @@
             {#each $study.processSequence as process, idx}
               {#if process.executesProtocol.name === protocol.name}
                 <tr>
-                  <!-- svelte-ignore a11y-no-static-element-interactions -->
-                  <!-- svelte-ignore a11y-click-events-have-key-events -->
-                  <!-- svelte-ignore a11y-missing-attribute -->
-                  <td><a class="link" on:click={() => openProcess(idx)}>{process.name}</a></td>
+                  <td>
+                    <button class="link" onclick={() => openProcess(idx)}>{process.name}</button>
+                  </td>
                   <td>
                     <table class="subtable">
                       <tbody>
@@ -190,5 +198,12 @@
   .link {
     color: hsl(145, 83%, 28%);
     cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-size: medium;
+  }
+
+  .link:hover {
+    text-decoration: underline;
   }
 </style>

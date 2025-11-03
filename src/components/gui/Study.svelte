@@ -165,7 +165,7 @@
                   {/each}
                 </tbody>
               </table>
-              <p style="font-style: italic; font-size: .9em">Showing first 5 of <a class="link" onclick={openMaterial}>{study.materials.sources.length} materials</a></p>
+              <p style="font-style: italic; font-size: .9em">Showing first 5 of<button class="link sm-text" onclick={openMaterial}>{study.materials.sources.length} materials</button></p>
             {:else}
               No materials associated with this study.
             {/if}
@@ -189,7 +189,7 @@
                   {/each}
                 </tbody>
               </table>
-              <p style="font-style: italic; font-size: .9em">Showing first 5 of <a class="link" onclick={openSample}>{study.materials.samples.length} samples</a></p>
+              <p style="font-style: italic; font-size: .9em">Showing first 5 of<button class="link sm-text" onclick={openSample}>{study.materials.samples.length} samples</button></p>
             {:else}
               No materials associated with this study.
             {/if}
@@ -222,11 +222,6 @@
     </table>
   {/if}
 </section>
-
-<!-- 
-<pre>
-    {JSON.stringify(study, null, 2)}
-</pre> -->
 
 <style>
   table#study {
@@ -267,6 +262,17 @@
 
   .link {
     color: hsl(145, 83%, 28%);
+    background-color: transparent;
+    border: none;
+    font-size: medium;
     cursor: pointer;
+  }
+
+  .sm-text {
+    font-size: small;
+  }
+
+  .link:hover {
+    text-decoration: underline;
   }
 </style>

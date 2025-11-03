@@ -12,7 +12,7 @@ class WizardStore {
   simpleGuiBreadcrumb = $state([
     {
       name: "",
-      fn: () => {},
+      fn: () => {}, // fn function should be in the format () => {}, without the curly brackets svelte will throw a warning => [assignment_value_stale]
     },
   ]);
 }

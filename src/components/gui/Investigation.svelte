@@ -62,7 +62,7 @@
                   {person.firstName}
                   {person.lastName}, {person.affiliation}, {person.address}
                   {#if orcid}
-                    <br />ORCID: {orcid}
+                    <br /><strong>ORCID:</strong><a href={orcid} target="_blank">{orcid} </a>
                   {/if}
                 </li>
               {/each}
@@ -81,8 +81,8 @@
                 <li>
                   {publication.authorList}<br />
                   <span style="font-weight: 500; font-style: italic;">{publication.title}</span><br />
-                  {#if publication.doi}DOI: <a href="https://doi.org/{publication.doi}" target="_blank">{publication.doi}</a>{/if}
-                  {#if publication.pubMedID}Pubmed ID: {publication.pubMedID}{/if}
+                  {#if publication.doi}<strong>DOI:</strong> <a href="https://doi.org/{publication.doi}" target="_blank">{publication.doi}</a>{/if}
+                  {#if publication.pubMedID}<strong>Pubmed ID:</strong> {publication.pubMedID}{/if}
                 </li>
               {/each}
             </ul>
