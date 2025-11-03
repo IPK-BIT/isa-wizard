@@ -61,27 +61,27 @@
     <table id="study">
       <tbody>
         <tr>
-          <td>Title</td>
+          <td><strong>Title</strong></td>
           <td>{study.title}</td>
         </tr>
         <tr>
-          <td>Identifier</td>
+          <td><strong>Identifier</strong></td>
           <td>{study.identifier}</td>
         </tr>
         <tr>
-          <td>Description</td>
+          <td><strong>Description</strong></td>
           <td>{study.description}</td>
         </tr>
         <tr>
-          <td>Date of submission</td>
+          <td><strong>Date of submission</strong></td>
           <td>{study.submissionDate}</td>
         </tr>
         <tr>
-          <td>Date of public release</td>
+          <td><strong>Date of public release</strong></td>
           <td>{study.publicReleaseDate}</td>
         </tr>
         <tr>
-          <td>People</td>
+          <td><strong>People</strong></td>
           <td>
             {#if study.people.length > 0}
               <ul>
@@ -102,7 +102,7 @@
           </td>
         </tr>
         <tr>
-          <td>Publications</td>
+          <td><strong>Publications</strong></td>
           <td>
             {#if study.publications.length > 0}
               <ul>
@@ -121,15 +121,15 @@
           </td>
         </tr>
         <tr>
-          <td>Protocols</td>
+          <td><strong>Protocols</strong></td>
           <td>
             {#if study.protocols.length > 0}
               <table class="subtable">
                 <tbody>
                   <tr>
-                    <th>Name</th>
-                    <th>Version</th>
-                    <th>URI</th>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Version</strong></th>
+                    <th><strong>URI</strong></th>
                   </tr>
                   {#each study.protocols as protocol, idx}
                     <tr>
@@ -148,13 +148,13 @@
           </td>
         </tr>
         <tr>
-          <td>Materials</td>
+          <td><strong>Materials</strong></td>
           <td>
             {#if study.materials.sources.length > 0}
               <table class="subtable">
                 <tbody>
                   <tr>
-                    <th>Name</th>
+                    <th><strong>Name</strong></th>
                   </tr>
                   {#each study.materials.sources as material, idx}
                     {#if idx < 5}
@@ -172,13 +172,13 @@
           </td>
         </tr>
         <tr>
-          <td>Samples</td>
+          <td><strong>Samples</strong></td>
           <td>
             {#if study.materials.samples.length > 0}
               <table class="subtable">
                 <tbody>
                   <tr>
-                    <th>Name</th>
+                    <th><strong>Name</strong></th>
                   </tr>
                   {#each study.materials.samples as material, idx}
                     {#if idx < 5}
@@ -196,14 +196,14 @@
           </td>
         </tr>
         <tr>
-          <td>Comments</td>
+          <td><strong>Comments</strong></td>
           <td>
             {#if study.comments.length > 0}
               <table class="subtable">
                 <tbody>
                   <tr>
-                    <th>Name</th>
-                    <th>Value</th>
+                    <th><strong>Name</strong></th>
+                    <th><strong>Value</strong></th>
                   </tr>
                   {#each study.comments as comment}
                     <tr>

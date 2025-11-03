@@ -28,7 +28,7 @@
   .breadcrumb {
     display: flex;
     flex-wrap: wrap;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.5rem;
     margin-bottom: 1rem;
     list-style: none;
     background-color: #f8f9fa;
@@ -36,11 +36,12 @@
   }
 
   .breadcrumb-item {
-    margin-right: 0.5rem;
+    margin-right: 0.25rem;
     background-color: transparent;
     border: none;
     color: hsl(145, 83%, 28%);
     cursor: pointer;
+    font-size: medium;
   }
 
   .breadcrumb-item.active {
@@ -50,7 +51,7 @@
 
   .breadcrumb-item::before {
     content: ">";
-    margin-right: 0.5rem;
+    margin-right: 0.1rem;
     color: #848484;
   }
   .breadcrumb-item:first-child::before {

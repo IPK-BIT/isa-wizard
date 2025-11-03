@@ -32,27 +32,27 @@
   <table id="investigation">
     <tbody>
       <tr>
-        <td>Title</td>
+        <td><strong>Title</strong></td>
         <td>{$isaObj.title}</td>
       </tr>
       <tr>
-        <td>Identifier</td>
+        <td><strong>Identifier</strong></td>
         <td>{$isaObj.identifier}</td>
       </tr>
       <tr>
-        <td>Description</td>
+        <td><strong>Description</strong></td>
         <td>{$isaObj.description}</td>
       </tr>
       <tr>
-        <td>Date of submission</td>
+        <td><strong>Date of submission</strong></td>
         <td>{$isaObj.submissionDate}</td>
       </tr>
       <tr>
-        <td>Date of public release</td>
+        <td><strong>Date of public release</strong></td>
         <td>{$isaObj.publicReleaseDate}</td>
       </tr>
       <tr>
-        <td>People</td>
+        <td><strong>People</strong></td>
         <td>
           {#if $isaObj.people.length > 0}
             <ul>
@@ -73,7 +73,7 @@
         </td>
       </tr>
       <tr>
-        <td>Publications</td>
+        <td><strong>Publications</strong></td>
         <td>
           {#if $isaObj.publications.length > 0}
             <ul>
@@ -92,14 +92,14 @@
         </td>
       </tr>
       <tr>
-        <td>Comments</td>
+        <td><strong>Comments</strong></td>
         <td>
           {#if $isaObj.comments.length > 0}
             <table class="subtable">
               <tbody>
                 <tr>
-                  <th>Name</th>
-                  <th>Value</th>
+                  <th><strong>Name</strong></th>
+                  <th><strong>Value</strong></th>
                 </tr>
                 {#each $isaObj.comments as comment}
                   <tr>
@@ -115,14 +115,13 @@
         </td>
       </tr>
       <tr>
-        <td>Studies</td>
+        <td><strong>Studies</strong></td>
         <td>
           {#if $isaObj.studies.length > 0}
             {#each $isaObj.studies as study, i}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <a class="link" on:click={() => openStudy(i)}>{study.title ? study.title : "Untitled study"}</a><br />
+              <button class="link" onclick={() => openStudy(i)}>
+                {study.title ? study.title : "Untitled study"}
+              </button>
             {/each}
           {:else}
             None
@@ -192,13 +191,16 @@
     font-size: 1.2em;
   }
 
-  a.link {
+  .link {
+    border: none;
+    background-color: transparent;
+    font-size: medium;
     color: hsl(145, 83%, 33%);
     text-decoration: underline;
     cursor: pointer;
   }
 
-  a.link:hover {
+  .link:hover {
     color: hsl(145, 83%, 43%);
   }
 </style>

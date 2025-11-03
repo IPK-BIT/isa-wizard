@@ -26,6 +26,9 @@
       { name: `${$study.processSequence[idx].name} Process`, fn: () => {} },
     ];
   }
+
+  $inspect(protocol);
+  $inspect($study.processSequence);
 </script>
 
 <h3>Protocol</h3>
@@ -34,11 +37,11 @@
 <table id="protocol">
   <tbody>
     <tr>
-      <td>Name</td>
+      <td><strong>Name</strong></td>
       <td>{protocol.name}</td>
     </tr>
     <tr>
-      <td>URI</td>
+      <td><strong>URI</strong></td>
       <td>
         <a href={protocol.uri} target="_blank" rel="noopener noreferrer">
           {protocol.uri}
@@ -46,24 +49,24 @@
       </td>
     </tr>
     <tr>
-      <td>Description</td>
+      <td><strong>Description</strong></td>
       <td>{protocol.description}</td>
     </tr>
     <tr>
-      <td>Type</td>
+      <td><strong>Type</strong></td>
       <td>
         {#if protocol.protocolType}
           <table class="subtable">
             <tbody>
               <tr>
-                <th>Type Name</th>
-                <th>Term Source</th>
-                <th>Term Accession</th>
+                <th><strong>Type Name</strong></th>
+                <th><strong>Term Source</strong></th>
+                <th><strong>Term Accession</strong></th>
               </tr>
               <tr>
-                <td>{protocol.protocolType.annotationValue}</td>
-                <td>{protocol.protocolType.termSource}</td>
-                <td>{protocol.protocolType.termAccession}</td>
+                <td>{protocol?.protocolType?.annotationValue ?? "-"}</td>
+                <td>{protocol?.protocolType?.termSource ?? "-"}</td>
+                <td>{protocol?.protocolType?.termAccession ?? "-"}</td>
               </tr>
             </tbody>
           </table>
@@ -73,24 +76,24 @@
       </td>
     </tr>
     <tr>
-      <td>Version</td>
+      <td><strong>Version</strong></td>
       <td>{protocol.version}</td>
     </tr>
     <tr>
-      <td>Parameters</td>
+      <td><strong>Parameters</strong></td>
       <td>
         <table class="subtable">
           <tbody>
             <tr>
-              <th>Parameter Name</th>
-              <th>Term Source</th>
-              <th>Term Accession</th>
+              <th><strong>Parameter Name</strong></th>
+              <th><strong>Term Source</strong></th>
+              <th><strong>Term Accession</strong></th>
             </tr>
             {#each protocol.parameters as parameter}
               <tr>
-                <td>{parameter.parameterName.annotationValue}</td>
-                <td>{parameter.parameterName.termSource}</td>
-                <td>{parameter.parameterName.termAccession}</td>
+                <td>{parameter?.parameterName?.annotationValue ?? "-"}</td>
+                <td>{parameter?.parameterName?.termSource ?? "-"}</td>
+                <td>{parameter?.parameterName?.termAccession ?? "-"}</td>
               </tr>
             {/each}
           </tbody>
@@ -98,13 +101,13 @@
       </td>
     </tr>
     <tr>
-      <td>Processes</td>
+      <td><strong>Processes</strong></td>
       <td>
         <table class="subtable">
           <tbody>
             <tr>
-              <th>Process Name</th>
-              <th>Parameter Values</th>
+              <th><strong>Process Name</strong></th>
+              <th><strong>Parameter Values</strong></th>
             </tr>
             {#each $study.processSequence as process, idx}
               {#if process.executesProtocol.name === protocol.name}
@@ -123,9 +126,14 @@
                         {:else}
                           {#each process.parameterValues as parameterValue}
                             <tr>
-                              <td>{parameterValue.category.parameterName.annotationValue}</td>
-                              <td>{parameterValue.value}</td>
-                              <td>{parameterValue.unit.annotationValue}</td>
+                              <td>{parameterValue?.category?.parameterName?.annotationValue ?? "-"}</td>
+                              {#if parameterValue?.category?.comments?.find((c) => c.name === "valueIsOntology")?.value === "true"}
+                                <td>{parameterValue?.value?.annotationValue ?? "-"}</td>
+                                <td>{"[Value is ontology]"}</td>
+                              {:else}
+                                <td>{parameterValue?.value ?? "-"}</td>
+                                <td>{parameterValue?.unit?.annotationValue ?? "-"}</td>
+                              {/if}
                             </tr>
                           {/each}
                         {/if}
