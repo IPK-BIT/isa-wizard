@@ -1,5 +1,6 @@
 <script lang="ts">
   import Schemas from "@/lib/schemas";
+  import { isaObj } from "@/stores/isa";
   import { onMount } from "svelte";
 
   interface ImageDataBRAPI {
@@ -12,16 +13,19 @@
     pageSize = $state(5);
 
   onMount(() => {
-    loadTable();
+    // image protocol somehow needs to be loaded before calling load table function or with derived rune. In the function itself, this statement would return undefined
+    let imageProtocol = $isaObj.studies.at(-1).protocols.find((p) => p.name === "Imaging"); // Loads the last study and find the Imaging protocol
+    loadTable(imageProtocol);
   });
 
   /**
    * Loads all process sequences and connects inputs (ObservationUnitDbId) with outputs (ImageURL)
    * Works only with Images from a BRAPI Server
    */
-  function loadTable() {
+  function loadTable(protocol: any) {
     let process = Schemas.getObjectFromSchema("process");
     process["name"] = "Imaging"; // Fixed Protocol Name
+    process["executesProtocol"] = protocol;
 
     allImages.forEach((img: ImageDataBRAPI) => {
       const sampleName = img.observationUnitDbId;
