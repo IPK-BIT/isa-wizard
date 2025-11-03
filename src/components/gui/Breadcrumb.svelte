@@ -1,27 +1,23 @@
 <script lang="ts">
-  import { isaObj } from "@/stores/isa";
-  // import { simpleGuiBreadcrumb, simpleGuiLevel } from "@/stores/wizard";
   import { wizardStore } from "@/stores/WizardStore.svelte";
 </script>
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <!-- svelte-ignore a11y-missing-attribute -->
     {#each wizardStore.simpleGuiBreadcrumb as crumb, idx}
       {#if idx === wizardStore.simpleGuiBreadcrumb.length - 1}
-        <li class="breadcrumb-item active"><a>{crumb.name}</a></li>
+        <li class="breadcrumb-item active">
+          <button class="breadcrumb-item active">{crumb.name}</button>
+        </li>
       {:else}
         <li class="breadcrumb-item">
-          <a
-            on:click={() => {
+          <button
+            class="breadcrumb-item"
+            onclick={() => {
               wizardStore.simpleGuiBreadcrumb = wizardStore.simpleGuiBreadcrumb.slice(0, idx + 1);
               crumb.fn();
-            }}
+            }}>{crumb.name}</button
           >
-            {crumb.name}
-          </a>
         </li>
       {/if}
     {/each}
@@ -41,11 +37,15 @@
 
   .breadcrumb-item {
     margin-right: 0.5rem;
+    background-color: transparent;
+    border: none;
     color: hsl(145, 83%, 28%);
+    cursor: pointer;
   }
 
   .breadcrumb-item.active {
     color: #848484;
+    cursor: default;
   }
 
   .breadcrumb-item::before {
