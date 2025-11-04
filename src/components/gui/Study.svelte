@@ -12,8 +12,18 @@
       jsonPath: `${jsonPath}.materials.sources`,
     };
     wizardStore.simpleGuiBreadcrumb = [
-      { name: $isaObj.title ?? "Untitled Investigation", fn: () => (wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" }) },
-      { name: study.title ?? "Untitled Study", fn: () => (wizardStore.simpleGuiLevel = { type: "Study", jsonPath }) },
+      {
+        name: $isaObj.title ?? "Untitled Investigation",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" };
+        },
+      },
+      {
+        name: study.title ?? "Untitled Study",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Study", jsonPath };
+        },
+      },
       { name: "Materials", fn: () => {} },
     ];
   }
@@ -24,8 +34,18 @@
       jsonPath: `${jsonPath}.materials.samples`,
     };
     wizardStore.simpleGuiBreadcrumb = [
-      { name: $isaObj.title ? $isaObj.title : "Untitled Investigation", fn: () => (wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" }) },
-      { name: study.title ? study.title : "Untitled Study", fn: () => (wizardStore.simpleGuiLevel = { type: "Study", jsonPath }) },
+      {
+        name: $isaObj.title ? $isaObj.title : "Untitled Investigation",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" };
+        },
+      },
+      {
+        name: study.title ? study.title : "Untitled Study",
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Study", jsonPath };
+        },
+      },
       { name: "Samples", fn: () => {} },
     ];
   }
