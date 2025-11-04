@@ -12,7 +12,7 @@
       {:else}
         <li class="breadcrumb-item">
           <button
-            class="breadcrumb-item"
+            class="breadcrumb-item inactive"
             onclick={() => {
               wizardStore.simpleGuiBreadcrumb = wizardStore.simpleGuiBreadcrumb.slice(0, idx + 1);
               crumb.fn();
@@ -56,5 +56,9 @@
   }
   .breadcrumb-item:first-child::before {
     content: "";
+  }
+
+  .inactive:hover {
+    text-decoration: underline;
   }
 </style>
