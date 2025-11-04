@@ -75,7 +75,7 @@
       <tr>
         <td><strong>Publications</strong></td>
         <td>
-          {#if $isaObj.publications.length > 0}
+          {#if $isaObj.publications && $isaObj.publications.length > 0}
             <ul>
               {#each $isaObj.publications as publication}
                 <li>
@@ -94,7 +94,7 @@
       <tr>
         <td><strong>Comments</strong></td>
         <td>
-          {#if $isaObj.comments.length > 0}
+          {#if $isaObj.comments && $isaObj.comments.length > 0}
             <table class="subtable">
               <tbody>
                 <tr>
