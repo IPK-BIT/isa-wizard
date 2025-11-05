@@ -5,14 +5,14 @@ class WizardStore {
   });
 
   simpleGuiLevel = $state({
-    type: "Investigation",
+    type: "Investigation" as "Investigation" | "Study" | "Protocol" | "Material" | "Sample" | "Process",
     jsonPath: "",
   });
 
   simpleGuiBreadcrumb = $state([
     {
       name: "",
-      fn: () => {}, // fn function should be in the format () => {}, without the curly brackets svelte will throw a warning => [assignment_value_stale]
+      fn: () => { }, // fn function should be in the format () => {}, without the curly brackets svelte will throw a warning => [assignment_value_stale]
     },
   ]);
 }

@@ -1,8 +1,9 @@
 <script lang="ts">
   import Pagination from "./Pagination.svelte";
   import Breadcrumb from "./Breadcrumb.svelte";
+  import type { Material } from "@/lib/schemas/types_isa";
 
-  let { value: materials } = $props();
+  let { value: materials }: { value: Material[] } = $props();
 
   let pageSize = $state(10); // Default page size, can be adjusted as needed
   let currentPage = $state(0); // Current page index, starts from 0
@@ -16,7 +17,12 @@
     <tr>
       <th><strong>Material Name</strong></th>
       {#each materials[0].characteristics as characteristic}
-        <th><strong>{characteristic.category.characteristicType.annotationValue} ({characteristic.category.characteristicType.termAccession})</strong></th>
+        <th
+          ><strong
+            >{characteristic?.category?.characteristicType?.annotationValue ?? "-"} ({characteristic?.category?.characteristicType?.termAccession ??
+              "-"})</strong
+          ></th
+        >
       {/each}
     </tr>
   </thead>
@@ -24,9 +30,9 @@
     {#if idx >= currentPage * pageSize && idx < (currentPage + 1) * pageSize}
       <tbody>
         <tr>
-          <td>{material.name}</td>
+          <td>{material?.name ?? "-"}</td>
           {#each material.characteristics as characteristic}
-            <td>{characteristic.value}</td>
+            <td>{characteristic?.value ?? "-"}</td>
           {/each}
         </tr>
       </tbody>

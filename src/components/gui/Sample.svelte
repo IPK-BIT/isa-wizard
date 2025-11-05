@@ -1,8 +1,9 @@
-<script>
+<script lang="ts">
+  import type { Sample } from "@/lib/schemas/types_isa";
   import Breadcrumb from "./Breadcrumb.svelte";
   import Pagination from "./Pagination.svelte";
 
-  let { value: samples } = $props();
+  let { value: samples }: { value: Sample[] } = $props();
 
   let pageSize = $state(10); // Default page size, can be adjusted as needed
   let currentPage = $state(0); // Current page index, starts from 0
@@ -16,7 +17,10 @@
     <tr>
       <th><strong>Sample Name</strong></th>
       {#each samples[0].factorValues as factorValue}
-        <th><strong>{factorValue.category.factorType.annotationValue} ({factorValue.category.factorType.termAccession})</strong></th>
+        <th
+          ><strong>{factorValue?.category?.factorType?.annotationValue ?? "-"} ({factorValue?.category?.factorType?.termAccession ?? "-"})</strong
+          ></th
+        >
       {/each}
     </tr>
   </thead>
@@ -24,9 +28,9 @@
     {#if idx >= currentPage * pageSize && idx < (currentPage + 1) * pageSize}
       <tbody>
         <tr>
-          <td>{sample.name}</td>
+          <td>{sample?.name ?? "-"}</td>
           {#each sample.factorValues as factorValue}
-            <td>{factorValue.value}</td>
+            <td>{factorValue?.value ?? "-"}</td>
           {/each}
         </tr>
       </tbody>

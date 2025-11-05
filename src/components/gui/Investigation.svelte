@@ -1,26 +1,37 @@
 <script lang="ts">
   import { isaObj } from "@/stores/isa.js";
-  // import { simpleGuiBreadcrumb, simpleGuiLevel } from '@/stores/wizard';
   import { wizardStore } from "@/stores/WizardStore.svelte";
   import Breadcrumb from "./Breadcrumb.svelte";
+  import type { Comment, Person } from "@/lib/schemas/types_isa";
 
-  function personORCID(person) {
-    let orcid = person.comments.find((comment) => comment.value.includes("orcid.org"));
+  function personORCID(person: Person) {
+    let orcid = person?.comments?.find((comment: Comment) => comment?.value?.includes("orcid.org"));
     if (orcid) {
-      return orcid.value;
+      return orcid?.value ?? "-";
     } else {
       return false;
     }
   }
 
-  function openStudy(elem) {
+  function openStudy(elem: number) {
+    if (!$isaObj.studies) {
+      console.error("Studies is not defined!");
+      return false;
+    }
+
     wizardStore.simpleGuiLevel = {
       type: "Study",
       jsonPath: `studies[${elem}]`,
     };
     wizardStore.simpleGuiBreadcrumb = [
-      { name: $isaObj.title ? $isaObj.title : "Untitled Investigation", fn: () => (wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" }) },
-      { name: $isaObj.studies[elem].title ? $isaObj.studies[elem].title : "Untitled study", fn: () => (wizardStore.simpleGuiLevel = { type: "Study", jsonPath: `studies[${elem}]` }) },
+      {
+        name: $isaObj.title ? $isaObj.title : "Untitled Investigation",
+        fn: () => (wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" }),
+      },
+      {
+        name: $isaObj.studies[elem].title ? $isaObj.studies[elem].title : "Untitled study",
+        fn: () => (wizardStore.simpleGuiLevel = { type: "Study", jsonPath: `studies[${elem}]` }),
+      },
     ];
   }
 </script>
@@ -33,34 +44,34 @@
     <tbody>
       <tr>
         <td><strong>Title</strong></td>
-        <td>{$isaObj.title}</td>
+        <td>{$isaObj.title ?? "-"}</td>
       </tr>
       <tr>
         <td><strong>Identifier</strong></td>
-        <td>{$isaObj.identifier}</td>
+        <td>{$isaObj.identifier ?? "-"}</td>
       </tr>
       <tr>
         <td><strong>Description</strong></td>
-        <td>{$isaObj.description}</td>
+        <td>{$isaObj.description ?? "-"}</td>
       </tr>
       <tr>
         <td><strong>Date of submission</strong></td>
-        <td>{$isaObj.submissionDate}</td>
+        <td>{$isaObj.submissionDate ?? "-"}</td>
       </tr>
       <tr>
         <td><strong>Date of public release</strong></td>
-        <td>{$isaObj.publicReleaseDate}</td>
+        <td>{$isaObj.publicReleaseDate ?? "-"}</td>
       </tr>
       <tr>
         <td><strong>People</strong></td>
         <td>
-          {#if $isaObj.people.length > 0}
+          {#if $isaObj.people && $isaObj.people.length > 0}
             <ul>
               {#each $isaObj.people as person}
                 {@const orcid = personORCID(person)}
                 <li>
-                  {person.firstName}
-                  {person.lastName}, {person.affiliation}, {person.address}
+                  {person.firstName ?? "-"}
+                  {person.lastName ?? "-"}, {person.affiliation ?? "-"}, {person.address ?? "-"}
                   {#if orcid}
                     <br /><strong>ORCID:</strong><a href={orcid} target="_blank">{orcid} </a>
                   {/if}
@@ -103,8 +114,8 @@
                 </tr>
                 {#each $isaObj.comments as comment}
                   <tr>
-                    <td>{comment["name"]}</td>
-                    <td>{comment["value"]}</td>
+                    <td>{comment.name}</td>
+                    <td>{comment.value ?? "-"}</td>
                   </tr>
                 {/each}
               </tbody>
@@ -117,7 +128,7 @@
       <tr>
         <td><strong>Studies</strong></td>
         <td>
-          {#if $isaObj.studies.length > 0}
+          {#if $isaObj.studies && $isaObj.studies.length > 0}
             {#each $isaObj.studies as study, i}
               <button class="link" onclick={() => openStudy(i)}>
                 {study.title ? study.title : "Untitled study"}
@@ -172,23 +183,6 @@
   ul {
     margin: 0;
     padding: 0 0 0 20px;
-  }
-
-  div {
-    margin-top: 50px;
-  }
-
-  p.attr {
-    margin: 0;
-    padding: 0;
-    font-weight: 500;
-    font-size: 1em;
-  }
-
-  p.value {
-    margin: 0;
-    padding: 0;
-    font-size: 1.2em;
   }
 
   .link {

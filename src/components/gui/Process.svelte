@@ -3,8 +3,10 @@
   import Breadcrumb from "./Breadcrumb.svelte";
   import { isaObj } from "@/stores/isa";
   import Pagination from "./Pagination.svelte";
+  import type { Process } from "@/lib/schemas/types_isa";
+  import { isOntologyValue } from "@/utils/typeguards";
 
-  let { value: process, jsonPath = "" } = $props();
+  let { value: process, jsonPath = "" }: { value: Process; jsonPath: string } = $props();
 
   let previousProcess = $derived(process?.previousProcess ?? null);
   let nextProcess = $derived(process?.nextProcess ?? null);
@@ -24,7 +26,7 @@
    * Heavily depends on the names from the processes and protocols so it could break if a protocol has no name.
    * @param process
    */
-  function openProcess(process) {
+  function openProcess(process: Process) {
     try {
       let processIdx = processSequence.findIndex((p) => p["@id"] === process["@id"]);
 
@@ -33,8 +35,8 @@
         jsonPath: `studies[0].processSequence[${processIdx}]`,
       };
 
-      let protocolName = processSequence[processIdx].executesProtocol.name;
-      let protocolIdx = study.protocols.findIndex((p) => p.name === protocolName);
+      let protocolName = processSequence?.[processIdx]?.executesProtocol?.name;
+      let protocolIdx = study?.protocols?.findIndex((p) => p.name === protocolName);
 
       wizardStore.simpleGuiBreadcrumb = [
         {
@@ -44,7 +46,7 @@
           },
         },
         {
-          name: study.title ? study.title : "Untitled Study",
+          name: study?.title ? study.title : "Untitled Study",
           fn: () => {
             wizardStore.simpleGuiLevel = { type: "Study", jsonPath: `${wizardStore.simpleGuiLevel.jsonPath.split(".")[0]}` };
           },
@@ -55,7 +57,7 @@
             wizardStore.simpleGuiLevel = { type: "Protocol", jsonPath: `studies[0].protocols[${protocolIdx}]` };
           },
         },
-        { name: `${study.processSequence[processIdx].name} Process`, fn: () => {} },
+        { name: `${study?.processSequence?.[processIdx]?.name} Process`, fn: () => {} },
       ];
     } catch (error) {
       console.error(`Error: Something went wrong with opening Process ${process}`, error);
@@ -70,15 +72,15 @@
   <tbody>
     <tr>
       <td><strong>Name</strong></td>
-      <td>{process.name}</td>
+      <td>{process.name ?? "-"}</td>
     </tr>
     <tr>
       <td><strong>Performer</strong></td>
-      <td>{process.performer}</td>
+      <td>{process.performer ?? "-"}</td>
     </tr>
     <tr>
       <td><strong>Date</strong></td>
-      <td>{process.date}</td>
+      <td>{process.date ?? "-"}</td>
     </tr>
     <tr>
       <td><strong>Previous Process</strong></td>
@@ -87,7 +89,7 @@
           <button
             class="link"
             onclick={() => {
-              if (study) openProcess(previousProcess);
+              if (study && previousProcess) openProcess(previousProcess);
             }}
           >
             {previousProcess?.name ?? process.previousProcess["@id"]}
@@ -104,7 +106,7 @@
           <button
             class="link"
             onclick={() => {
-              if (study) openProcess(nextProcess);
+              if (study && nextProcess) openProcess(nextProcess);
             }}
           >
             {nextProcess?.name ?? process.nextProcess["@id"]}
@@ -131,21 +133,21 @@
               {#if idx >= page * pageSize && idx < (page + 1) * pageSize}
                 <tr>
                   <td>{input.name}</td>
-                  <td>{process.executesProtocol.name}</td>
+                  <td>{process?.executesProtocol?.name ?? "-"}</td>
                   {#each process.parameterValues as parameterValue}
-                    {#if parameterValue?.category?.comments?.find((c) => c.name === "valueIsOntology")?.value === "true"}
+                    {#if isOntologyValue(parameterValue)}
                       <td>{parameterValue?.value?.annotationValue ?? "-"}</td>
                     {:else}
                       <td>{parameterValue?.value ?? "-"} {parameterValue?.unit?.annotationValue ?? "-"}</td>
                     {/if}
                   {/each}
-                  <td>{process?.outputs[idx]?.name ?? "-"}</td>
+                  <td>{process?.outputs?.[idx]?.name ?? "-"}</td>
                 </tr>
               {/if}
             {/each}
           </tbody>
         </table>
-        <Pagination totalCount={process.inputs.length} bind:pageSize bind:currentPage={page} />
+        <Pagination totalCount={process?.inputs?.length} bind:pageSize bind:currentPage={page} />
       </td>
     </tr>
   </tbody>

@@ -1,13 +1,21 @@
-<script>
+<script lang="ts">
   import { wizardStore } from "@/stores/WizardStore.svelte";
   import Breadcrumb from "./Breadcrumb.svelte";
   import { isaObj } from "@/stores/isa";
+  import type { Process, Protocol } from "@/lib/schemas/types_isa";
+  import { isOntologyValue } from "@/utils/typeguards";
 
-  let { value: protocol, jsonPath } = $props();
+  let { value: protocol, jsonPath }: { value: Protocol; jsonPath: string } = $props();
 
-  let study = isaObj.keyed(wizardStore.simpleGuiLevel.jsonPath.split(".")[0]);
+  let study = $derived.by(() => {
+    if (isaObj.keyed) {
+      return isaObj.keyed(wizardStore.simpleGuiLevel.jsonPath.split(".")[0]);
+    } else {
+      return null;
+    }
+  });
 
-  function openProcess(idx) {
+  function openProcess(idx: number) {
     wizardStore.simpleGuiLevel = {
       type: "Process",
       jsonPath: `${wizardStore.simpleGuiLevel.jsonPath.split(".")[0]}.processSequence[${idx}]`,
@@ -35,9 +43,6 @@
       { name: `${$study.processSequence[idx].name} Process`, fn: () => {} },
     ];
   }
-
-  // $inspect(protocol);
-  // $inspect($study.processSequence);
 </script>
 
 <h3>Protocol</h3>
@@ -47,19 +52,19 @@
   <tbody>
     <tr>
       <td><strong>Name</strong></td>
-      <td>{protocol.name}</td>
+      <td>{protocol.name ?? "-"}</td>
     </tr>
     <tr>
       <td><strong>URI</strong></td>
       <td>
         <a href={protocol.uri} target="_blank" rel="noopener noreferrer">
-          {protocol.uri}
+          {protocol.uri ?? "-"}
         </a>
       </td>
     </tr>
     <tr>
       <td><strong>Description</strong></td>
-      <td>{protocol.description}</td>
+      <td>{protocol.description ?? "-"}</td>
     </tr>
     <tr>
       <td><strong>Type</strong></td>
@@ -118,8 +123,9 @@
               <th><strong>Process Name</strong></th>
               <th><strong>Parameter Values</strong></th>
             </tr>
-            {#each $study.processSequence as process, idx}
-              {#if process.executesProtocol.name === protocol.name}
+            {#each $study.processSequence as p, idx}
+              {@const process: Process = p}
+              {#if process?.executesProtocol?.name === protocol.name}
                 <tr>
                   <td>
                     <button class="link" onclick={() => openProcess(idx)}>{process.name}</button>
@@ -127,7 +133,7 @@
                   <td>
                     <table class="subtable">
                       <tbody>
-                        {#if process.parameterValues.length === 0}
+                        {#if process?.parameterValues?.length === 0}
                           <tr>
                             <td colspan="3">No parameter values were defined for this process.</td>
                           </tr>
@@ -135,7 +141,7 @@
                           {#each process.parameterValues as parameterValue}
                             <tr>
                               <td>{parameterValue?.category?.parameterName?.annotationValue ?? "-"}</td>
-                              {#if parameterValue?.category?.comments?.find((c) => c.name === "valueIsOntology")?.value === "true"}
+                              {#if isOntologyValue(parameterValue)}
                                 <td>{parameterValue?.value?.annotationValue ?? "-"}</td>
                                 <td>{"[Value is ontology]"}</td>
                               {:else}
