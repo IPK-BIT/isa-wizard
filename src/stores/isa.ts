@@ -2,7 +2,7 @@ import { writable, get, derived } from "svelte/store";
 import { keyed } from "@humanspeak/svelte-keyed";
 
 import Schema from "@/lib/schemas";
-import type { Investigation } from "./isaTypes";
+import type { Investigation } from "../lib/schemas/types_isa";
 
 function createIsaStoresSynced() {
   const storeIsaObj = writable<Investigation>({});
