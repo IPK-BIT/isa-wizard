@@ -18,6 +18,14 @@ window.steps = [
                 explanation: 'DM-3'
             },
             {
+                label: 'Short Title',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'identifier'
+                },
+                explanation: 'DM-2'
+            },
+            {
                 label: 'Project Description',
                 type: 'textarea',
                 isaMapping: {
@@ -86,6 +94,14 @@ window.steps = [
                     jsonPath: 'studies[0].title'
                 },
                 explanation: 'DM-12'
+            },
+            {
+                label: 'Short Title',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].identifier'
+                },
+                explanation: 'DM-2'
             },
             {
                 label: 'Location',

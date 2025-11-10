@@ -3,6 +3,18 @@
   import { wizardStore } from "@/stores/WizardStore.svelte";
   import Breadcrumb from "./Breadcrumb.svelte";
   import type { Comment, Person } from "@/lib/schemas/types_isa";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    wizardStore.simpleGuiBreadcrumb = [
+      {
+        name: $isaObj?.title === "" ? "Untitled Investigation" : ($isaObj.title ?? "Untitled Investigation"),
+        fn: () => {
+          wizardStore.simpleGuiLevel = { type: "Investigation", jsonPath: "" };
+        },
+      },
+    ];
+  });
 
   function personORCID(person: Person) {
     let orcid = person?.comments?.find((comment: Comment) => comment?.value?.includes("orcid.org"));

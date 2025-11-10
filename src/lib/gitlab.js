@@ -17,7 +17,8 @@ export function login(authentication, codeChallenge, isaObj) {
     }
     const urlParams = new URLSearchParams(params);
     const authUrl = `${authentication.base_url}/oauth/authorize?${urlParams.toString()}`;
-    window.location.href = authUrl;
+    window.open(authUrl, '_blank', 'noopener,noreferrer');
+    // window.location.href = authUrl;
 }
 
 export function generateCodeVerifier() {

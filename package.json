@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@fslab/fsspreadsheet": "^6.3.1",
-    "@nfdi4plants/arctrl": "^1.0.0-beta.9",
+    "@nfdi4plants/arctrl": "^2.5.1",
     "ajv": "^8.17.1",
     "client-zip": "^2.5.0",
     "dataframe-js": "^1.4.4",

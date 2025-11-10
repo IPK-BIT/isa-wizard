@@ -5,16 +5,20 @@
   // import { isaObj } from "@/stores/isa";
   // import Gitlab from "./Gitlab.svelte";
   import { getIsaTab, toIsaTab } from "@/lib/getIsaTab";
-  import { ArcInvestigation_fromJsonString } from "@nfdi4plants/arctrl/ISA/ISA.Json/Investigation";
-  import { toFsWorkbook } from "@nfdi4plants/arctrl/ISA/ISA.Spreadsheet/ArcInvestigation";
-  import { ARC } from "@nfdi4plants/arctrl";
+  import { JsonController, ARC } from "@nfdi4plants/arctrl";
+  // import { ArcInvestigation_fromJsonString } from "@nfdi4plants/arctrl/ISA/ISA.Json/Investigation";
+  // import { toFsWorkbook } from "@nfdi4plants/arctrl/ISA/ISA.Spreadsheet/ArcInvestigation";
+  // import { ARC } from "@nfdi4plants/arctrl";
 
-  // import { Xlsx } from "@fslab/fsspreadsheet";
+  import { Xlsx } from "@fslab/fsspreadsheet";
 
   import { config } from "@/lib/appstate.svelte";
   import { isaObj } from "@/stores/isa";
   import Schema from "@/lib/schemas";
   import { downloadZip } from "client-zip";
+  import type { Investigation } from "@/lib/schemas/types_isa";
+  import Gitlab from "../gitlab/Gitlab.svelte";
+  import { gitlab_response } from "@/stores/gitlab-api";
   // import Schemas from "@/lib/schemas";
 
   async function tryLogin(authentication) {
@@ -57,31 +61,66 @@
     document.body.removeChild(a);
   }
 
-  // function toArc() {
-  //   let isaJsonString = JSON.stringify($isaObj);
-  //   let investigation = JsonController.Investigation.fromISAJsonString(isaJsonString);
+  /**
+   * Go through the ISA Object and make all fields ready for ARCtrl Exort
+   * @param isaObj
+   */
+  function arcReadyISA(isaObj: Investigation) {
+    let isaClone: Investigation = JSON.parse(JSON.stringify(isaObj));
+    const study = isaClone.studies?.at(0);
+    const assay = study?.assays?.at(0);
 
-  //   // let study = JsonController.Study.fromISAJsonString(myJson)[0]; // the second value are registered assays
-  //   // let assay = JsonController.Assay.fromISAJsonString(myJson);
+    // Make sure identifiers exist
+    if (!isaClone.identifier) {
+      isaClone.identifier = "1234";
+    }
+    if (study && !study.identifier) {
+      study.identifier = "1234";
+    }
 
-  //   // let inv = new ArcInvestigation(investigation);
+    return isaClone;
+  }
 
-  //   console.log(investigation);
-  // }
+  function toArc(fulfillWriteContracts) {
+    let cleanISA = arcReadyISA($isaObj);
 
-  async function toArc() {
-    const investigation = ArcInvestigation_fromJsonString(JSON.stringify($isaObj, null, 2));
-    console.log(investigation);
-    let fswb = toFsWorkbook(investigation);
+    console.log(cleanISA);
+    let isaJsonString = JSON.stringify(cleanISA);
+    let investigation = JsonController.Investigation.fromISAJsonString(isaJsonString);
+
+    // let studyJsonString = JSON.stringify(cleanISA.studies?.at(0));
+    // let study = JsonController.Study.fromISAJsonString(studyJsonString); // the second value are registered assays
+
+    // let assayJsonString = JSON.stringify(cleanISA.studies?.at(0)?.assays?.at(0));
+    // let assay = JsonController.Assay.fromISAJsonString(assayJsonString);
 
     let arc = new ARC(investigation);
-    arc.UpdateFileSystem();
     let contracts = arc.GetWriteContracts();
     console.log(contracts);
-
     fulfillWriteContracts(contracts);
-    return true;
+
+    // arc.WriteAsync("./arcs/myARC/");
+
+    console.log(investigation);
+    //console.log(study);
+    //console.log(assay);
+
+    console.log(arc);
   }
+
+  // async function toArc() {
+  //   const investigation = ArcInvestigation_fromJsonString(JSON.stringify($isaObj, null, 2));
+  //   console.log(investigation);
+  //   let fswb = toFsWorkbook(investigation);
+
+  //   let arc = new ARC(investigation);
+  //   arc.UpdateFileSystem();
+  //   let contracts = arc.GetWriteContracts();
+  //   console.log(contracts);
+
+  //   fulfillWriteContracts(contracts);
+  //   return true;
+  // }
 
   async function fulfillWriteContracts(contracts) {
     let filesInZip = [];
@@ -130,14 +169,13 @@
       </div>
       <div class="items-center align-right">
         {#if option.type === "gitlab"}
-          <!-- {#if !$gitlab_response.access_token} -->
-          {#if true}
+          {#if !$gitlab_response.access_token}
             <button class="btn btn-huge" onclick={() => tryLogin(option?.config?.authentication)}>Login</button>
           {:else}
-            <!-- <Gitlab auth_config={option.config.authentication} /> -->
+            <Gitlab {toArc} />
           {/if}
         {:else if option.type === "arc"}
-          <button class="btn btn-huge" onclick={toArc}>Export</button>
+          <button class="btn btn-huge" onclick={() => toArc(fulfillWriteContracts)}>Export</button>
         {:else if option.type === "isa-json"}
           <button class="btn btn-huge" onclick={saveIsaAsJson}>Export</button>
         {:else if option.type === "isa-tab"}

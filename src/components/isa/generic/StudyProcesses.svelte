@@ -3,6 +3,7 @@
   import TableUpload from "../generic/TableUpload.svelte";
   import { isaObj } from "@/stores/isa";
   import type DataFrame from "dataframe-js";
+  import Schema from "@/lib/schemas";
 
   let { componentConfig, value = $bindable() } = $props();
 
@@ -107,7 +108,10 @@
         let parameteValue = Schemas.getObjectFromSchema("process_parameter_value");
         parameteValue.category = parameter;
         parameteValue.value = parameter.comments.find((c: any) => c.name == "value")?.value;
-        parameteValue.unit = parameter.comments.find((c: any) => c.name == "unit")?.value;
+        parameteValue.unit = parameter.comments.find((c: any) => c.name == "unit")?.value ?? null;
+        if (parameteValue.unit === "") {
+          parameteValue.unit = null; // empty string is not allowed in ARC Export function from arctrl!
+        }
         process.parameterValues = [...process.parameterValues, parameteValue];
       }
 
