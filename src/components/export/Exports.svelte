@@ -1,15 +1,6 @@
 <script lang="ts">
-  import { generateCodeChallenge, generateCodeVerifier, login } from "@/lib/gitlab";
-  // import { config } from "@/stores/config";
-  // import { gitlab_response } from "@/stores/gitlab-api";
-  // import { isaObj } from "@/stores/isa";
-  // import Gitlab from "./Gitlab.svelte";
   import { getIsaTab, toIsaTab } from "@/lib/getIsaTab";
   import { JsonController, ARC } from "@nfdi4plants/arctrl";
-  // import { ArcInvestigation_fromJsonString } from "@nfdi4plants/arctrl/ISA/ISA.Json/Investigation";
-  // import { toFsWorkbook } from "@nfdi4plants/arctrl/ISA/ISA.Spreadsheet/ArcInvestigation";
-  // import { ARC } from "@nfdi4plants/arctrl";
-
   import { Xlsx } from "@fslab/fsspreadsheet";
 
   import { config } from "@/lib/appstate.svelte";
@@ -17,11 +8,11 @@
   import Schema from "@/lib/schemas";
   import { downloadZip } from "client-zip";
   import type { Investigation } from "@/lib/schemas/types_isa";
-  import Gitlab from "../gitlab/Gitlab.svelte";
+  import Gitlab from "./Gitlab.svelte";
   import { gitlab_response } from "@/stores/gitlab-api";
-  // import Schemas from "@/lib/schemas";
+  import { generateCodeVerifier, generateCodeChallenge, login, type Authentication } from "@/lib/gitlab";
 
-  async function tryLogin(authentication) {
+  async function tryLogin(authentication: Authentication) {
     let codeVerifier = generateCodeVerifier();
     let codeChallenge = await generateCodeChallenge(codeVerifier);
 
@@ -53,7 +44,7 @@
     a.href = URL.createObjectURL(
       new Blob([JSON.stringify($isaObj, null, 2)], {
         type: "application/json",
-      })
+      }),
     );
     a.setAttribute("download", "isa.json");
     document.body.appendChild(a);
@@ -88,23 +79,12 @@
     let isaJsonString = JSON.stringify(cleanISA);
     let investigation = JsonController.Investigation.fromISAJsonString(isaJsonString);
 
-    // let studyJsonString = JSON.stringify(cleanISA.studies?.at(0));
-    // let study = JsonController.Study.fromISAJsonString(studyJsonString); // the second value are registered assays
-
-    // let assayJsonString = JSON.stringify(cleanISA.studies?.at(0)?.assays?.at(0));
-    // let assay = JsonController.Assay.fromISAJsonString(assayJsonString);
-
     let arc = new ARC(investigation);
     let contracts = arc.GetWriteContracts();
     console.log(contracts);
     fulfillWriteContracts(contracts);
 
-    // arc.WriteAsync("./arcs/myARC/");
-
     console.log(investigation);
-    //console.log(study);
-    //console.log(assay);
-
     console.log(arc);
   }
 
@@ -172,7 +152,7 @@
           {#if !$gitlab_response.access_token}
             <button class="btn btn-huge" onclick={() => tryLogin(option?.config?.authentication)}>Login</button>
           {:else}
-            <Gitlab {toArc} />
+            <Gitlab auth_config={option.config.authentication} />
           {/if}
         {:else if option.type === "arc"}
           <button class="btn btn-huge" onclick={() => toArc(fulfillWriteContracts)}>Export</button>

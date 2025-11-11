@@ -10,13 +10,19 @@
   import GenericQuestionnaire from "./components/questionnaire/GenericQuestionnaire.svelte";
   import { getAppState, AppState, setConfig, setQuestionnaireSteps, updateAppState } from "./lib/appstate.svelte";
   import Schema from "./lib/schemas";
+  import { init } from "./stores/gitlab-api";
 
   setConfig(config);
   setQuestionnaireSteps(config.steps.length);
 
   import { isaObj, isaStr } from "./stores/isa";
+  import { onMount } from "svelte";
 
   let show = $state(true);
+
+  onMount(() => {
+    //  init();
+  });
 </script>
 
 {#if getAppState() === AppState.Init}
