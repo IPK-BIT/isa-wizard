@@ -534,12 +534,41 @@ window.steps = [
             }
         ]
     },
+    // {
+    //     title: 'Please provide the basic information of your Assay',
+    //     fields: [
+    //         {
+    //             label: 'Short Title',
+    //             type: 'text',
+    //             isaMapping: {
+    //                 jsonPath: 'studies[0].assays[0].comments',
+    //                 commentName: 'filename'
+    //             },
+    //             explanation: 'DM-2'
+    //         },
 
+
+    //     ]
+    // },
     {
         title: 'Please upload the results of your Study.',
+        fields: [
+            {
+                label: 'Short Title',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].assays[0].comments',
+                    commentName: 'filename'
+                },
+                explanation: 'DM-2'
+            },
+
+
+        ],
         component: 'AssayProcesses',
         level: 'Assay',
         jsonPath: 'studies[0].assays[0]',
+
         componentConfig: {
             brapiBaseURL: "https://mira.ipk-gatersleben.de/test/brapi/v2/"
         }
