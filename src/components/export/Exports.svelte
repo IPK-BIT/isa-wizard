@@ -11,6 +11,7 @@
   import Gitlab from "./Gitlab.svelte";
   import { gitlab_response } from "@/stores/gitlab-api";
   import { generateCodeVerifier, generateCodeChallenge, login, type Authentication } from "@/lib/gitlab";
+  import { fulfillWriteContracts, type FilesInZip } from "@/utils/arcExport";
 
   async function tryLogin(authentication: Authentication) {
     let codeVerifier = generateCodeVerifier();
@@ -44,7 +45,7 @@
     a.href = URL.createObjectURL(
       new Blob([JSON.stringify($isaObj, null, 2)], {
         type: "application/json",
-      }),
+      })
     );
     a.setAttribute("download", "isa.json");
     document.body.appendChild(a);
@@ -56,10 +57,10 @@
    * Go through the ISA Object and make all fields ready for ARCtrl Exort
    * @param isaObj
    */
-  function arcReadyISA(isaObj: Investigation) {
+  export function arcReadyISA(isaObj: Investigation) {
     let isaClone: Investigation = JSON.parse(JSON.stringify(isaObj));
-    const study = isaClone.studies?.at(0);
-    const assay = study?.assays?.at(0);
+    const study = isaClone.studies?.at(0); // FIXME allow more studies
+    const assay = study?.assays?.at(0); // FIXME allow more assays
 
     // Make sure identifiers exist
     if (!isaClone.identifier) {
@@ -69,62 +70,29 @@
       study.identifier = "1234";
     }
 
+    if (assay) {
+      // convert assay short title in filename
+      const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? "MISSING_TITLE_" + Date.now();
+      const filename = `${shortName}/isa.assay.xlsx`;
+      assay.filename = filename;
+    }
+
+    console.log("assay: ", assay);
+
     return isaClone;
   }
 
-  function toArc(fulfillWriteContracts) {
+  async function toArc() {
     let cleanISA = arcReadyISA($isaObj);
 
-    console.log(cleanISA);
+    // console.log(cleanISA);
     let isaJsonString = JSON.stringify(cleanISA);
     let investigation = JsonController.Investigation.fromISAJsonString(isaJsonString);
 
     let arc = new ARC(investigation);
     let contracts = arc.GetWriteContracts();
     console.log(contracts);
-    fulfillWriteContracts(contracts);
-
-    console.log(investigation);
-    console.log(arc);
-  }
-
-  // async function toArc() {
-  //   const investigation = ArcInvestigation_fromJsonString(JSON.stringify($isaObj, null, 2));
-  //   console.log(investigation);
-  //   let fswb = toFsWorkbook(investigation);
-
-  //   let arc = new ARC(investigation);
-  //   arc.UpdateFileSystem();
-  //   let contracts = arc.GetWriteContracts();
-  //   console.log(contracts);
-
-  //   fulfillWriteContracts(contracts);
-  //   return true;
-  // }
-
-  async function fulfillWriteContracts(contracts) {
-    let filesInZip = [];
-
-    for (const contract of contracts) {
-      if ((contract.Operation = "CREATE")) {
-        if (contract.DTO == undefined) {
-        } else if (contract.DTOType == "ISA_Assay" || contract.DTOType == "ISA_Study" || contract.DTOType == "ISA_Investigation") {
-          let xlsxBytes = await Xlsx.toBytes(contract.DTO);
-
-          filesInZip.push({
-            name: contract.Path,
-            lastModified: new Date(),
-            input: xlsxBytes,
-          });
-        } else if (contract.DTOType == "PlainText") {
-        } else {
-          console.log("Warning: The given contract is not a correct ARC write contract: ", contract);
-        }
-      }
-    }
-
-    console.log(filesInZip);
-
+    const filesInZip = (await fulfillWriteContracts(contracts, "ZIP")) as FilesInZip[];
     const blob = await downloadZip(filesInZip).blob();
 
     const link = document.createElement("a");
@@ -132,6 +100,9 @@
     link.download = "arc.zip";
     link.click();
     link.remove();
+
+    // console.log(investigation);
+    // console.log(arc);
   }
 </script>
 
@@ -155,7 +126,7 @@
             <Gitlab auth_config={option.config.authentication} />
           {/if}
         {:else if option.type === "arc"}
-          <button class="btn btn-huge" onclick={() => toArc(fulfillWriteContracts)}>Export</button>
+          <button class="btn btn-huge" onclick={() => toArc()}>Export</button>
         {:else if option.type === "isa-json"}
           <button class="btn btn-huge" onclick={saveIsaAsJson}>Export</button>
         {:else if option.type === "isa-tab"}
