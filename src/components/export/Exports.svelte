@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { getIsaTab, toIsaTab } from "@/lib/getIsaTab";
+  import { toIsaTab } from "@/lib/getIsaTab";
   import { JsonController, ARC } from "@nfdi4plants/arctrl";
-  import { Xlsx } from "@fslab/fsspreadsheet";
 
   import { config } from "@/lib/appstate.svelte";
   import { isaObj } from "@/stores/isa";
@@ -11,7 +10,7 @@
   import Gitlab from "./Gitlab.svelte";
   import { gitlab_response } from "@/stores/gitlab-api";
   import { generateCodeVerifier, generateCodeChallenge, login, type Authentication } from "@/lib/gitlab";
-  import { fulfillWriteContracts, type FilesInZip } from "@/utils/arcExport";
+  import { arcReadyISA, fulfillWriteContracts, type FilesInZip } from "@/utils/arcExport";
 
   async function tryLogin(authentication: Authentication) {
     let codeVerifier = generateCodeVerifier();
@@ -22,6 +21,7 @@
     login(authentication, codeChallenge, $isaObj);
   }
 
+  // FIXME: Converting is possible but some fields are [object object]
   function convertToIsaTabArchive() {
     let ontoRef1 = Schema.getObjectFromSchema("ontology_source_reference");
     ontoRef1.name = "OBI";
@@ -45,7 +45,7 @@
     a.href = URL.createObjectURL(
       new Blob([JSON.stringify($isaObj, null, 2)], {
         type: "application/json",
-      })
+      }),
     );
     a.setAttribute("download", "isa.json");
     document.body.appendChild(a);
@@ -53,39 +53,9 @@
     document.body.removeChild(a);
   }
 
-  /**
-   * Go through the ISA Object and make all fields ready for ARCtrl Exort
-   * @param isaObj
-   */
-  export function arcReadyISA(isaObj: Investigation) {
-    let isaClone: Investigation = JSON.parse(JSON.stringify(isaObj));
-    const study = isaClone.studies?.at(0); // FIXME allow more studies
-    const assay = study?.assays?.at(0); // FIXME allow more assays
-
-    // Make sure identifiers exist
-    if (!isaClone.identifier) {
-      isaClone.identifier = "1234";
-    }
-    if (study && !study.identifier) {
-      study.identifier = "1234";
-    }
-
-    if (assay) {
-      // convert assay short title in filename
-      const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? "MISSING_TITLE_" + Date.now();
-      const filename = `${shortName}/isa.assay.xlsx`;
-      assay.filename = filename;
-    }
-
-    console.log("assay: ", assay);
-
-    return isaClone;
-  }
-
   async function toArc() {
     let cleanISA = arcReadyISA($isaObj);
 
-    // console.log(cleanISA);
     let isaJsonString = JSON.stringify(cleanISA);
     let investigation = JsonController.Investigation.fromISAJsonString(isaJsonString);
 
@@ -100,9 +70,6 @@
     link.download = "arc.zip";
     link.click();
     link.remove();
-
-    // console.log(investigation);
-    // console.log(arc);
   }
 </script>
 

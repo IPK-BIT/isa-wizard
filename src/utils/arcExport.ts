@@ -1,5 +1,5 @@
-import { downloadZip } from "client-zip";
 import { Xlsx } from "@fslab/fsspreadsheet";
+import type { Investigation } from "@/lib/schemas/types_isa";
 
 export type Contract = {
   DTO: any; // _FsWorkbook
@@ -20,7 +20,7 @@ export type FilesInZip = {
  * Use this function to handle multiple types of Contracts.
  * Can be extended to support more patterns or maybe export the functions itself if more parameters are needed in the future
  * @param contracts
- * @param contractType
+ * @param contractType "ZIP" | "GIT"
  * @returns different kind of results depending on the contract type
  */
 export async function fulfillWriteContracts(contracts: Contract[], contractType: ContractType) {
@@ -105,4 +105,45 @@ async function fulfillWriteContractsGIT(contracts: Contract[]): Promise<GitPaylo
   }
 
   return payload;
+}
+
+
+
+/**
+ * Go through the ISA Object and make all fields ready for ARCtrl Export
+ * This function does not change the original ISA object
+ * @param isaObj
+ */
+export function arcReadyISA(isaObj: Investigation) {
+  let isaClone: Investigation = JSON.parse(JSON.stringify(isaObj)); // create deep clone object
+  const studies = isaClone.studies ?? [];
+  const randomID = Date.now();
+
+  if (!isaClone.title) {
+    isaClone.title = "MISSING-TITLE-" + randomID;
+  }
+
+  // Make sure identifiers exist
+  if (!isaClone.identifier) {
+    isaClone.identifier = "MISSING-IDENTIFIER-" + randomID;
+  }
+
+
+  studies?.forEach((study, index) => {
+    if (study && !study.identifier) {
+      study.identifier = `study${index}`;
+    }
+
+    if (study.assays) {
+      study.assays.forEach((assay, index) => {
+        // convert assay short title in filename
+        const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? `assay${index}`;
+        const filename = `${shortName}/isa.assay.xlsx`;
+        assay.filename = filename;
+      })
+    }
+
+  })
+
+  return isaClone;
 }
