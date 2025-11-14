@@ -83,16 +83,6 @@
     visibleImages = next;
   }
 
-  /**
-   * Just for testing. Can be deleted if not needed anymore
-   */
-  async function testMultipleImages(amount: number) {
-    for (let i = 0; i < amount; i++) {
-      allImages.push(...(await fetchBrapiData("images")));
-    }
-    visibleImages = allImages.slice(0, PAGE_SIZE);
-  }
-
   function reset() {
     approve = false;
   }
@@ -102,10 +92,16 @@
   <div class="grid padding">
     <!-- First Row -->
     <div class="flex-center padding">
-      <label for="server-input"> Server: </label>
+      <label for="server-input"> Server</label>
     </div>
     <div class="server-container">
-      <input id="server-input" bind:value={brapiURL} type="text" class="input-url" placeholder="URL of the BrAPI endpoint. Usually of the form /brapi/v2/" />
+      <input
+        id="server-input"
+        bind:value={brapiURL}
+        type="text"
+        class="input-url"
+        placeholder="URL of the BrAPI endpoint. Usually of the form /brapi/v2/"
+      />
       <div class="flex-center">
         <button class="btn large" style="min-width: 150px;" onclick={async () => (allStudies = (await fetchBrapiData("studies")) ?? [])}>Load</button>
       </div>
@@ -114,7 +110,7 @@
     <!-- Second Row -->
     {#if allStudies.length > 0}
       <div class="flex-center padding">
-        <label for="study-select"> Study: </label>
+        <label for="study-select"> Study</label>
       </div>
       <div class="server-container">
         <select id="study-select" bind:value={selectedStudy} class="study-select" style="flex: 1;" disabled={allStudies.length === 0}>
@@ -128,8 +124,6 @@
             style="min-width: 150px;"
             onclick={async () => {
               await loadImages();
-              // just for testing
-              // testMultipleImages(10);
             }}>Find Images</button
           >
         </div>
@@ -139,7 +133,7 @@
       <div class="padding">
         <p>{allImages.length} Images found</p>
       </div>
-      <div class="image-grid">
+      <div class="image-grid padding">
         {#each visibleImages as img}
           <div class="image-card">
             <div class="image-meta">
@@ -200,7 +194,7 @@
     display: flex;
     flex-direction: row;
     gap: 4px;
-    padding: 16px 0px;
+    padding: 16px 8px;
   }
 
   #server-input {
