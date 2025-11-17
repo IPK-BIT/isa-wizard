@@ -43,7 +43,7 @@
       }
       cleanISA.title = projectName;
       logger.push({ message: `Checking for existing projects...` });
-      const projects = await getExistingProjects(auth_config, $gitlab_response.access_token);
+      const projects = await getExistingProjects(auth_config, $gitlab_response.access_token, projectName, namespaceId);
 
       const existingProject = projects.find((p) => p.name === projectName);
 
