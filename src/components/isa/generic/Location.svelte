@@ -33,12 +33,7 @@
   let { label = "", isaLevel = null, attr, value: location = $bindable() }: { label: string; isaLevel: any; attr: any; value: string } = $props();
 
   let locationString = $state("");
-
-  const countryCodeToStr = {
-    DE: "Germany",
-    US: "United States of America",
-    GB: "United Kingdom",
-  };
+  let errorLog = $state("");
 
   if (!isaLevel) {
     isaLevel = getContext("isaLevel");
@@ -62,8 +57,7 @@
       return data.results[0];
     } catch (error) {
       console.error(`Could not fetch geocode location ${params.name}`);
-      location = `ERROR: Could not fetch location ${params.name}`; // Display error message in the location field
-      setLocationInformation("", "", ""); // reset
+      errorLog = `Failed to fetch location: ${params.name}`;
     }
   }
 
@@ -86,6 +80,7 @@
 
       const countryCodeString = geocodeData.country_code + (countryCode ? " / " + countryCode.name : ""); // For the Country Field, display like DE / Germany
       setLocationInformation(String(geocodeData.longitude), String(geocodeData.latitude), countryCodeString);
+      errorLog = ""; // Clear old errors
     } catch (error) {
       console.error(error);
     }
@@ -127,19 +122,13 @@
 
     $isaObj = $isaObj; // Sync store. Force reactitivy!
   }
-
-  function oninput() {
-    if (!location) {
-      setLocationInformation("", "", ""); // reset
-    }
-  }
 </script>
 
 <div class="grid padding">
   <p class="padding">{label}</p>
 
   <div class="padding input-container">
-    <input data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={location} use:explanationAction={attr} {oninput} />
+    <input data-isaLevel={isaLevel} data-attr={attr} type="text" bind:value={location} use:explanationAction={attr} />
     {#if location}
       <button aria-label="geocode button" class="btn" title="Geocode" onclick={getLocation}>
         <svg fill="#fff" height="20px" width="20px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.515 425.515" xml:space="preserve">
@@ -181,6 +170,19 @@
     {/if}
   </div>
 </div>
+{#if errorLog}
+  <div class="error-container grid padding">
+    <div class="padding">
+      <button
+        class="btn btn-warning"
+        onclick={() => {
+          errorLog = "";
+        }}>Clear</button
+      >
+    </div>
+    <p class="padding">{errorLog}</p>
+  </div>
+{/if}
 
 <style>
   .grid {
@@ -190,6 +192,15 @@
 
   .padding {
     padding: 8px;
+  }
+
+  .error-container {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .error-container > p {
+    margin: 0px;
+    color: red;
   }
 
   .input-container {
