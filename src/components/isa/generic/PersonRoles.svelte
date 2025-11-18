@@ -49,7 +49,7 @@
    * Synchronize checkboxes with ISA String role ontology annotation
    */
   function onChange() {
-    let emptyOA = Schemas.getObjectFromSchema<OntologyAnnotation>("ontology_annotation");
+    let emptyOA = Schemas.getObjectFromSchema("ontology_annotation");
 
     roles = [];
     for (let roleAccession of rolesSelected) {
