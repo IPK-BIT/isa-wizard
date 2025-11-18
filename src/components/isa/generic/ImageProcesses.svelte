@@ -1,5 +1,6 @@
 <script lang="ts">
   import Schemas from "@/lib/schemas";
+  import type { DataFile, Protocol, Sample } from "@/lib/schemas/types_isa";
   import { isaObj } from "@/stores/isa";
   import { onMount } from "svelte";
 
@@ -14,15 +15,17 @@
 
   onMount(() => {
     // image protocol somehow needs to be loaded before calling load table function or with derived rune. In the function itself, this statement would return undefined
-    let imageProtocol = $isaObj.studies.at(-1).protocols.find((p) => p.name === "Imaging"); // Loads the last study and find the Imaging protocol
-    loadTable(imageProtocol);
+    let imageProtocol = $isaObj?.studies?.at(-1)?.protocols?.find((p) => p.name === "Imaging"); // Loads the last study and find the Imaging protocol
+    if (imageProtocol) {
+      loadTable(imageProtocol);
+    }
   });
 
   /**
    * Loads all process sequences and connects inputs (ObservationUnitDbId) with outputs (ImageURL)
    * Works only with Images from a BRAPI Server
    */
-  function loadTable(protocol: any) {
+  function loadTable(protocol: Protocol) {
     let process = Schemas.getObjectFromSchema("process");
     process["name"] = "Imaging"; // Fixed Protocol Name
     process["executesProtocol"] = protocol;
@@ -33,11 +36,11 @@
 
       let sample = Schemas.getObjectFromSchema("sample");
       let data = Schemas.getObjectFromSchema("data");
-      if (!value.materials.samples.find((s: any) => s.name == sample.name) && sample.name) {
+      if (!value.materials.samples.find((s: Sample) => s.name == sample.name) && sample.name) {
         value.materials.samples = [...value.materials.samples, sample];
       }
 
-      if (!value.dataFiles.find((d: any) => d.name == data.name) && data.name) {
+      if (!value.dataFiles.find((d: DataFile) => d.name == data.name) && data.name) {
         value.dataFiles = [...value.dataFiles, data];
       }
 

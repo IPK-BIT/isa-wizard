@@ -2,12 +2,13 @@
   import String from "../generic/String.svelte";
   import Schema from "@/lib/schemas";
   import OntologySvelect, { type OntologyResult } from "./OntologySvelect.svelte";
+  import type { OntologyAnnotation } from "@/lib/schemas/types_isa";
 
   let { value: component = $bindable(), index, remove } = $props();
   let componentType = $derived(component?.componentType);
 
   function addComponentType(type: OntologyResult) {
-    const ontologySchema = Schema.getObjectFromSchema("ontology_annotation");
+    const ontologySchema = Schema.getObjectFromSchema<OntologyAnnotation>("ontology_annotation");
     ontologySchema.annotationValue = type.label;
     ontologySchema.termSource = type.ontology_name;
     ontologySchema.termAccession = type.short_form;

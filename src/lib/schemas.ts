@@ -19,7 +19,29 @@ import publication_schema from "@/lib/schemas/publication_schema.json";
 import sample_schema from "@/lib/schemas/sample_schema.json";
 import source_schema from "@/lib/schemas/source_schema.json";
 import study_schema from "@/lib/schemas/study_schema.json";
-import type { Comment } from "./schemas/types_isa";
+import {
+  type Person,
+  type Assay,
+  type Comment,
+  type DataFile,
+  type Factor,
+  type FactorValue,
+  type Investigation,
+  type Material,
+  type MaterialAttribute,
+  type MaterialAttributeValue,
+  type OntologyAnnotation,
+  type OntologySourceReference,
+  type Process,
+  type ProcessParameterValue,
+  type Protocol,
+  type ProtocolComponent,
+  type ProtocolParameter,
+  type Publication,
+  type Sample,
+  type Source,
+  type Study,
+} from "./schemas/types_isa";
 
 const mapping = {
   assay: assay_schema,
@@ -45,8 +67,34 @@ const mapping = {
   study: study_schema,
 };
 
+type SchemaMap = {
+  assay: Assay;
+  comment: Comment;
+  data: DataFile;
+  factor: Factor;
+  factor_value: FactorValue;
+  investigation: Investigation;
+  material_attribute: MaterialAttribute;
+  material_attribute_value: MaterialAttributeValue;
+  material: Material;
+  ontology_annotation: OntologyAnnotation;
+  ontology_source_reference: OntologySourceReference;
+  person: Person;
+  process: Process;
+  process_parameter_value: ProcessParameterValue;
+  protocol_component: ProtocolComponent;
+  protocol_parameter: ProtocolParameter;
+  protocol: Protocol;
+  publication: Publication;
+  sample: Sample;
+  source: Source;
+  study: Study;
+};
+
+export type SchemaObject = keyof SchemaMap;
+
 export default class Schema {
-  static getObjectFromSchema(identifier: string) {
+  static getObjectFromSchema<T extends SchemaObject>(identifier: T): SchemaMap[T] {
     let schema = mapping[identifier as keyof typeof mapping];
     if (!schema) {
       throw new Error(`No schema found for identifier: ${identifier}`);
@@ -86,7 +134,7 @@ export default class Schema {
         obj[k] = {};
       }
     }
-    return obj;
+    return obj as SchemaMap[T];
   }
 
   static getComment(name: string, value: any): Comment {
@@ -146,7 +194,7 @@ export default class Schema {
     return Object.assign(person, values);
   }
 
-  static createCharacteristicObject(key, value) {
+  static createCharacteristicObject(key: string, value: string) {
     let emptyCharacteristic = Schema.getObjectFromSchema("material_attribute_value");
     emptyCharacteristic.value = value;
 
@@ -157,7 +205,7 @@ export default class Schema {
     emptyCharacteristic.category = emptyCategory;
 
     emptyOntologyAnnotation = Schema.getObjectFromSchema("ontology_annotation");
-    emptyCharacteristic.unit = null;
+    emptyCharacteristic.unit = undefined;
 
     return emptyCharacteristic;
   }
