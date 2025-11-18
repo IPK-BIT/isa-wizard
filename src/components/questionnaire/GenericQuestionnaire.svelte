@@ -20,7 +20,6 @@
   import Publications from "../isa/generic/Publications.svelte";
   import Location from "@/components/isa/generic/Location.svelte";
   import RORPicker from "../isa/generic/ROR_Picker.svelte";
-  import OntologySvelect from "../isa/generic/OntologySvelect.svelte";
   import OntologyAnnotation from "../isa/generic/OntologyAnnotation.svelte";
   import TextSelect from "../isa/generic/TextSelect.svelte";
   import ProtocolParameters from "../isa/generic/ProtocolParameters.svelte";
@@ -93,6 +92,9 @@
   }
 
   function handleKeypress(event: KeyboardEvent) {
+    if (document.activeElement !== document.body) {
+      return; // Only trigger event if body is focused
+    }
     if (event.key === "ArrowRight") {
       next();
     } else if (event.key === "ArrowLeft") {
