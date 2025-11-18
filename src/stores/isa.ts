@@ -3,6 +3,7 @@ import { keyed } from "@humanspeak/svelte-keyed";
 
 import Schema from "@/lib/schemas";
 import type { Investigation } from "@/lib/schemas/types_isa";
+import { miappeInvestigationHandler, miappeStudyHandler } from "@/lib/miappeMappers";
 
 function createIsaStoresSynced() {
   const storeIsaObj = writable<Investigation>({});
@@ -23,22 +24,22 @@ function createIsaStoresSynced() {
     storeIsaStr.set(isaStr);
   };
 
-  // const addProxies = () => {
-  //     let isaObj = get(storeIsaObj);
-  //     isaObj = new Proxy(isaObj, miappeInvestigationHandler);
-  //     if (isaObj.studies.length > 0) {
-  //         for (const [i, study] of isaObj.studies.entries()) {
-  //             isaObj.studies[i] = new Proxy(isaObj.studies[i], miappeStudyHandler);
-  //         }
-  //     }
-  //     storeIsaObj.set(isaObj);
-  // }
+  const addProxies = () => {
+    let isaObj = get(storeIsaObj);
+    isaObj = new Proxy(isaObj, miappeInvestigationHandler);
+    if (isaObj.studies && isaObj.studies.length > 0) {
+      for (const [i, study] of isaObj.studies.entries()) {
+        isaObj.studies[i] = new Proxy(isaObj.studies[i], miappeStudyHandler);
+      }
+    }
+    storeIsaObj.set(isaObj);
+  };
 
   type IsaObjStore = {
     subscribe: typeof storeIsaObj.subscribe;
     update: typeof updateIsaObj;
     set: typeof setIsaObj;
-    // addProxies?: typeof addProxies;
+    addProxies?: typeof addProxies;
     keyed?: (level: any) => ReturnType<typeof keyed>;
     keyedComments?: (jsonPath: any, commentName: any) => any;
   };
@@ -54,7 +55,7 @@ function createIsaStoresSynced() {
       subscribe: storeIsaObj.subscribe,
       update: updateIsaObj,
       set: setIsaObj,
-      // addProxies: addProxies,
+      addProxies: addProxies,
     },
     isaStr: {
       subscribe: storeIsaStr.subscribe,

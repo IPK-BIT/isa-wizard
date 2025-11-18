@@ -43,7 +43,7 @@
         {:else if getAppState() === AppState.Wizard}
           <GenericQuestionnaire closeWizard={() => updateAppState(AppState.GUI)} />
         {:else if getAppState() === AppState.Review}
-          <p>Review</p>
+          <Gui />
         {:else if getAppState() === AppState.GUI}
           <Gui />
         {/if}
