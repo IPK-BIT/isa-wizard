@@ -6,8 +6,7 @@
    * Fetch Roles with API and make them modular/globally accessible for this component
    */
   async function getCreditOntologyTerms() {
-    let apiurl =
-      "https://www.ebi.ac.uk/ols4/api/select?q=rol&ontology=CRO&rows=92";
+    let apiurl = "https://www.ebi.ac.uk/ols4/api/select?q=rol&ontology=CRO&rows=92";
 
     let response = await fetch(apiurl, {
       method: "GET",
@@ -29,9 +28,7 @@
       };
     });
 
-    rolesAvailable = rolesAvailable.filter((role: any) =>
-      role.accession.includes("CREDIT:")
-    );
+    rolesAvailable = rolesAvailable.filter((role: any) => role.accession.includes("CREDIT:"));
   }
 
   getCreditOntologyTerms();
@@ -40,6 +37,7 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import Schemas from "@/lib/schemas.js";
+  import type { OntologyAnnotation } from "@/lib/schemas/types_isa";
 
   let { roles = $bindable(), mode = "edit" } = $props();
 
@@ -50,36 +48,33 @@
   /**
    * Synchronize checkboxes with ISA String role ontology annotation
    */
- function onChange() {
+  function onChange() {
     let emptyOA = Schemas.getObjectFromSchema("ontology_annotation");
-  
+
     roles = [];
     for (let roleAccession of rolesSelected) {
-      let role: any = rolesAvailable.find(
-        (role: any) => role.accession === roleAccession
-      );
+      let role: any = rolesAvailable.find((role: any) => role.accession === roleAccession);
 
-      let _emptyOA = Object.assign({}, emptyOA);
+      let _emptyOA: OntologyAnnotation = Object.assign({}, emptyOA);
 
       _emptyOA.termSource = "CREDIT";
       _emptyOA.termAccession = role.accession;
       _emptyOA.annotationValue = role.name;
 
-       roles = [...roles, _emptyOA];
-       rolesReadable = rolesSelected.map((r) => mapAccessionToLabel.get(r)); 
+      roles = [...roles, _emptyOA];
+      rolesReadable = rolesSelected.map((r) => mapAccessionToLabel.get(r));
     }
   }
 
   // synchronize ISA String with checkboxes
   $effect(() => {
-    // track roles for ISA String changes, but not rolesSelected because this would trigger a feedback loop 
+    // track roles for ISA String changes, but not rolesSelected because this would trigger a feedback loop
     const currentRoles = roles;
     untrack(() => {
-      rolesSelected = currentRoles.map((roleOA: any) => roleOA.termAccession);
+      rolesSelected = currentRoles.map((roleOA: OntologyAnnotation) => roleOA.termAccession);
       rolesReadable = rolesSelected.map((r) => mapAccessionToLabel.get(r));
     });
-  })
-
+  });
 </script>
 
 <section style="position: relative;" class:section-bordered={mode === "edit"}>
@@ -92,32 +87,18 @@
       <p style="margin-bottom: 0;">No contributions</p>
     {/if}
   {:else}
-    <button
-      class="btn btn-secondary"
-      style="position: absolute; top: 8px; right: 10px; margin:0;"
-      onclick={() => (showRolesDescriptions = !showRolesDescriptions)}
-      >{showRolesDescriptions == true ? "Hide" : "Show"} role descriptions</button
-    >
+    <button class="btn btn-secondary" style="position: absolute; top: 8px; right: 10px; margin:0;" onclick={() => (showRolesDescriptions = !showRolesDescriptions)}>{showRolesDescriptions == true ? "Hide" : "Show"} role descriptions</button>
 
     <div id="roles">
       {#each rolesAvailable as role, i}
         <div class="role">
-          <input
-            id="checkbox-{i}"
-            type="checkbox"
-            value={role.accession}
-            bind:group={rolesSelected}
-            onchange={onChange}
-          />
+          <input id="checkbox-{i}" type="checkbox" value={role.accession} bind:group={rolesSelected} onchange={onChange} />
           <div>
             <label for="checkbox-{i}"
               >{role.name}
               {#if showRolesDescriptions}
                 <p>
-                  {role.description
-                    .replace('"', "")
-                    .replace('"', "")
-                    .replace("[]", "")}
+                  {role.description.replace('"', "").replace('"', "").replace("[]", "")}
                 </p>
               {/if}
             </label>

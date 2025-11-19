@@ -45,7 +45,7 @@
     a.href = URL.createObjectURL(
       new Blob([JSON.stringify($isaObj, null, 2)], {
         type: "application/json",
-      }),
+      })
     );
     a.setAttribute("download", "isa.json");
     document.body.appendChild(a);
@@ -61,7 +61,7 @@
 
     let arc = new ARC(investigation);
     let contracts = arc.GetWriteContracts();
-    console.log(contracts);
+
     const filesInZip = (await fulfillWriteContracts(contracts, "ZIP")) as FilesInZip[];
     const blob = await downloadZip(filesInZip).blob();
 

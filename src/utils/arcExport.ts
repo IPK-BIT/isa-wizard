@@ -107,11 +107,10 @@ async function fulfillWriteContractsGIT(contracts: Contract[]): Promise<GitPaylo
   return payload;
 }
 
-
-
 /**
  * Go through the ISA Object and make all fields ready for ARCtrl Export
  * This function does not change the original ISA object
+ * It will create a clone from the ISA objects and returns it ready for exporting.
  * @param isaObj
  */
 export function arcReadyISA(isaObj: Investigation) {
@@ -128,7 +127,6 @@ export function arcReadyISA(isaObj: Investigation) {
     isaClone.identifier = "MISSING-IDENTIFIER-" + randomID;
   }
 
-
   studies?.forEach((study, index) => {
     if (study && !study.identifier) {
       study.identifier = "study" + index;
@@ -140,10 +138,9 @@ export function arcReadyISA(isaObj: Investigation) {
         const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? "assay" + index;
         const filename = `${shortName}/isa.assay.xlsx`;
         assay.filename = filename;
-      })
+      });
     }
-
-  })
+  });
 
   return isaClone;
 }

@@ -2,6 +2,7 @@
   import Svelecte from "svelecte";
   import { onMount } from "svelte";
   import PersonRoles from "./PersonRoles.svelte";
+  import type { Comment, Person } from "@/lib/schemas/types_isa";
 
   interface FetchORCID {
     "expanded-result": Array<{
@@ -20,40 +21,49 @@
     institutions: string[];
   }
 
-  let { value: person = $bindable(), countPeople = 1, index, removePerson } = $props();
+  interface Props {
+    value: Person;
+    countPeople: number;
+    index: number;
+    removePerson: any;
+  }
+
+  let { value: person = $bindable(), countPeople = 1, index, removePerson }: Props = $props();
 
   let mode: "view" | "edit" = $state("view");
 
   onMount(() => {
     if (
-      !person.comments.find((c: { name: string; value: string }) => {
+      !person?.comments?.find((c: Comment) => {
         return c.name === "Person ID";
-      })
+      }) &&
+      person.comments
     ) {
       person.comments = [...person.comments, { name: "Person ID", value: "" }];
     }
   });
 
   let orcid: string = $derived(
-    person.comments.find((c: { name: string; value: string }) => {
+    person?.comments?.find((c: Comment) => {
       return c.name === "Person ID";
-    })?.value || "",
+    })?.value || ""
   );
 
   $effect(() => {
     if (
       person &&
       orcid !==
-        person.comments.find((c: { name: string; value: string }) => {
+        person?.comments?.find((c: Comment) => {
           return c.name === "Person ID";
         })?.value
     ) {
-      let idx = person.comments.findIndex((c: { name: string; value: string }) => {
-        return c.name === "Person ID";
-      });
-      if (idx !== -1) {
+      let idx =
+        person?.comments?.findIndex((c: Comment) => {
+          return c.name === "Person ID";
+        }) ?? -1;
+      if (idx !== -1 && person?.comments?.[idx]) {
         person.comments[idx].value = orcid;
-      } else {
+      } else if (person.comments) {
         person.comments = [...person.comments, { name: "Person ID", value: orcid }];
       }
     }

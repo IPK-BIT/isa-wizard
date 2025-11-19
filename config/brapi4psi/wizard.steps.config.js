@@ -104,6 +104,24 @@ window.steps = [
                 explanation: 'DM-2'
             },
             {
+                label: 'Start Date',
+                type: 'date',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'startDate'
+                },
+                explanation: 'DM-14'
+            },
+            {
+                label: 'End Date',
+                type: 'date',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'endDate'
+                },
+                explanation: 'DM-15'
+            },
+            {
                 label: 'Location',
                 type: 'location',
                 isaMapping: {

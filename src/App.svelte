@@ -9,20 +9,13 @@
   import ProgressBar from "./components/layout/ProgressBar.svelte";
   import GenericQuestionnaire from "./components/questionnaire/GenericQuestionnaire.svelte";
   import { getAppState, AppState, setConfig, setQuestionnaireSteps, updateAppState } from "./lib/appstate.svelte";
-  import Schema from "./lib/schemas";
-  import { init } from "./stores/gitlab-api";
 
   setConfig(config);
   setQuestionnaireSteps(config.steps.length);
 
-  import { isaObj, isaStr } from "./stores/isa";
-  import { onMount } from "svelte";
+  import { isaStr } from "./stores/isa";
 
   let show = $state(true);
-
-  onMount(() => {
-    //  init();
-  });
 </script>
 
 {#if getAppState() === AppState.Init}
@@ -50,7 +43,7 @@
         {:else if getAppState() === AppState.Wizard}
           <GenericQuestionnaire closeWizard={() => updateAppState(AppState.GUI)} />
         {:else if getAppState() === AppState.Review}
-          <p>Review</p>
+          <Gui />
         {:else if getAppState() === AppState.GUI}
           <Gui />
         {/if}

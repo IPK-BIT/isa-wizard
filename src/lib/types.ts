@@ -20,6 +20,7 @@ export type Config = {
 };
 
 export type Hook = {
+  parameters: any;
   type: string;
   state: {
     mapping: string;
