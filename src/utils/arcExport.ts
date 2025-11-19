@@ -131,13 +131,13 @@ export function arcReadyISA(isaObj: Investigation) {
 
   studies?.forEach((study, index) => {
     if (study && !study.identifier) {
-      study.identifier = `study${index}`;
+      study.identifier = "study" + index;
     }
 
     if (study.assays) {
       study.assays.forEach((assay, index) => {
         // convert assay short title in filename
-        const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? `assay${index}`;
+        const shortName = assay?.comments?.find((c) => c.name === "filename")?.value ?? "assay" + index;
         const filename = `${shortName}/isa.assay.xlsx`;
         assay.filename = filename;
       })
