@@ -2,7 +2,7 @@
     import Schemas from "@/lib/schemas";
     import { isaObj } from "@/stores/isa";
     import { value } from "@nfdi4plants/arctrl/fable_modules/fable-library.4.5.0/Option";
-    import set from "lodash.set";
+    import set from "lodash/set";
     import Svelecte from "svelecte";
     import { onMount } from "svelte";
     import OntologyAnnotation from "../generic/OntologyAnnotation.svelte";
