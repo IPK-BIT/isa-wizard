@@ -4,8 +4,8 @@ export let jsonPath;
 
 import { onMount } from 'svelte';
 
-import get from 'lodash/get';
-import set from 'lodash/set';
+import get from 'lodash.get';
+import set from 'lodash.set';
 
 import Schemas from '@/lib/schemas';
 
