@@ -7,7 +7,8 @@
         selectionChangedEvent = (selectedOptions: {label: String, iri: String, ontology_name: String, type: string})=>{console.log(selectedOptions)},
         parameter = 'collection=DataPLANT',
         className = undefined,
-        value = ''
+        value = '',
+        singleSelection = false,
     } = $props();
 
 onMount(()=>{
@@ -21,7 +22,7 @@ onMount(()=>{
             placeholder: "Type to search...",
             hasShortSelectedLabel: true,
             allowCustomTerms: false,
-            singleSelection: false,
+            singleSelection: singleSelection,
             ts4nfdiGateway: false,
             singleSuggestionRow: false,
             showApiSource: true,

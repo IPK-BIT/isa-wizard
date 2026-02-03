@@ -87,61 +87,61 @@ window.steps = [
                 },
                 explanation: 'DM-12'
             },
-            // {
-            //     label: 'Location',
-            //     type: 'location',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Experimental Site'
-            //     },
-            //     explanation: 'DM-18'
-            // },
-            // {
-            //     label: 'Location Latitude',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Latitude'
-            //     },
-            //     explanation: 'DM-19'
-            // },
-            // {
-            //     label: 'Location Longitude',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Longitude'
-            //     },
-            //     explanation: 'DM-20'
-            // },
-            // {
-            //     label: 'ROR ID of your Institution',
-            //     type: 'ror',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Contact Institution ROR'
-            //     }
-            // },
-            // {
-            //     label: 'Institution Contact Address',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Contact Institution'
-            //     },
-            //     explanation: 'DM-16'
-            // },
-            // {
-            //     label: 'Country',
-            //     type: 'text',
-            //     isaMapping: {
-            //         jsonPath: 'studies[0].comments',
-            //         commentName: 'Study Country'
-            //     },
-            //     explanation: 'DM-17'
-            // }
+            {
+                label: 'Location',
+                type: 'location',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Experimental Site'
+                },
+                explanation: 'DM-18'
+            },
+            {
+                label: 'Location Latitude',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Latitude'
+                },
+                explanation: 'DM-19'
+            },
+            {
+                label: 'Location Longitude',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Longitude'
+                },
+                explanation: 'DM-20'
+            },
+            {
+                label: 'ROR ID of your Institution',
+                type: 'ror',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Contact Institution ROR'
+                }
+            },
+            {
+                label: 'Institution Contact Address',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Contact Institution'
+                },
+                explanation: 'DM-16'
+            },
+            {
+                label: 'Country',
+                type: 'text',
+                isaMapping: {
+                    jsonPath: 'studies[0].comments',
+                    commentName: 'Study Country'
+                },
+                explanation: 'DM-17'
+            }
         ]
-    },  
+    },
     {
         hooks: [
             {
@@ -151,75 +151,101 @@ window.steps = [
                     count: 1
                 },
                 parameters: {
-                    protocolName: 'Growth',
-                    protocolVersion: 'MIAPPE v1.1',
+                    name: 'Growth',
+                    version: 'MIAPPE v1.1',
                     protocolType: {
                         "@id": "",
                         "annotationValue": "plant growth protocol",
                         "termSource": "DPBO",
                         "termAccession": "DPBO:1000164",
                         "comments": []
-                      },
+                    },
                     // protocolDescription: 'How the plants were grown up.',
-                    protocolParameters: [ 
-                        {
-                            "@id": "",
-                            "annotationValue": "Light intensity",
-                            "termSource": "MIAPPE",
-                            "termAccession": "MIAPPE:0101",
-                            "comments": []
-                        }, {
-                            "@id": "",
-                            "annotationValue": "temperature day",
-                            "termSource": "DPBO",
-                            "termAccession": "DPBO:0000007",
-                            "comments": []
-                        },{
-                            "@id": "",
-                            "annotationValue": "temperature night",
-                            "termSource": "DPBO",
-                            "termAccession": "DPBO:0000008",
-                            "comments": []
-                        }
+                    parameters: [
+
+                        // {
+                        //     parameterName: {
+                        //         "@id": "",
+                        //         "annotationValue": "Light intensity",
+                        //         "termSource": "MIAPPE",
+                        //         "termAccession": "MIAPPE:0101",
+                        //         "comments": []
+                        //     }, comments: [
+                        //         {
+                        //             "@id": "",
+                        //             "name": "value",
+                        //             "value": ""
+                        //         },
+                        //         {
+                        //             "@id": "",
+                        //             "name": "deletable",
+                        //             "value": "false"
+                        //         }, {
+                        //             "@id": "",
+                        //             "name": "unit",
+                        //             "value": ""
+                        //         }
+                        //     ]
+                        // }
+
+                        // , {
+                        //     "@id": "",
+                        //     "annotationValue": "temperature day",
+                        //     "termSource": "DPBO",
+                        //     "termAccession": "DPBO:0000007",
+                        //     "comments": []
+                        // },{
+                        //     "@id": "",
+                        //     "annotationValue": "temperature night",
+                        //     "termSource": "DPBO",
+                        //     "termAccession": "DPBO:0000008",
+                        //     "comments": []
+                        // }
                     ]
                 }
             }
         ],
         title: 'Please provide a brief summary of the Growth Conditions.',
-        fields: [
-            {
-                label: 'Growth description',
-                type: 'textarea',
-                isaMapping: {
-                    jsonPath: 'studies[0].protocols[0].description'
-                },
-                explanation: 'DM-67'
-            },
-            {
-                label: 'Protocol URI',
-                type: 'text',
-                isaMapping: {
-                    jsonPath: 'studies[0].protocols[0].uri'
-                },
-                explanation: 'DM-66'
-            },
-            {
-                label: 'Protocol Parameters',
-                type: 'parameters',
-                isaMapping: {
-                    jsonPath: 'studies[0].protocols[0].parameters'
-                },
-                explanation: 'DM-68'
-            },
-            {
-                label: 'Protocol Components',
-                type: 'components',
-                isaMapping: {
-                    jsonPath: 'studies[0].protocols[0].components'
-                },
-                explanation: 'DM-69'
-            }
-        ]
+        component: "protocol",
+        jsonPath: 'studies[0].protocols',
+        componentConfig: {
+            showComments: false,
+            label: 'Protocols'
+        }
+        // fields: [
+        //     {
+        //         label: 'Growth description',
+        //         type: 'textarea',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].description'
+        //         },
+        //         explanation: 'DM-67'
+        //     },
+        //     {
+        //         label: 'Protocol URI',
+        //         type: 'text',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].uri'
+        //         },
+        //         explanation: 'DM-66'
+        //     },
+        //     {
+        //         label: 'Protocol Parameters',
+        //         type: 'parameters',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].parameters'
+        //         },
+        //         explanation: 'DM-68'
+        //     },
+        //     {
+        //         label: 'Protocol Components',
+        //         type: 'components',
+        //         isaMapping: {
+        //             jsonPath: 'studies[0].protocols[0].components'
+        //         },
+        //         explanation: 'DM-69'
+        //     }
+        // ]
     },
     {
         title: 'Please upload the Material used in your Study.',
@@ -239,7 +265,7 @@ window.steps = [
                     count: 1
                 },
                 parameters: {
-                    
+
                 }
             }
         ],
@@ -288,15 +314,15 @@ window.steps = [
                     count: 2
                 },
                 parameters: {
-                    protocolName: 'Phenotyping',
-                    protocolVersion: 'MIAPPE v1.1',
-                    protocolType: {
-                        "@id": "",
-                        "annotationValue": "phenotyping",
-                        "termSource": "DPBO",
-                        "termAccession": "DPBO:1000224",
-                        "comments": []
-                      },
+                    name: 'Imaging',
+                    version: 'MIAPPE v1.1',
+                    // protocolType: {
+                    //     "@id": "",
+                    //     "annotationValue": "phenotyping",
+                    //     "termSource": "DPBO",
+                    //     "termAccession": "DPBO:1000224",
+                    //     "comments": []
+                    //   },
                     // protocolParameters: ['Phenotyping method']
                 }
             }
@@ -337,13 +363,14 @@ window.steps = [
             }
         ]
     },
+
     {
         title: 'Please upload the results of your Study.',
         component: 'AssayProcesses',
         level: 'Assay',
         jsonPath: 'studies[0].assays[0]',
         componentConfig: {
-
+            brapiBaseURL: "https://mira.ipk-gatersleben.de/test/brapi/v2/"
         }
     }
 ];

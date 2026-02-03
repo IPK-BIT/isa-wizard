@@ -1,5 +1,8 @@
 import { mount } from "svelte";
 import App from "./App.svelte";
+import { init } from "./stores/gitlab-api";
+
+await init(); // Handle gitlab init in case of oauth redirect flow
 
 // Extend the Window interface to include 'isawizard'
 declare global {

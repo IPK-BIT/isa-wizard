@@ -18,13 +18,22 @@
     function addPerson() {
         people = [...people, Schema.getObjectFromSchema('person')];
     }
+
+    /**
+     * Called from child (Person) component with props
+     * @param index - person index in people array
+     */
+    function removePerson(index: number) { 
+        people.splice(index, 1);
+        people = [...people];
+    }
 </script>
 
 <section>
     <div>
         <h3>{label}</h3>
-        {#each people as _, i}
-            <Person bind:value={people[i]} countPeople={people.length} />
+        {#each people, i}
+            <Person bind:value={people[i]} index={i} countPeople={people.length} removePerson={(index: number) => removePerson(index)} />
         {/each}
         <button class="btn" onclick={addPerson}>Add {__person__}</button>
     </div>
