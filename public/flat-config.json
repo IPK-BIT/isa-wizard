@@ -1,0 +1,79 @@
+{
+	"general": {
+		"name": "MIAPPE Wizard",
+		"layoutMode": "standalone",
+		"initialView": "wizard",
+		"showQuestionnaireProgressBar": true,
+		"showConsole": true
+	},
+	"steps": [
+		{
+			"title": "Investigation Information",
+			"texts": ["Please provide the following information about your investigation."],
+			"fields": [
+				{
+					"label": "Investigation File Name",
+					"type": "text",
+					"isaMapping": { "jsonPath": "filename" },
+					"explanation": "A filename for your investigation."
+				},
+				{
+					"label": "Investigation Identifier",
+					"type": "text",
+					"isaMapping": { "jsonPath": "identifier" },
+					"explanation": "A descriptive identifier for your investigation."
+				},
+				{
+					"label": "Investigation Title",
+					"type": "text",
+					"isaMapping": { "jsonPath": "title" },
+					"explanation": "A descriptive title for your investigation."
+				},
+				{
+					"label": "Investigation Description",
+					"type": "textarea",
+					"isaMapping": { "jsonPath": "description" },
+					"explanation": "A description of your investigation."
+				},
+				{
+					"label": "Investigation Submission Date",
+					"type": "date",
+					"isaMapping": { "jsonPath": "submissionDate" },
+					"explanation": "The date when your investigation was submitted."
+				},
+				{
+					"label": "Investigation Public Release Date",
+					"type": "date",
+					"isaMapping": { "jsonPath": "publicReleaseDate" },
+					"explanation": "The date when your investigation was made public."
+				},
+				{
+					"label": "License",
+					"type": "license",
+					"isaMapping": { "jsonPath": "comments", "commentName": "License" },
+					"explanation": "The license under which your investigation is released."
+				}
+			]
+		},
+		{
+			"title": "Investigation Publications",
+			"texts": ["Please provide information about the publications related to your investigation."],
+			"component": {
+				"type": "publications",
+				"isaMapping": { "jsonPath": "publications" },
+				"label": "Publications",
+				"explantion": "Add publications related to your investigation."
+			}
+		},
+		{
+			"title": "Investigation People",
+			"texts": ["Please provide information about the persons involved in your investigation."],
+			"component": {
+				"type": "people",
+				"isaMapping": { "jsonPath": "people" },
+				"label": "Authors",
+				"explantion": "Add people involved in your investigation."
+			}
+		}
+	]
+}
