@@ -1,7 +1,7 @@
 <script lang="ts">
 	import errorImage from './assets/error.png';
 	import { onMount } from 'svelte';
-	import { ConfigLoader } from './lib/configLoader';
+	import { ConfigLoader } from './lib/config.svelte';
 	import type { WizardConfig, WizardFinishData, FormResponse } from './lib/types/Config';
 	import type { FinishCallback } from './lib/types/Events';
 	import Header from './components/layout/Header.svelte';
@@ -10,6 +10,9 @@
 
 	import { isaObj, isaStr } from './stores/isa';
 	import Schema from './lib/schemas';
+	import { getAppstate, updateAppstate } from './lib/appstate.svelte';
+	import Gui from './components/gui/Gui.svelte';
+	import Tree from './components/layout/Tree.svelte';
 
 	onMount(() => {
 		$isaObj = Schema.getObjectFromSchema('investigation');
@@ -57,6 +60,7 @@
 
 			// Initialize responses object with empty values for all fields
 			if (wizardConfig) {
+				updateAppstate({ template: wizardConfig.rootTemplate });
 			}
 
 			loading = false;
@@ -104,7 +108,7 @@
 		</div>
 	</div>
 {:else if wizardConfig}
-	<div class="h-screen bg-base-200">
+	<div>
 		{#if wizardConfig.general.layoutMode === 'standalone'}
 			<Header config={wizardConfig.general} />
 		{/if}
@@ -116,15 +120,24 @@
 		>
 			{#if wizardConfig.general.layoutMode === 'standalone'}
 				<div class="col-start-1 row-start-2 self-stretch py-5 pr-2.5 pl-2.75">
-					{#if wizardConfig.general.showQuestionnaireProgressBar}
-						<ProgressBar currentStep={currentStepIndex} totalSteps={wizardConfig.steps.length} />
+					{#if getAppstate().mode === 'wizard' && wizardConfig.general.showQuestionnaireProgressBar}
+						<ProgressBar totalSteps={wizardConfig.templates[getAppstate().template].steps.length} />
+					{:else if getAppstate().mode === 'gui'}
+						<Tree />
 					{/if}
 				</div>
 			{/if}
 			<div class="col-start-2 row-start-2 mt-5 overflow-y-auto px-2.5 py-0 pb-5">
-				<div class="card bg-base-100 p-4 shadow-md">
-					<Questionnaire bind:currentStepIndex config={wizardConfig} onFinish={handleSubmit} />
-				</div>
+				{#if getAppstate().mode === 'wizard'}
+					<div class="card bg-base-100 p-4 shadow-md">
+						<Questionnaire
+							config={wizardConfig.templates[getAppstate().template]}
+							onFinish={handleSubmit}
+						/>
+					</div>
+				{:else}
+					<Gui config={wizardConfig} />
+				{/if}
 			</div>
 			{#if wizardConfig.general.layoutMode === 'standalone'}
 				<div class="col-start-3 row-start-2 self-stretch border-l-0 py-5 pr-2.75 pl-2.5">

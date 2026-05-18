@@ -1,5 +1,8 @@
+import OntologyAnnotations from '../../components/isa/collection/OntologyAnnotations.svelte';
 import People from '../../components/isa/collection/People.svelte';
+import Protocols from '../../components/isa/collection/Protocols.svelte';
 import Publications from '../../components/isa/collection/Publications.svelte';
+import Entities from '../../components/isa/composed/Entities.svelte';
 import Date from '../../components/isa/singleton/Date.svelte';
 import License from '../../components/isa/singleton/License.svelte';
 import OntologyAnnotation from '../../components/isa/singleton/OntologyAnnotation.svelte';
@@ -16,5 +19,8 @@ export const fieldTypes = {
 
 export const componentTypes = {
 	publications: Publications,
-	people: People
+	people: People,
+	'ontology-annotations': OntologyAnnotations,
+	protocols: Protocols,
+	entities: Entities,
 };

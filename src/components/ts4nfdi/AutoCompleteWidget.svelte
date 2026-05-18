@@ -30,7 +30,7 @@
 				preselected: [],
 				placeholder: 'Type to search...',
 				hasShortSelectedLabel: true,
-				allowCustomTerms: false,
+				allowCustomTerms: true,
 				singleSelection: singleSelection,
 				ts4nfdiGateway: false,
 				singleSuggestionRow: false,

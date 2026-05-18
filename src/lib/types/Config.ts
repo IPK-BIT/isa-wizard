@@ -26,11 +26,22 @@ export interface GeneralConfig {
 	showConsole: boolean;
 }
 
+export interface TemplateConfig {
+	[key: string]: {
+		steps: StepConfig[];
+		children?: {
+			template: string;
+			repeatable: boolean;
+			isaMapping: { jsonPath: string };
+		};
+	};
+}
+
 export interface WizardConfig {
 	general: GeneralConfig;
-	steps: StepConfig[];
-	submitButtonLabel?: string;
-	cancelButtonLabel?: string;
+	// steps: StepConfig[];
+	rootTemplate: string;
+	templates: TemplateConfig;
 }
 
 export interface FormResponse {

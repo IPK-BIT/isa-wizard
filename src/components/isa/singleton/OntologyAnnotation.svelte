@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getConfig } from '../../../lib/config.svelte';
 	import Schema from '../../../lib/schemas';
 	import AutoCompleteWidget from '../../ts4nfdi/AutoCompleteWidget.svelte';
 	import BreadcrumbWidget from '../../ts4nfdi/BreadcrumbWidget.svelte';
@@ -25,12 +26,16 @@
 		label = '',
 		attr,
 		explanation = '',
-		parameter = "collection=DataPLANT",
+		parameter = 'collection=DataPLANT',
 		value = $bindable(),
 		singleSelection = true,
-		showLabel = true
+		showLabel = true,
+		onRemove = undefined
 	} = $props();
 
+	const config: { 'lookup-services': { ts: { api: string } } } = getConfig() as {
+		'lookup-services': { ts: { api: string } };
+	};
 	const displayLabel = $derived(label || attr);
 </script>
 
@@ -45,28 +50,39 @@
 				style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 			>
 				<div>
-					<TitleWidget
-						api="https://terminology.services.base4nfdi.de/api-gateway/ols4/api/"
-						iri={value.termAccession}
-						ontologyId={value.termSource}
-					/>
+					<span class="text-lg font-semibold">{value.annotationValue}</span>
 					<BreadcrumbWidget
-						api="https://terminology.services.base4nfdi.de/api-gateway/ols4/api/"
+						api={config['lookup-services'].ts.api}
 						iri={value.termAccession}
 						ontologyId={value.termSource}
 					/>
 				</div>
-				<button class="btn btn-outline btn-sm btn-error" onclick={() => (value = {})}>
-					Clear
-				</button>
+				<div>
+					<button
+						class="btn btn-outline btn-sm btn-warning"
+						onclick={() => (value.annotationValue = '')}
+					>
+						Clear
+					</button>
+					{#if onRemove}
+						<button class="btn btn-outline btn-sm btn-error" onclick={onRemove}> Remove </button>
+					{/if}
+				</div>
 			</div>
 		{:else}
-			<AutoCompleteWidget
-				api="https://terminology.services.base4nfdi.de/api-gateway/ols4/api/"
-				parameter={parameter}
-				{selectionChangedEvent}
-				{singleSelection}
-			/>
+			<div class="flex w-full items-center justify-between space-x-2">
+				<div class="w-full">
+					<AutoCompleteWidget
+						api={config['lookup-services'].ts.api}
+						{parameter}
+						{selectionChangedEvent}
+						{singleSelection}
+					/>
+				</div>
+				{#if onRemove}
+					<button class="btn mt-2 btn-outline btn-sm btn-error" onclick={onRemove}> Remove </button>
+				{/if}
+			</div>
 		{/if}
 		<p class="label">{explanation}</p>
 	</fieldset>

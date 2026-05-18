@@ -6,8 +6,20 @@
 		"showQuestionnaireProgressBar": true,
 		"showConsole": true
 	},
+	"lookup-services": {
+		"ts": {
+			"api": "https://api.terminology.tib.eu/api/",
+			"parameter": "collection=DataPLANT"
+		}
+	},
 	"templates": {
 		"investigation": {
+			"metadata": {
+				"type": "investigation",
+				"code": "investigation",
+				"label": "Investigation",
+				"description": "An investigation represents a unit of research. You can have multiple studies within an investigation, each representing a different aspect of your research. Please provide the necessary information for your investigation and its related studies."
+			},
 			"steps": [
 				{
 					"title": "Investigation Information",
@@ -66,7 +78,7 @@
 						"type": "publications",
 						"isaMapping": { "jsonPath": "publications" },
 						"label": "Publications",
-						"explantion": "Add publications related to your investigation."
+						"explanation": "Add publications related to your investigation."
 					}
 				},
 				{
@@ -76,57 +88,239 @@
 						"type": "people",
 						"isaMapping": { "jsonPath": "people" },
 						"label": "Authors",
-						"explantion": "Add people involved in your investigation."
+						"explanation": "Add people involved in your investigation."
 					}
 				}
-			],
-            "children": [
-                {
-                    "template": "study",
-                    "repeatable": true,
-                    "isaMapping": { "jsonPath": "studies" }
-                }
-            ]
+			]
 		},
-        "study": {
-            "steps": [
-                {
-                    "title": "Study Information",
-                    "texts": ["Please provide the following information about your study."],
-                    "fields": [
-                        {
-                            "label": "Study File Name",
-                            "type": "text",
-                            "isaMapping": { "jsonPath": "filename" },
-                            "explanation": "A filename for your study."
-                        }
-                    ]
-                }
-            ],
-            "children": [
-                {
-                    "template": "assay",
-                    "repeatable": true,
-                    "isaMapping": { "jsonPath": "assays" }
-                }
-            ]
-        },
-        "assay": {
-            "steps": [
-                {
-                    "title": "Assay Information",
-                    "texts": ["Please provide the following information about your assay."],
-                    "fields": [
-                        {
-                            "label": "Assay File Name",
-                            "type": "text",
-                            "isaMapping": { "jsonPath": "filename" },
-                            "explanation": "A filename for your assay."
-                        }
-                    ]
-                }
-            ]
-        }
+		"phenotyping-study": {
+			"metadata": {
+				"type": "study",
+				"code": "phenotyping-study",
+				"label": "Phenotyping Study",
+				"description": "A study represents a unit of research within your investigation. You can have multiple studies, each with its own set of assays. Please provide the necessary information for each study you want to include in your investigation."
+			},
+			"steps": [
+				{
+					"title": "Study Information",
+					"texts": ["Please provide the following information about your study."],
+					"fields": [
+						{
+							"label": "Study File Name",
+							"type": "text",
+							"isaMapping": { "jsonPath": "filename" },
+							"explanation": "A filename for your study."
+						},
+						{
+							"label": "Study Identifier",
+							"type": "text",
+							"isaMapping": { "jsonPath": "identifier" },
+							"explanation": "A descriptive identifier for your study."
+						},
+						{
+							"label": "Study Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "title" },
+							"explanation": "A descriptive title for your study."
+						},
+						{
+							"label": "Study Description",
+							"type": "textarea",
+							"isaMapping": { "jsonPath": "description" },
+							"explanation": "A description of your study."
+						},
+						{
+							"label": "Study Submission Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "submissionDate" },
+							"explanation": "The date when your study was submitted."
+						},
+						{
+							"label": "Study Public Release Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "publicReleaseDate" },
+							"explanation": "The date when your study was made public."
+						}
+					]
+				},
+				{
+					"title": "MIAPPE Specific Information",
+					"texts": ["Please provide the following MIAPPE specific information about your study."],
+					"fields": [
+						{
+							"label": "Study Start Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Start Date" },
+							"explanation": "The date when your study started."
+						},
+						{
+							"label": "Study End Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study End Date" },
+							"explanation": "The date when your study ended."
+						},
+						{
+							"label": "Study Contact Institution",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Contact Institution" },
+							"explanation": "The institution associated with your study."
+						},
+						{
+							"label": "Study Country",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Country" },
+							"explanation": "The country associated with your study."
+						},
+						{
+							"label": "Study Experimental Site",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Experimental Site" },
+							"explanation": "The site where your study was conducted."
+						},
+						{
+							"label": "Study Latitude",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Latitude" },
+							"explanation": "The latitude of the study location."
+						},
+						{
+							"label": "Study Longitude",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Longitude" },
+							"explanation": "The longitude of the study location."
+						},
+						{
+							"label": "Study Altitude",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Altitude" },
+							"explanation": "The altitude of the study location."
+						},
+						{
+							"label": "Study Design Description",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Design Description" },
+							"explanation": "The design of your study."
+						}
+					]
+				},
+				{
+					"title": "Study Design Descriptors",
+					"texts": [
+						"Please provide information about the design of your study using ontology annotations."
+					],
+					"component": {
+						"type": "ontology-annotations",
+						"isaMapping": { "jsonPath": "studyDesignDescriptors" },
+						"label": "Study Design Descriptors",
+						"explanation": "Add study design descriptors."
+					}
+				},
+				{
+					"title": "Study Publications",
+					"texts": ["Please provide information about the publications related to your study."],
+					"component": {
+						"type": "publications",
+						"isaMapping": { "jsonPath": "publications" },
+						"label": "Publications",
+						"explanation": "Add publications related to your study."
+					}
+				},
+				{
+					"title": "Study People",
+					"texts": ["Please provide information about the persons involved in your study."],
+					"component": {
+						"type": "people",
+						"isaMapping": { "jsonPath": "people" },
+						"label": "Authors",
+						"explanation": "Add people involved in your study."
+					}
+				},
+				{
+					"title": "Protocols",
+					"texts": ["Please provide information about the protocols used in your study."],
+					"component": {
+						"type": "protocols",
+						"isaMapping": { "jsonPath": "protocols" },
+						"label": "Protocols",
+						"explanation": "Add protocols used in your study."
+					}
+				},
+				{
+					"title": "Materials",
+					"texts": ["Please provide information about the materials used in your study."],
+					"component": {
+						"type": "entities",
+						"isaMapping": { "jsonPath": "materials" },
+						"label": "Materials",
+						"explanation": "Add materials used in your study."
+
+					}
+				}
+			]
+		},
+		"phenotyping-assay": {
+			"metadata": {
+				"type": "assay",
+				"code": "phenotyping-assay",
+				"label": "Phenotyping Assay",
+				"description": "An assay represents a unit of experimental work within a study. You can have multiple assays within a study, each representing a different experiment or analysis. Please provide the necessary information for each assay you want to include in your study."
+			},
+			"steps": [
+				{
+					"title": "Assay Information",
+					"texts": ["Please provide the following information about your assay."],
+					"fields": [
+						{
+							"label": "Assay File Name",
+							"type": "text",
+							"isaMapping": { "jsonPath": "filename" },
+							"explanation": "A filename for your assay."
+						},
+						{
+							"label": "Assay Identifier",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "identifier" },
+							"explanation": "An identifier for your assay."
+						},
+						{
+							"label": "Assay Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "title" },
+							"explanation": "A title for your assay."
+						},
+						{
+							"label": "Assay Measurement Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "measurementType" },
+							"explanation": "The type of measurement performed in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "technologyType" },
+							"explanation": "The type of technology used in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Platform",
+							"type": "text",
+							"isaMapping": { "jsonPath": "technologyPlatform" },
+							"explanation": "The technology platform for your assay."
+						}
+					]
+				},
+				{
+					"title": "Materials",
+					"texts": ["Please provide information about the materials used in your study."],
+					"component": {
+						"type": "entities",
+						"isaMapping": { "jsonPath": "materials" },
+						"label": "Materials",
+						"explanation": "Add materials used in your study."
+
+					}
+				}
+			]
+		}
 	},
 	"rootTemplate": "investigation"
 }

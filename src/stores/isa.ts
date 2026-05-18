@@ -1,18 +1,28 @@
 import { writable, get, derived } from 'svelte/store';
 import { keyed } from '@humanspeak/svelte-keyed';
 import Schema from '../lib/schemas';
+import type { ISAInvestigationSchema } from '../lib/types/isa.generated';
 
 function createIsaStoresSynced() {
-	const storeIsaObj = writable({});
+	const initialIsa = Schema.getObjectFromSchema('investigation') as ISAInvestigationSchema;
+	const storeIsaObj = writable<ISAInvestigationSchema>(initialIsa);
 	const storeIsaStr = writable('');
 
-	const setIsaObj = (isaObj: any) => {
+	const setIsaObj = (isaObj: ISAInvestigationSchema) => {
 		storeIsaObj.set(isaObj);
 		storeIsaStr.set(JSON.stringify(isaObj, null, 2));
 	};
 
-	const updateIsaObj = (isaObj: any) => {
-		storeIsaObj.update(isaObj);
+	const updateIsaObj = (
+		isaObj:
+			| Partial<ISAInvestigationSchema>
+			| ((prev: ISAInvestigationSchema) => ISAInvestigationSchema)
+	) => {
+		if (typeof isaObj === 'function') {
+			storeIsaObj.update(isaObj as (prev: ISAInvestigationSchema) => ISAInvestigationSchema);
+		} else {
+			storeIsaObj.update((prev) => ({ ...prev, ...isaObj }));
+		}
 		storeIsaStr.set(JSON.stringify(get(storeIsaObj), null, 2));
 	};
 

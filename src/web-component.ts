@@ -25,6 +25,22 @@ class ISAWizardElement extends HTMLElement {
 		container.id = 'widget-container';
 		this.widgetShadowRoot.appendChild(container);
 
+		// Apply background to the host/container so the widget matches the app background.
+		try {
+			const rootStyles = getComputedStyle(document.documentElement);
+			const base200 = rootStyles.getPropertyValue('--color-base-200').trim();
+			if (base200) {
+				container.style.background = base200;
+			} else {
+				container.style.background = '';
+			}
+			container.style.minHeight = '100vh';			container.style.display = 'block';+			this.style.display = 'block';
++			this.style.minHeight = '100vh';
++			this.style.width = '100%';
++		} catch (e) {
++			// ignore if getComputedStyle isn't available in the environment
++		}
+
 		// Get config from attributes or properties
 		const configUrl = this.getAttribute('config-url') || this.getAttribute('configUrl');
 		const configAttr = this.getAttribute('config');

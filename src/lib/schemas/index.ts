@@ -1,10 +1,18 @@
-import investigation from './investigation.json';
-import study from './study.json';
-import assay from './assay.json';
-import comment from './comment.json';
-import publication from './publication.json';
-import ontology_annotation from './ontology_annotation.json';
-import person from './person.json';
+import investigation from './investigation_schema.json';
+import study from './study_schema.json';
+import assay from './assay_schema.json';
+import comment from './comment_schema.json';
+import publication from './publication_schema.json';
+import ontology_annotation from './ontology_annotation_schema.json';
+import person from './person_schema.json';
+import protocol from './protocol_schema.json';
+import protocol_parameter from './protocol_parameter_schema.json';
+import protocol_component from './protocol_component_schema.json';
+import material from './material_schema.json';
+import source from './source_schema.json';
+import sample from './sample_schema.json';
+import material_attribute from './material_attribute_schema.json';
+import material_attribute_value from './material_attribute_value_schema.json';
 
 const mapping = {
 	investigation: investigation,
@@ -13,7 +21,15 @@ const mapping = {
 	comment: comment,
 	publication: publication,
 	ontology_annotation: ontology_annotation,
-	person: person
+	person: person,
+	protocol: protocol,
+	protocol_parameter: protocol_parameter,
+	protocol_component: protocol_component,
+	material: material,
+	source: source,
+	sample: sample,
+	material_attribute: material_attribute,
+	material_attribute_value: material_attribute_value,
 };
 
 export default class Schema {
@@ -57,8 +73,17 @@ export default class Schema {
 						entries.map(([k, v]) => [k, getDataByJsonType((v as { type: string }).type)])
 					);
 				}
+			} else if ('$ref' in value) {
+				obj[key] = this.getObjectFromSchema(value.$ref.split('_').slice(0, -1).join('_'));
+			} else if ('anyOf' in value) {
+				obj[key] = getDataByJsonType(value.anyOf[0].type);
+				if (obj[key] === null) {
+					obj[key] = this.getObjectFromSchema(
+						value.anyOf[0].$ref.split('_').slice(0, -1).join('_')
+					);
+				}
 			} else {
-				obj[key] = {};
+				obj[key] = undefined;
 			}
 		}
 
