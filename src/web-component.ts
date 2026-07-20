@@ -34,12 +34,14 @@ class ISAWizardElement extends HTMLElement {
 			} else {
 				container.style.background = '';
 			}
-			container.style.minHeight = '100vh';			container.style.display = 'block';+			this.style.display = 'block';
-+			this.style.minHeight = '100vh';
-+			this.style.width = '100%';
-+		} catch (e) {
-+			// ignore if getComputedStyle isn't available in the environment
-+		}
+			container.style.minHeight = '100vh';
+			container.style.display = 'block';
+			this.style.display = 'block';
+			this.style.minHeight = '100vh';
+			this.style.width = '100%';
+		} catch (e) {
+			// ignore if getComputedStyle isn't available in the environment
+		}
 
 		// Get config from attributes or properties
 		const configUrl = this.getAttribute('config-url') || this.getAttribute('configUrl');

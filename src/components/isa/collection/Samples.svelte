@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Schema from '../../../lib/schemas';
-	import Sample from '../composed/Sample.svelte';
+	import MaterialUpload from '../../util/MaterialUpload.svelte';
 
 	let {
 		label = 'Samples',
@@ -12,13 +12,8 @@
 
 	const displayLabel = $derived(label || attr);
 
-	function addSample() {
-		const newSample = Schema.getObjectFromSchema('sample');
-		value = [...(value || []), newSample];
-	}
-
-	function removeSample(index: number) {
-		value = value?.filter((_: unknown, i: number) => i !== index);
+	function importSamples(list: any[]) {
+		value = list;
 	}
 </script>
 
@@ -32,24 +27,40 @@
 			<p class="label">{explanation}</p>
 		{/if}
 
-		<div class="space-y-4">
-			{#if value && value.length > 0}
-				{#each value as _, index (index)}
-					<Sample
-						label={`Sample ${index + 1}`}
-						attr={`sample[${index}]`}
-						bind:value={value[index]}
-						showLabel={false}
-						onRemove={() => removeSample(index)}
-					/>
-				{/each}
-			{:else}
-				<p class="label text-gray-500 italic">No samples added yet</p>
-			{/if}
+		<div
+			class="rounded-md border p-4"
+			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
+		>
+			<MaterialUpload type="sample" onapprove={importSamples} />
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addSample}>
-			+ Add Sample
-		</button>
+		{#if value && value.length > 0}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Sample Name</th>
+						{#each value[0].characteristics as characteristic}
+							<th>Characteristic [{characteristic.category.characteristicType.annotationValue}]</th>
+						{/each}
+						{#each value[0].factorValues as factor}
+							<th>Factor [{factor.category.factorType.annotationValue}]</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody>
+					{#each value as sample, index (index)}
+						<tr>
+							<td>{sample.name}</td>
+							{#each sample.characteristics as characteristic, i (i)}
+								<td>{characteristic.value.annotationValue ?? characteristic.value}</td>
+							{/each}
+							{#each sample.factorValues as factor, i (i)}
+								<td>{factor.value.annotationValue ?? factor.value}</td>
+							{/each}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 	</fieldset>
 </section>

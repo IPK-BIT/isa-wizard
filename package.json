@@ -25,26 +25,28 @@
 		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
 	},
 	"devDependencies": {
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
-		"@tailwindcss/postcss": "^4.2.4",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"@tailwindcss/postcss": "^4.3.2",
 		"@tsconfig/svelte": "^5.0.8",
-		"@types/node": "^24.12.2",
-		"autoprefixer": "^10.5.0",
-		"daisyui": "^5.5.19",
+		"@types/dataframe-js": "^1.4.3",
+		"@types/node": "^24.13.3",
+		"autoprefixer": "^10.5.2",
+		"daisyui": "^5.6.18",
 		"json-schema-to-typescript": "^15.0.4",
-		"postcss": "^8.5.14",
-		"prettier": "^3.8.3",
-		"prettier-plugin-svelte": "^3.5.1",
+		"postcss": "^8.5.19",
+		"prettier": "^3.9.5",
+		"prettier-plugin-svelte": "^3.5.2",
 		"prettier-plugin-tailwindcss": "^0.8.0",
-		"svelte": "^5.55.4",
-		"svelte-check": "^4.4.6",
-		"tailwindcss": "^4.2.4",
-		"terser": "^5.46.2",
-		"typescript": "~6.0.2",
-		"vite": "^8.0.10"
+		"svelte": "^5.56.4",
+		"svelte-check": "^4.7.2",
+		"tailwindcss": "^4.3.2",
+		"terser": "^5.49.0",
+		"typescript": "~6.0.3",
+		"vite": "^8.1.4"
 	},
 	"dependencies": {
 		"@humanspeak/svelte-keyed": "^5.0.1",
+		"dataframe-js": "^1.4.4",
 		"svelecte": "^5.3.0"
 	}
 }

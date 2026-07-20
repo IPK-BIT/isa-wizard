@@ -27,6 +27,17 @@
 		}
 	}
 
+	function openAssay(template: any) {
+		updateAppstate({
+			template: template.metadata.code,
+			isaLvl:
+				getAppstate().isaLvl,
+			currentStepIndex: 0,
+			mode: 'wizard',
+			guiType: 'investigation'
+		});
+	}
+
 	// Derive the current study based on isaLvl
 	const study = $derived.by(() => {
 		const hierarchy = parseIsaLvl(getAppstate().isaLvl);
@@ -37,12 +48,39 @@
 	});
 </script>
 
+<div class="flex justify-between">
 <div class="breadcrumbs text-sm">
 	<ul>
-		<li><button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button></li>
+		<li>
+			<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
+		</li>
 		<li><button onclick={openStudy}>{study?.title || 'Untitled Study'}</button></li>
 		<li>{assay.filename || 'Untitled Assay'}</li>
 	</ul>
+</div>
+<div>
+	{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
+		<p>Loading...</p>
+	{:then assayTemplates}
+		{#if assayTemplates.length === 0}
+			<p>No assay templates available</p>
+		{:else}
+			<ul>
+				{#each assayTemplates as template}
+					<li>
+						<button
+							class="btn btn-sm btn-primary"
+							onclick={() => openAssay(template)}
+							>Edit as {(template as any).metadata.label}</button
+						>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	{:catch error}
+		<p>Error loading assay templates: {error.message}</p>
+	{/await}
+	</div>
 </div>
 
 <table class="table w-full">

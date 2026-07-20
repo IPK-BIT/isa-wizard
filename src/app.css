@@ -41,18 +41,18 @@
 }
 
 @layer base {
-  html {
-    height: 100%;
-  }
+	html {
+		height: 100%;
+	}
 
-  body {
-    @apply bg-base-200;
-    min-height: 100vh;
-  }
+	body {
+		@apply bg-base-200;
+		min-height: 100vh;
+	}
 
-  #app {
-    min-height: 100%;
-  }
+	#app {
+		min-height: 100%;
+	}
 }
 
 @plugin 'daisyui/theme' {

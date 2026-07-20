@@ -43,9 +43,7 @@
 	style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 >
 	<div class="flex justify-end">
-		<button class="btn btn-sm btn-error" onclick={onRemove}>
-			Remove
-		</button>
+		<button class="btn btn-sm btn-error" onclick={onRemove}> Remove </button>
 	</div>
 
 	<OntologyAnnotation
@@ -56,66 +54,66 @@
 		showLabel={true}
 	/>
 
-	<fieldset class="fieldset mt-4">
+	<fieldset class="mt-4 fieldset">
 		<legend class="fieldset-legend">Characteristic Value Type</legend>
-	<div class="join w-full">
-		<button
-			type="button"
-			class="join-item w-1/3 btn btn-sm btn-outline"
-			class:btn-accent={getCharacteristicValueType() === 'string'}
-			onclick={() => switchCharacteristicValueType('string')}
-		>
-			String
-		</button>
-		<button
-			type="button"
-			class="join-item w-1/3 btn btn-sm btn-outline"
-			class:btn-accent={getCharacteristicValueType() === 'number'}
-			onclick={() => switchCharacteristicValueType('number')}
-		>
-			Number
-		</button>
-		<button
-			type="button"
-			class="join-item w-1/3 btn btn-sm btn-outline"
-			class:btn-accent={getCharacteristicValueType() === 'ontology'}
-			onclick={() => switchCharacteristicValueType('ontology')}
-		>
-			Ontology Annotation
-		</button>
-	</div>
+		<div class="join w-full">
+			<button
+				type="button"
+				class="btn join-item w-1/3 btn-outline btn-sm"
+				class:btn-accent={getCharacteristicValueType() === 'string'}
+				onclick={() => switchCharacteristicValueType('string')}
+			>
+				String
+			</button>
+			<button
+				type="button"
+				class="btn join-item w-1/3 btn-outline btn-sm"
+				class:btn-accent={getCharacteristicValueType() === 'number'}
+				onclick={() => switchCharacteristicValueType('number')}
+			>
+				Number
+			</button>
+			<button
+				type="button"
+				class="btn join-item w-1/3 btn-outline btn-sm"
+				class:btn-accent={getCharacteristicValueType() === 'ontology'}
+				onclick={() => switchCharacteristicValueType('ontology')}
+			>
+				Ontology Annotation
+			</button>
+		</div>
 	</fieldset>
 
 	{#if getCharacteristicValueType() === 'string'}
-	<String
-		label="Characteristic Value"
-		attr="value"
-		explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
-		bind:value={characteristic.value}
-		showLabel={true}
-	/>
+		<String
+			label="Characteristic Value"
+			attr="value"
+			explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
+			bind:value={characteristic.value}
+			showLabel={true}
+		/>
 	{:else if getCharacteristicValueType() === 'number'}
-	<Number
-		label="Characteristic Value"
-		attr="value"
-		explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
-		bind:value={characteristic.value}
-		showLabel={true}
-	/>
-	<OntologyAnnotation
-		label="Characteristic Unit"
-		attr="unit"
-		explanation="The unit of the characteristic, e.g. 'degrees Celsius', 'seconds', etc."
-		bind:value={characteristic.unit}
-		showLabel={true}
-	/>
+		<Number
+			label="Characteristic Value"
+			attr="value"
+			explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
+			bind:value={characteristic.value}
+			showLabel={true}
+		/>
+		<OntologyAnnotation
+			label="Characteristic Unit"
+			attr="unit"
+			explanation="The unit of the characteristic, e.g. 'degrees Celsius', 'seconds', etc."
+			bind:value={characteristic.unit}
+			showLabel={true}
+		/>
 	{:else}
-	<OntologyAnnotation
-		label="Characteristic Value"
-		attr="value"
-		explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
-		bind:value={characteristic.value}
-		showLabel={true}
-	/>
+		<OntologyAnnotation
+			label="Characteristic Value"
+			attr="value"
+			explanation="The value of the characteristic, e.g. 'Homo sapiens', '37', etc."
+			bind:value={characteristic.value}
+			showLabel={true}
+		/>
 	{/if}
 </div>

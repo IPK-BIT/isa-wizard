@@ -1,10 +1,9 @@
 <script lang="ts">
 	import Schema from '../../../lib/schemas';
-	import Material from '../composed/Material.svelte';
-	import Sample from '../composed/Sample.svelte';
+	import MaterialUpload from '../../util/MaterialUpload.svelte';
 
 	let {
-		label = 'Materials',
+		label = 'Other Materials',
 		attr,
 		explanation = '',
 		value = $bindable(),
@@ -13,13 +12,8 @@
 
 	const displayLabel = $derived(label || attr);
 
-	function addMaterial() {
-		const newMaterial = Schema.getObjectFromSchema('material');
-		value = [...(value || []), newMaterial];
-	}
-
-	function removeMaterial(index: number) {
-		value = value?.filter((_: unknown, i: number) => i !== index);
+	function importMaterials(list: any[]) {
+		value = list;
 	}
 </script>
 
@@ -33,24 +27,34 @@
 			<p class="label">{explanation}</p>
 		{/if}
 
-		<div class="space-y-4">
-			{#if value && value.length > 0}
-				{#each value as _, index (index)}
-					<Material
-						label={`Material ${index + 1}`}
-						attr={`material[${index}]`}
-						bind:value={value[index]}
-						showLabel={false}
-						onRemove={() => removeMaterial(index)}
-					/>
-				{/each}
-			{:else}
-				<p class="label text-gray-500 italic">No materials added yet</p>
-			{/if}
+		<div
+			class="rounded-md border p-4"
+			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
+		>
+			<MaterialUpload type="material" onapprove={importMaterials} />
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addMaterial}>
-			+ Add Material
-		</button>
+		{#if value && value.length > 0}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Material Name</th>
+						{#each value[0].characteristics as characteristic}
+							<th>Characteristic [{characteristic.category.characteristicType.annotationValue}]</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody>
+					{#each value as material, index (index)}
+						<tr>
+							<td>{material.name}</td>
+							{#each material.characteristics as characteristic, i (i)}
+								<td>{characteristic.value.annotationValue ?? characteristic.value}</td>
+							{/each}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 	</fieldset>
 </section>

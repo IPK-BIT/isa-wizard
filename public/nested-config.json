@@ -253,7 +253,16 @@
 						"isaMapping": { "jsonPath": "materials" },
 						"label": "Materials",
 						"explanation": "Add materials used in your study."
-
+					}
+				},
+				{
+					"title": "Processing",
+					"texts": ["Please provide information how the material was processed in your study."],
+					"component": {
+						"type": "processes",
+						"isaMapping": { "jsonPath": "processSequence" },
+						"label": "Process Sequence",
+						"explanation": "Add Proccesses to your study."
 					}
 				}
 			]
@@ -310,13 +319,32 @@
 				},
 				{
 					"title": "Materials",
-					"texts": ["Please provide information about the materials used in your study."],
+					"texts": ["Please provide information about the materials used in your assay."],
 					"component": {
 						"type": "entities",
 						"isaMapping": { "jsonPath": "materials" },
 						"label": "Materials",
 						"explanation": "Add materials used in your study."
-
+					}
+				},
+				{
+					"title": "Data Files",
+					"texts": ["Please provide information about the data files generated in your assay."],
+					"component": {
+						"type": "data",
+						"isaMapping": { "jsonPath": "dataFiles" },
+						"label": "Data Files",
+						"explanation": "Add data files generated in your assay."
+					}
+				},
+				{
+					"title": "Processing",
+					"texts": ["Please provide information how the material was processed in your study."],
+					"component": {
+						"type": "processes",
+						"isaMapping": { "jsonPath": "processSequence" },
+						"label": "Process Sequence",
+						"explanation": "Add Proccesses to your study."
 					}
 				}
 			]

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Schema from '../../../lib/schemas';
-	import Source from '../composed/Source.svelte';
+	import MaterialUpload from '../../util/MaterialUpload.svelte';
 
 	let {
 		label = 'Sources',
@@ -21,8 +21,8 @@
 		value = value?.filter((_: unknown, i: number) => i !== index);
 	}
 
-	function importSources() {
-		// Placeholder for import functionality
+	function importSources(list: any[]) {
+		value = list;
 	}
 </script>
 
@@ -36,27 +36,34 @@
 			<p class="label">{explanation}</p>
 		{/if}
 
-		<div class="space-y-4">
-			{#if value && value.length > 0}
-				{#each value as _, index (index)}
-					<Source
-						label={`Source ${index + 1}`}
-						attr={`source[${index}]`}
-						bind:value={value[index]}
-						showLabel={false}
-						onRemove={() => removeSource(index)}
-					/>
-				{/each}
-			{:else}
-				<p class="label text-gray-500 italic">No sources added yet</p>
-			{/if}
+		<div
+			class="rounded-md border p-4"
+			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
+		>
+			<MaterialUpload type="source" onapprove={importSources} />
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addSource}>
-			+ Add Source
-		</button>
-		<button type="button" class="btn btn-sm btn-secondary" onclick={importSources}>
-			Import from tabular source file
-		</button>
+		{#if value && value.length > 0}
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Source Name</th>
+						{#each value[0].characteristics as characteristic}
+							<th>Characteristic [{characteristic.category.characteristicType.annotationValue}]</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody>
+					{#each value as source, index (index)}
+						<tr>
+							<td>{source.name}</td>
+							{#each source.characteristics as characteristic, i (i)}
+								<td>{characteristic.value.annotationValue ?? characteristic.value}</td>
+							{/each}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
 	</fieldset>
 </section>

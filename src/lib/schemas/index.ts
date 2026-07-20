@@ -13,6 +13,11 @@ import source from './source_schema.json';
 import sample from './sample_schema.json';
 import material_attribute from './material_attribute_schema.json';
 import material_attribute_value from './material_attribute_value_schema.json';
+import factor from './factor_schema.json';
+import factor_value from './factor_value_schema.json';
+import process from './process_schema.json';
+import process_parameter_value from './process_parameter_value_schema.json';
+import data from './data_schema.json';
 
 const mapping = {
 	investigation: investigation,
@@ -30,10 +35,19 @@ const mapping = {
 	sample: sample,
 	material_attribute: material_attribute,
 	material_attribute_value: material_attribute_value,
+	factor: factor,
+	factor_value: factor_value,
+	process: process,
+	process_parameter_value: process_parameter_value,
+	data: data,
 };
 
 export default class Schema {
-	static getObjectFromSchema(identifier: string) {
+	static getObjectFromSchema(identifier: string, maxDepth = 2, currentDepth = 0) {
+		if (currentDepth >= maxDepth) {
+			return null;
+		}
+
 		let schema = mapping[identifier as keyof typeof mapping];
 		if (!schema) {
 			throw new Error(`Schema with identifier ${identifier} not found.`);
@@ -74,12 +88,18 @@ export default class Schema {
 					);
 				}
 			} else if ('$ref' in value) {
-				obj[key] = this.getObjectFromSchema(value.$ref.split('_').slice(0, -1).join('_'));
+				obj[key] = this.getObjectFromSchema(
+					value.$ref.split('_').slice(0, -1).join('_'),
+					maxDepth,
+					currentDepth + 1
+				);
 			} else if ('anyOf' in value) {
 				obj[key] = getDataByJsonType(value.anyOf[0].type);
 				if (obj[key] === null) {
 					obj[key] = this.getObjectFromSchema(
-						value.anyOf[0].$ref.split('_').slice(0, -1).join('_')
+						value.anyOf[0].$ref.split('_').slice(0, -1).join('_'),
+						maxDepth,
+						currentDepth + 1
 					);
 				}
 			} else {

@@ -73,6 +73,7 @@
 			<div class="flex w-full items-center justify-between space-x-2">
 				<div class="w-full">
 					<AutoCompleteWidget
+						className="z-10"
 						api={config['lookup-services'].ts.api}
 						{parameter}
 						{selectionChangedEvent}

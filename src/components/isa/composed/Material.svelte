@@ -1,5 +1,5 @@
 <script lang="ts">
-    	let {
+	let {
 		label = 'Sample',
 		attr,
 		explanation = '',

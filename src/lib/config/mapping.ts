@@ -8,6 +8,8 @@ import License from '../../components/isa/singleton/License.svelte';
 import OntologyAnnotation from '../../components/isa/singleton/OntologyAnnotation.svelte';
 import String from '../../components/isa/singleton/String.svelte';
 import Textarea from '../../components/isa/singleton/Textarea.svelte';
+import ProcessSequence from '../../components/isa/collection/ProcessSequence.svelte';
+import DataFiles from '../../components/isa/collection/DataFiles.svelte';
 
 export const fieldTypes = {
 	date: Date,
@@ -23,4 +25,6 @@ export const componentTypes = {
 	'ontology-annotations': OntologyAnnotations,
 	protocols: Protocols,
 	entities: Entities,
+	processes: ProcessSequence,
+	data: DataFiles,
 };

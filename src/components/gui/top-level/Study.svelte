@@ -32,6 +32,16 @@
 		});
 	}
 
+	function openStudy(template: any) {
+		updateAppstate({
+			template: template.metadata.code,
+			isaLvl: getAppstate().isaLvl,
+			currentStepIndex: 0,
+			mode: 'wizard',
+			guiType: 'investigation'
+		});
+	}
+
 	function openInvestigation() {
 		updateAppstate({
 			currentStepIndex: 0,
@@ -42,11 +52,38 @@
 	}
 </script>
 
+<div class="flex justify-between">
 <div class="breadcrumbs text-sm">
 	<ul>
-		<li><button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button></li>
+		<li>
+			<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
+		</li>
 		<li>{study.title || 'Untitled Study'}</li>
 	</ul>
+</div>
+	<div>
+		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'study')}
+			<p>Loading...</p>
+		{:then studyTemplates}
+			{#if studyTemplates.length === 0}
+				<p>No study templates available</p>
+			{:else}
+				<ul>
+					{#each studyTemplates as template}
+						<li>
+							<button
+								class="btn btn-sm btn-primary"
+								onclick={() => openStudy(template)}
+								>Edit as {(template as any).metadata.label}</button
+							>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		{:catch error}
+			<p>Error loading study templates: {error.message}</p>
+		{/await}
+	</div>
 </div>
 
 <table class="table w-full">

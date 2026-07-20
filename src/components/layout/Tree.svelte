@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { getAppstate, updateAppstate } from '../../lib/appstate.svelte';
 	import { isaObj } from '../../stores/isa';
-	import { constructAssayPath, constructStudyPath, parseIsaLvl } from '../../lib/util/breadcrumbUtils';
+	import {
+		constructAssayPath,
+		constructStudyPath,
+		parseIsaLvl
+	} from '../../lib/util/breadcrumbUtils';
 
 	const activeNode = $derived.by(() => parseIsaLvl(getAppstate().isaLvl));
 
@@ -52,10 +56,10 @@
 <nav class="card bg-base-100 shadow-md">
 	<div class="card-body gap-2 p-4">
 		<div class="flex items-center justify-between">
-			<h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/70">Navigation</h2>
+			<h2 class="text-sm font-semibold tracking-wide text-base-content/70 uppercase">Navigation</h2>
 		</div>
 
-		<ul class="menu menu-sm gap-1 p-0">
+		<ul class="menu gap-1 menu-sm p-0">
 			<li>
 				<button
 					class:active={isActivePath('investigation')}

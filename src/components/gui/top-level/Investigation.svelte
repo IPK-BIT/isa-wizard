@@ -23,6 +23,16 @@
 		});
 	}
 
+	function openInvestigation() {
+		updateAppstate({
+			template: 'investigation',
+			isaLvl: '',
+			currentStepIndex: 0,
+			mode: 'wizard',
+			guiType: 'investigation'
+		});
+	}
+
 	function openStudy(index: number) {
 		updateAppstate({
 			currentStepIndex: 0,
@@ -33,10 +43,15 @@
 	}
 </script>
 
-<div class="breadcrumbs text-sm">
-	<ul>
-		<li>{$isaObj.title || 'Untitled Investigation'}</li>
-	</ul>
+<div class="flex justify-between">
+	<div class="breadcrumbs text-sm">
+		<ul>
+			<li>{$isaObj.title || 'Untitled Investigation'}</li>
+		</ul>
+	</div>
+	<div>
+		<button class="btn btn-sm btn-primary" onclick={openInvestigation}>Edit Investigation</button>
+	</div>
 </div>
 
 <table class="table w-full">

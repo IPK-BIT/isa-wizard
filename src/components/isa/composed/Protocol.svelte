@@ -127,13 +127,13 @@
 				showLabel={true}
 			/>
 
-            <Components
-                label="Protocol Components"
-                attr="components"
-                explanation="A list of components used in the protocol."
-                bind:value={protocol.components}
-                showLabel={true}
-            />
+			<Components
+				label="Protocol Components"
+				attr="components"
+				explanation="A list of components used in the protocol."
+				bind:value={protocol.components}
+				showLabel={true}
+			/>
 		</div>
 	{/if}
 </div>

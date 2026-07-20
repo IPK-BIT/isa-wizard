@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Characteristics from "../collection/Characteristics.svelte";
-	import String from "../singleton/String.svelte";
+	import Characteristics from '../collection/Characteristics.svelte';
+	import String from '../singleton/String.svelte';
 
-    	let {
+	let {
 		label = 'Sample',
 		attr,
 		explanation = '',
@@ -12,14 +12,13 @@
 	} = $props();
 </script>
 
-<div class="border rounded-lg p-4 bg-base-200"
-			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
+<div
+	class="rounded-lg border bg-base-200 p-4"
+	style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 >
-
 	<div class="flex justify-end gap-2">
 		<button class="btn btn-sm btn-error" onclick={onRemove}>Remove</button>
 	</div>
-
 
 	<String
 		label="Sample Name"
