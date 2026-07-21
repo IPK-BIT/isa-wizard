@@ -3,7 +3,10 @@
 	import Schema from '../../../lib/schemas';
 	import { isaObj } from '../../../stores/isa';
 	import BreadcrumbWidget from '../../ts4nfdi/BreadcrumbWidget.svelte';
+	import Materials from '../building-blocks/Materials.svelte';
 	import Person from '../building-blocks/Person.svelte';
+	import ProcessSequence from '../building-blocks/ProcessSequence.svelte';
+	import Protocols from '../building-blocks/Protocols.svelte';
 	import Publication from '../building-blocks/Publication.svelte';
 
 	let { value: study = $bindable(), config } = $props();
@@ -53,14 +56,14 @@
 </script>
 
 <div class="flex justify-between">
-<div class="breadcrumbs text-sm">
-	<ul>
-		<li>
-			<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
-		</li>
-		<li>{study.title || 'Untitled Study'}</li>
-	</ul>
-</div>
+	<div class="breadcrumbs text-sm">
+		<ul>
+			<li>
+				<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
+			</li>
+			<li>{study.title || 'Untitled Study'}</li>
+		</ul>
+	</div>
 	<div>
 		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'study')}
 			<p>Loading...</p>
@@ -71,9 +74,7 @@
 				<ul>
 					{#each studyTemplates as template}
 						<li>
-							<button
-								class="btn btn-sm btn-primary"
-								onclick={() => openStudy(template)}
+							<button class="btn btn-primary btn-sm" onclick={() => openStudy(template)}
 								>Edit as {(template as any).metadata.label}</button
 							>
 						</li>
@@ -164,6 +165,24 @@
 			</td>
 		</tr>
 		<tr>
+			<th class="w-1/4 align-top">Protocols</th>
+			<td>
+				<Protocols protocols={study.protocols} {config} />
+			</td>
+		</tr>
+		<tr>
+			<th class="w-1/4 align-top">Materials</th>
+			<td>
+				<Materials materials={study.materials} {config} />
+			</td>
+		</tr>
+		<tr>
+			<th class="w-1/4 align-top">Process Sequence</th>
+			<td>
+				<ProcessSequence processes={study.processSequence} {config} />
+			</td>
+		</tr>
+		<tr>
 			<th class="w-1/4 align-top">Assays</th>
 			<td>
 				<div>
@@ -194,7 +213,7 @@
 								{#each assayTemplates as template}
 									<li>
 										<button
-											class="btn btn-outline btn-sm btn-primary"
+											class="btn btn-outline btn-primary btn-sm"
 											onclick={() => switchToTemplate(template)}
 											>{(template as any).metadata.label}</button
 										>

@@ -15,8 +15,7 @@ function createIsaStoresSynced() {
 
 	const updateIsaObj = (
 		isaObj:
-			| Partial<ISAInvestigationSchema>
-			| ((prev: ISAInvestigationSchema) => ISAInvestigationSchema)
+			Partial<ISAInvestigationSchema> | ((prev: ISAInvestigationSchema) => ISAInvestigationSchema)
 	) => {
 		if (typeof isaObj === 'function') {
 			storeIsaObj.update(isaObj as (prev: ISAInvestigationSchema) => ISAInvestigationSchema);

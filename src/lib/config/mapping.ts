@@ -26,5 +26,5 @@ export const componentTypes = {
 	protocols: Protocols,
 	entities: Entities,
 	processes: ProcessSequence,
-	data: DataFiles,
+	data: DataFiles
 };

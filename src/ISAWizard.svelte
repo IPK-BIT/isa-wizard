@@ -13,9 +13,11 @@
 	import { getAppstate, updateAppstate } from './lib/appstate.svelte';
 	import Gui from './components/gui/Gui.svelte';
 	import Tree from './components/layout/Tree.svelte';
+	import InitView from './components/layout/InitView.svelte';
+	import type { ISAInvestigationSchema } from './lib/types/isa.generated';
 
 	onMount(() => {
-		$isaObj = Schema.getObjectFromSchema('investigation');
+		$isaObj = Schema.getObjectFromSchema('investigation') as ISAInvestigationSchema;
 	});
 
 	// Props
@@ -60,7 +62,10 @@
 
 			// Initialize responses object with empty values for all fields
 			if (wizardConfig) {
-				updateAppstate({ template: wizardConfig.rootTemplate });
+				updateAppstate({
+					template: wizardConfig.rootTemplate,
+					mode: wizardConfig.general.initialView
+				});
 			}
 
 			loading = false;
@@ -109,7 +114,7 @@
 	</div>
 {:else if wizardConfig}
 	<div>
-		{#if wizardConfig.general.layoutMode === 'standalone'}
+		{#if wizardConfig.general.layoutMode === 'standalone' && getAppstate().mode != 'init'}
 			<Header config={wizardConfig.general} />
 		{/if}
 
@@ -135,13 +140,15 @@
 							onFinish={handleSubmit}
 						/>
 					</div>
+				{:else if getAppstate().mode === 'init'}
+					<InitView />
 				{:else}
 					<Gui config={wizardConfig} />
 				{/if}
 			</div>
 			{#if wizardConfig.general.layoutMode === 'standalone'}
 				<div class="col-start-3 row-start-2 self-stretch border-l-0 py-5 pr-2.75 pl-2.5">
-					{#if wizardConfig.general.showConsole}
+					{#if wizardConfig.general.showConsole && getAppstate().mode != 'init'}
 						<div class="card bg-base-100 p-4 shadow-md">
 							<button class="btn mb-2 btn-outline btn-sm" onclick={() => (show = !show)}>
 								{show ? 'Hide ISA' : 'Show ISA'}

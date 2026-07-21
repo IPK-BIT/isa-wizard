@@ -47,6 +47,7 @@
 	"dependencies": {
 		"@humanspeak/svelte-keyed": "^5.0.1",
 		"dataframe-js": "^1.4.4",
+		"isa4js": "link:../isa4js",
 		"svelecte": "^5.3.0"
 	}
 }

@@ -49,7 +49,7 @@
 			{/if}
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addOntologyAnnotation}>
+		<button type="button" class="btn btn-accent btn-sm" onclick={addOntologyAnnotation}>
 			+ Add Ontology Annotation
 		</button>
 	</fieldset>

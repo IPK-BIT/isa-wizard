@@ -51,6 +51,6 @@
 			{/if}
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addPerson}> + Add Person </button>
+		<button type="button" class="btn btn-accent btn-sm" onclick={addPerson}> + Add Person </button>
 	</fieldset>
 </section>

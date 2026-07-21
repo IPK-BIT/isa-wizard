@@ -50,7 +50,7 @@
 		</ul>
 	</div>
 	<div>
-		<button class="btn btn-sm btn-primary" onclick={openInvestigation}>Edit Investigation</button>
+		<button class="btn btn-primary btn-sm" onclick={openInvestigation}>Edit Investigation</button>
 	</div>
 </div>
 
@@ -149,7 +149,7 @@
 								{#each studyTemplates as template}
 									<li>
 										<button
-											class="btn btn-outline btn-sm btn-primary"
+											class="btn btn-outline btn-primary btn-sm"
 											onclick={() => switchToTemplate(template)}
 											>{(template as any).metadata.label}</button
 										>

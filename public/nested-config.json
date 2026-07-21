@@ -2,7 +2,7 @@
 	"general": {
 		"name": "MIAPPE Wizard",
 		"layoutMode": "standalone",
-		"initialView": "wizard",
+		"initialView": "init",
 		"showQuestionnaireProgressBar": true,
 		"showConsole": true
 	},

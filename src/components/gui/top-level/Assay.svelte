@@ -3,6 +3,8 @@
 	import { isaObj } from '../../../stores/isa';
 	import BreadcrumbWidget from '../../ts4nfdi/BreadcrumbWidget.svelte';
 	import { parseIsaLvl, constructStudyPath } from '../../../lib/util/breadcrumbUtils';
+	import Materials from '../building-blocks/Materials.svelte';
+	import ProcessSequence from '../building-blocks/ProcessSequence.svelte';
 
 	let { value: assay = $bindable(), config } = $props();
 
@@ -30,8 +32,7 @@
 	function openAssay(template: any) {
 		updateAppstate({
 			template: template.metadata.code,
-			isaLvl:
-				getAppstate().isaLvl,
+			isaLvl: getAppstate().isaLvl,
 			currentStepIndex: 0,
 			mode: 'wizard',
 			guiType: 'investigation'
@@ -49,37 +50,35 @@
 </script>
 
 <div class="flex justify-between">
-<div class="breadcrumbs text-sm">
-	<ul>
-		<li>
-			<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
-		</li>
-		<li><button onclick={openStudy}>{study?.title || 'Untitled Study'}</button></li>
-		<li>{assay.filename || 'Untitled Assay'}</li>
-	</ul>
-</div>
-<div>
-	{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
-		<p>Loading...</p>
-	{:then assayTemplates}
-		{#if assayTemplates.length === 0}
-			<p>No assay templates available</p>
-		{:else}
-			<ul>
-				{#each assayTemplates as template}
-					<li>
-						<button
-							class="btn btn-sm btn-primary"
-							onclick={() => openAssay(template)}
-							>Edit as {(template as any).metadata.label}</button
-						>
-					</li>
-				{/each}
-			</ul>
-		{/if}
-	{:catch error}
-		<p>Error loading assay templates: {error.message}</p>
-	{/await}
+	<div class="breadcrumbs text-sm">
+		<ul>
+			<li>
+				<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
+			</li>
+			<li><button onclick={openStudy}>{study?.title || 'Untitled Study'}</button></li>
+			<li>{assay.filename || 'Untitled Assay'}</li>
+		</ul>
+	</div>
+	<div>
+		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
+			<p>Loading...</p>
+		{:then assayTemplates}
+			{#if assayTemplates.length === 0}
+				<p>No assay templates available</p>
+			{:else}
+				<ul>
+					{#each assayTemplates as template}
+						<li>
+							<button class="btn btn-primary btn-sm" onclick={() => openAssay(template)}
+								>Edit as {(template as any).metadata.label}</button
+							>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		{:catch error}
+			<p>Error loading assay templates: {error.message}</p>
+		{/await}
 	</div>
 </div>
 
@@ -93,7 +92,7 @@
 			<th class="w-1/4 align-top">Measurement Type</th>
 			<td>
 				<div>
-					{#if assay.measurementType.annotationValue}
+					{#if assay.measurementType && assay.measurementType.annotationValue}
 						<span>{assay.measurementType.annotationValue}</span>
 						<BreadcrumbWidget
 							api={config['lookup-services'].ts.api}
@@ -122,6 +121,43 @@
 		<tr>
 			<th class="w-1/4 align-top">Technology Platform</th>
 			<td>{assay.technologyPlatform}</td>
+		</tr>
+		<tr>
+			<th class="w-1/4 align-top">Materials</th>
+			<td>
+				<div>
+					<Materials materials={assay.materials} {config} />
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="w-1/4 align-top">Data Files</th>
+			<td>
+				<div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Filename</th>
+								<th>File Type</th>
+							</tr>
+						</thead>
+						<tbody>
+							{#each assay.dataFiles as dataFile}
+								<tr>
+									<td>{dataFile.name}</td>
+									<td><span class="badge badge-sm badge-secondary">{dataFile.type}</span></td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="w-1/4 align-top">Process Sequence</th>
+			<td>
+				<ProcessSequence processes={assay.processSequence} {config} />
+			</td>
 		</tr>
 		<tr>
 			<th class="w-1/4 align-top">Comments</th>

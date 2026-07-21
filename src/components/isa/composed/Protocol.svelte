@@ -54,7 +54,7 @@
 		<div>
 			<button
 				type="button"
-				class="btn mr-2 btn-sm btn-secondary"
+				class="btn mr-2 btn-secondary btn-sm"
 				onclick={() => (editMode = !editMode)}
 				title={editMode ? 'Switch to view mode' : 'Switch to edit mode'}
 			>
@@ -63,7 +63,7 @@
 			{#if onRemove}
 				<button
 					type="button"
-					class="btn btn-sm btn-error"
+					class="btn btn-error btn-sm"
 					onclick={onRemove}
 					title="Remove publication"
 				>

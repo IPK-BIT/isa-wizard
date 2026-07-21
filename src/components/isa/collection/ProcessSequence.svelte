@@ -48,7 +48,7 @@
 			{/if}
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addProcess}>
+		<button type="button" class="btn btn-accent btn-sm" onclick={addProcess}>
 			+ Add Process
 		</button>
 	</fieldset>

@@ -11,7 +11,7 @@
 </script>
 
 <!-- Open the modal using ID.showModal() method -->
-<button class="btn btn-sm btn-accent" onclick={openModal}>{label}</button>
+<button class="btn btn-accent btn-sm" onclick={openModal}>{label}</button>
 <dialog {id} class="modal">
 	<div class={`modal-box ${className ?? 'w-11/12 max-w-5xl'}`}>
 		{@render children()}

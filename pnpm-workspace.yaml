@@ -1,2 +1,4 @@
 allowBuilds:
   core-js: set this to true or false
+overrides:
+  isa4js: link:../isa4js

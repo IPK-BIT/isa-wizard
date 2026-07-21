@@ -39,7 +39,7 @@ const mapping = {
 	factor_value: factor_value,
 	process: process,
 	process_parameter_value: process_parameter_value,
-	data: data,
+	data: data
 };
 
 export default class Schema {

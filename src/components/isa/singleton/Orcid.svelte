@@ -54,7 +54,7 @@
 			<div class="disabled input flex w-full items-center justify-between">
 				<span>{orcid}</span>
 				<button
-					class="btn btn-outline btn-sm btn-error"
+					class="btn btn-outline btn-error btn-sm"
 					onclick={() => {
 						orcid = '';
 					}}>Clear</button

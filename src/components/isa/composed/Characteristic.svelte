@@ -43,7 +43,7 @@
 	style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 >
 	<div class="flex justify-end">
-		<button class="btn btn-sm btn-error" onclick={onRemove}> Remove </button>
+		<button class="btn btn-error btn-sm" onclick={onRemove}> Remove </button>
 	</div>
 
 	<OntologyAnnotation

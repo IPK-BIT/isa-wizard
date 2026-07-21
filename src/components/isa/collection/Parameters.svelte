@@ -51,7 +51,7 @@
 			{/if}
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addParameter}>
+		<button type="button" class="btn btn-accent btn-sm" onclick={addParameter}>
 			+ Add Parameter
 		</button>
 	</fieldset>

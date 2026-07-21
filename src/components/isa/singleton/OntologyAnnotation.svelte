@@ -65,7 +65,7 @@
 						Clear
 					</button>
 					{#if onRemove}
-						<button class="btn btn-outline btn-sm btn-error" onclick={onRemove}> Remove </button>
+						<button class="btn btn-outline btn-error btn-sm" onclick={onRemove}> Remove </button>
 					{/if}
 				</div>
 			</div>
@@ -81,7 +81,7 @@
 					/>
 				</div>
 				{#if onRemove}
-					<button class="btn mt-2 btn-outline btn-sm btn-error" onclick={onRemove}> Remove </button>
+					<button class="btn mt-2 btn-outline btn-error btn-sm" onclick={onRemove}> Remove </button>
 				{/if}
 			</div>
 		{/if}

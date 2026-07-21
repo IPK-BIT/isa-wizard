@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getAppstate } from '../../lib/appstate.svelte';
 	import { isaObj } from '../../stores/isa';
+	import Exports from './Exports.svelte';
 	import Assay from './top-level/Assay.svelte';
 	import Investigation from './top-level/Investigation.svelte';
 	import Study from './top-level/Study.svelte';
@@ -15,6 +16,8 @@
 
 	const value = $derived(getAppstate().isaLvl ? isaObj.keyed(getAppstate().isaLvl) : undefined);
 </script>
+
+<Exports />
 
 {#key getAppstate().isaLvl}
 	<div class="card bg-base-100 shadow-xl">

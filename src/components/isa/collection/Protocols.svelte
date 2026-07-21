@@ -48,7 +48,7 @@
 			{/if}
 		</div>
 
-		<button type="button" class="btn btn-sm btn-accent" onclick={addProtocol}>
+		<button type="button" class="btn btn-accent btn-sm" onclick={addProtocol}>
 			+ Add Protocol
 		</button>
 	</fieldset>
