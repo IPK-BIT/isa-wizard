@@ -38,7 +38,7 @@
 	let loading: boolean = $state(true);
 	let error: string | null = $state(null);
 	let submitting: boolean = $state(false);
-	let show: boolean = $state(true);
+	let show: boolean = $state(false);
 
 	// Lifecycle
 	onMount(async () => {
