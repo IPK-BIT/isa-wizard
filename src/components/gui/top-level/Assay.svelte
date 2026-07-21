@@ -56,7 +56,7 @@
 				<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
 			</li>
 			<li><button onclick={openStudy}>{study?.title || 'Untitled Study'}</button></li>
-			<li>{assay.filename || 'Untitled Assay'}</li>
+			<li>{assay.filename || assay.comments?.find((c: {name: String; value: string}) => c.name==='title')?.value || `Assay ${Number((typeof getAppstate === 'function' && getAppstate()?.isaLvl?.match(/assays\[(\d+)\]/)?.[1]) ?? 0)+1}`}</li>
 		</ul>
 	</div>
 	<div>

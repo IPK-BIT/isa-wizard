@@ -89,7 +89,7 @@
 													onclick={() => openAssay(studyIndex, assayIndex)}
 												>
 													<span class="truncate">
-														{assay.filename || 'Untitled Assay'}
+														{assay.filename || assay.comments?.find(c => c.name==='title')?.value || `Assay ${assayIndex+1}`}
 													</span>
 												</button>
 											</li>

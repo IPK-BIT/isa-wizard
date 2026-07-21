@@ -194,7 +194,7 @@
 							{#each study.assays as assay, i (assay)}
 								<tr class="hover:cursor-pointer hover:bg-primary/10" onclick={() => openAssay(i)}>
 									<td>
-										<span>{assay.filename || 'Untitled Assay'}</span>
+										<span>{assay.filename || assay.comments?.find((c: {name: string, value: string}) => c.name==='title')?.value || `Assay ${i+1}`}</span>
 									</td>
 								</tr>
 							{/each}
