@@ -52,41 +52,47 @@ function createIsaStoresSynced() {
 
 	storesSynced.isaObj.keyedComments = (jsonPath: string, commentName: string) => {
 		const keyedComments = keyed(storesSynced.isaObj, jsonPath);
+		
 		const derivedComments = derived(keyedComments, ($comments) => {
+			// Ensure $comments is an array to avoid undefined errors
+			if (!Array.isArray($comments)) return '';
+			
 			let comment = $comments.find((c: { name: string; value: string }) => c.name === commentName);
-			let value = comment ? comment.value : '';
-			return value;
+			return comment ? comment.value : '';
 		});
+
 		const update = (value: string) => {
 			if (!value) {
 				value = '';
 			}
 			keyedComments.update(($comments) => {
-				let comment = $comments.find(
+				// Initialize as empty array if undefined
+				let commentsList = Array.isArray($comments) ? [...$comments] : [];
+				let comment = commentsList.find(
 					(c: { name: string; value: string }) => c.name === commentName
 				);
+				
 				if (comment) {
 					comment.value = value;
-					$comments = $comments;
 				} else {
 					const newComment = Schema.getObjectFromSchema('comment');
-					newComment.name = commentName;
-					$comments = [...$comments, newComment];
+					newComment!.name = commentName;
+					newComment!.value = value; // Ensure the initial typed value is captured immediately!
+					commentsList.push(newComment);
 				}
-				return $comments;
+				return commentsList;
 			});
 		};
+
 		const set = (value: string) => {
 			update(value);
 		};
 
-		const store = {
+		return {
 			subscribe: derivedComments.subscribe,
 			update,
 			set
 		};
-
-		return store;
 	};
 	return storesSynced;
 }

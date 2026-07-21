@@ -36,7 +36,7 @@
 					assayId = `assay${i}`;
 				}
 
-				assay.filename = `a_${studyId}-${assayId}.txt`;
+				assay.filename = `a_${assayId}.txt`;
 			}
 		}
 
