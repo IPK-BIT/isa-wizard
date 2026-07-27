@@ -36,6 +36,20 @@
 		return Array.isArray(protoList) ? protoList.map((p) => ({ label: p.name, value: p })) : [];
 	});
 
+	$effect(() => {
+		const list = $protocols;
+		const current = process.executesProtocol;
+		if (!Array.isArray(list) || !current) return;
+
+		const match = current['@id']
+			? (list.find((p) => p['@id'] === current['@id']) ?? list.find((p) => p.name === current.name))
+			: list.find((p) => p.name === current.name);
+
+		if (match && match !== current) {
+			process.executesProtocol = match;
+		}
+	});
+
 	// Dynamic entities derived from state
 	const availableSources = $derived.by((): ISASourceSchema[] =>
 		Array.isArray($materials.sources) ? $materials.sources : []
@@ -199,6 +213,7 @@
 		const targetIdx = dragTargetIndex ?? endPatternIdx;
 
 		if (targetIdx > endPatternIdx) {
+			// Fill downward: extend the pattern below the selection
 			if (selectedColumn === 'input') {
 				const existing = Array.isArray(process.inputs) ? [...process.inputs] : [];
 				const pattern = existing.slice(startIdx, endPatternIdx + 1);
@@ -218,6 +233,30 @@
 					for (let i = endPatternIdx + 1; i <= targetIdx; i++) {
 						const offset = (i - (endPatternIdx + 1)) % pattern.length;
 						existing[i] = pattern[offset];
+					}
+					process.outputs = existing;
+				}
+			}
+		} else if (targetIdx < startIdx) {
+			if (selectedColumn === 'input') {
+				const existing = Array.isArray(process.inputs) ? [...process.inputs] : [];
+				const pattern = existing.slice(startIdx, endPatternIdx + 1);
+
+				if (pattern.length > 0) {
+					for (let i = startIdx - 1; i >= targetIdx; i--) {
+						const offset = (startIdx - 1 - i) % pattern.length;
+						existing[i] = pattern[pattern.length - 1 - offset];
+					}
+					process.inputs = existing;
+				}
+			} else if (selectedColumn === 'output') {
+				const existing = Array.isArray(process.outputs) ? [...process.outputs] : [];
+				const pattern = existing.slice(startIdx, endPatternIdx + 1);
+
+				if (pattern.length > 0) {
+					for (let i = startIdx - 1; i >= targetIdx; i--) {
+						const offset = (startIdx - 1 - i) % pattern.length;
+						existing[i] = pattern[pattern.length - 1 - offset];
 					}
 					process.outputs = existing;
 				}
@@ -343,14 +382,14 @@
 							isDraggingFill &&
 							selectedColumn === 'input' &&
 							dragTargetIndex !== null &&
-							i > selectedRange[selectedRange.length - 1] &&
-							i <= dragTargetIndex}
+							((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
+								(i < selectedRange[0] && i >= dragTargetIndex))}
 						{@const isOutputDraggedOver =
 							isDraggingFill &&
 							selectedColumn === 'output' &&
 							dragTargetIndex !== null &&
-							i > selectedRange[selectedRange.length - 1] &&
-							i <= dragTargetIndex}
+							((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
+								(i < selectedRange[0] && i >= dragTargetIndex))}
 
 						<tr>
 							<!-- INPUT CELL -->
