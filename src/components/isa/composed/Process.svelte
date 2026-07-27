@@ -20,6 +20,12 @@
 		onRemove
 	} = $props();
 
+	let isEditing = $state(!process.name?.trim());
+
+	function handleRemove() {
+		onRemove?.();
+	}
+
 	// crop isaLvl to remove assays part if present
 	const rawIsaLvl = getAppstate().isaLvl;
 	const isaLvl =
@@ -238,6 +244,7 @@
 				}
 			}
 		} else if (targetIdx < startIdx) {
+			// Fill upward: extend the pattern above the selection
 			if (selectedColumn === 'input') {
 				const existing = Array.isArray(process.inputs) ? [...process.inputs] : [];
 				const pattern = existing.slice(startIdx, endPatternIdx + 1);
@@ -308,328 +315,373 @@
 
 <svelte:window onmouseup={handleGlobalMouseUp} onkeydown={handleKeyDown} />
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-	class="space-y-4 rounded-lg border border-neutral bg-base-200 p-4 select-none"
-	onclick={(e) => {
-		if (e.target === e.currentTarget) clearSelection();
-	}}
->
-	<String
-		label="Name"
-		attr="name"
-		explanation="The name of the Process"
-		bind:value={process.name}
-		showLabel={true}
-	/>
-
-	<Select
-		label="Protocol"
-		attr="executesProtocol"
-		explanation="The name of the executed Protocol"
-		options={protocolOptions}
-		bind:value={process.executesProtocol}
-		onChange={updateParameters}
-		showLabel={true}
-	/>
-
-	<ParameterValues
-		label="Parameter Values"
-		attr="parameterValues"
-		explanation="Values of the Protocol Parameters"
-		bind:value={process.parameterValues}
-		showLabel={true}
-	/>
-
-	<fieldset class="fieldset">
-		<legend class="fieldset-legend">Materials</legend>
-		<div
-			class="rounded-lg border bg-base-100 p-2 {process.inputs.length === process.outputs.length
-				? 'border-base-300'
-				: 'border-error'}"
-		>
-			<table class="table w-full overflow-visible table-sm">
-				<thead>
-					<tr>
-						<th class="border-r border-base-200 pr-4">
-							<EntitySelectModal
-								label="Input"
-								availableItems={allInputItems}
-								allowedTypes={['Source', 'Material', 'Sample', 'Data']}
-								onapprove={addInputs}
-							/>
-						</th>
-						<th class="pl-4">
-							<EntitySelectModal
-								label="Output"
-								availableItems={allOutputItems}
-								allowedTypes={['Material', 'Sample', 'Data']}
-								onapprove={addOutputs}
-							/>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each paginatedOuterIndices as i}
-						{@const isInputSelected = selectedColumn === 'input' && selectedRange.includes(i)}
-						{@const isOutputSelected = selectedColumn === 'output' && selectedRange.includes(i)}
-						{@const isInputLastSelected =
-							selectedColumn === 'input' && selectedRange[selectedRange.length - 1] === i}
-						{@const isOutputLastSelected =
-							selectedColumn === 'output' && selectedRange[selectedRange.length - 1] === i}
-						{@const isInputDraggedOver =
-							isDraggingFill &&
-							selectedColumn === 'input' &&
-							dragTargetIndex !== null &&
-							((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
-								(i < selectedRange[0] && i >= dragTargetIndex))}
-						{@const isOutputDraggedOver =
-							isDraggingFill &&
-							selectedColumn === 'output' &&
-							dragTargetIndex !== null &&
-							((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
-								(i < selectedRange[0] && i >= dragTargetIndex))}
-
-						<tr>
-							<!-- INPUT CELL -->
-							<!-- svelte-ignore a11y_no_static_element_interactions -->
-							<td
-								class="relative cursor-pointer border-r border-base-200 pr-4 transition-colors
-									{isInputSelected ? 'bg-primary/10 ring-1 ring-primary ring-inset' : ''}
-									{isInputDraggedOver ? 'border-b border-dashed border-primary bg-primary/20' : ''}"
-								onmousedown={(e) => handleCellMouseDown('input', i, e)}
-								onmouseenter={() => handleCellMouseEnter(i)}
-							>
-								{#if process.inputs.length > i}
-									<div class="flex items-center justify-between gap-2">
-										<span>{process.inputs[i].name}</span>
-
-										<div class="dropdown dropdown-end">
-											<div
-												tabindex="0"
-												role="button"
-												class="btn btn-circle btn-ghost btn-xs"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="text-base font-bold">⋮</span>
-											</div>
-											<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-											<ul
-												tabindex="0"
-												class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
-											>
-												<li>
-													<button type="button" onclick={() => fillColumnInput(i)}>
-														Fill entire column
-													</button>
-												</li>
-												<li>
-													<button
-														type="button"
-														class="text-error hover:bg-error/10"
-														onclick={() => deleteRow(i)}
-													>
-														Delete Row
-													</button>
-												</li>
-											</ul>
-										</div>
-									</div>
-
-									<!-- Excel Fill Handle -->
-									{#if isInputLastSelected}
-										<!-- svelte-ignore a11y_no_static_element_interactions -->
-										<div
-											class="absolute right-0 bottom-0 z-20 h-3 w-3 cursor-crosshair bg-primary transition-transform hover:scale-125"
-											title="Drag to fill sequence"
-											onmousedown={(e) => startFillDrag('input', e)}
-										></div>
-									{/if}
-								{:else}
-									<div class="flex items-center justify-between gap-2">
-										<span class="font-medium text-error">Missing Input</span>
-										<div class="dropdown dropdown-end">
-											<div
-												tabindex="0"
-												role="button"
-												class="btn btn-circle btn-ghost btn-xs"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="text-base font-bold">⋮</span>
-											</div>
-											<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-											<ul
-												tabindex="0"
-												class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
-											>
-												<li>
-													<button
-														type="button"
-														class="text-error hover:bg-error/10"
-														onclick={() => deleteRow(i)}
-													>
-														Delete Row
-													</button>
-												</li>
-											</ul>
-										</div>
-									</div>
-								{/if}
-							</td>
-
-							<!-- OUTPUT CELL -->
-							<!-- svelte-ignore a11y_no_static_element_interactions -->
-							<td
-								class="relative cursor-pointer pl-4 transition-colors
-									{isOutputSelected ? 'bg-primary/10 ring-1 ring-primary ring-inset' : ''}
-									{isOutputDraggedOver ? 'border-b border-dashed border-primary bg-primary/20' : ''}"
-								onmousedown={(e) => handleCellMouseDown('output', i, e)}
-								onmouseenter={() => handleCellMouseEnter(i)}
-							>
-								{#if process.outputs.length > i}
-									<div class="flex items-center justify-between gap-2">
-										<span>{process.outputs[i].name}</span>
-
-										<div class="dropdown dropdown-end">
-											<div
-												tabindex="0"
-												role="button"
-												class="btn btn-circle btn-ghost btn-xs"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="text-base font-bold">⋮</span>
-											</div>
-											<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-											<ul
-												tabindex="0"
-												class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
-											>
-												<li>
-													<button type="button" onclick={() => fillColumnOutput(i)}>
-														Fill entire column
-													</button>
-												</li>
-												<li>
-													<button
-														type="button"
-														class="text-error hover:bg-error/10"
-														onclick={() => deleteRow(i)}
-													>
-														Delete Row
-													</button>
-												</li>
-											</ul>
-										</div>
-									</div>
-
-									<!-- Excel Fill Handle -->
-									{#if isOutputLastSelected}
-										<!-- svelte-ignore a11y_no_static_element_interactions -->
-										<div
-											class="absolute right-0 bottom-0 z-20 h-3 w-3 cursor-crosshair bg-primary transition-transform hover:scale-125"
-											title="Drag to fill sequence"
-											onmousedown={(e) => startFillDrag('output', e)}
-										></div>
-									{/if}
-								{:else}
-									<div class="flex items-center justify-between gap-2">
-										<span class="font-medium text-error">Missing Output</span>
-										<div class="dropdown dropdown-end">
-											<div
-												tabindex="0"
-												role="button"
-												class="btn btn-circle btn-ghost btn-xs"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="text-base font-bold">⋮</span>
-											</div>
-											<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-											<ul
-												tabindex="0"
-												class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
-											>
-												<li>
-													<button
-														type="button"
-														class="text-error hover:bg-error/10"
-														onclick={() => deleteRow(i)}
-													>
-														Delete Row
-													</button>
-												</li>
-											</ul>
-										</div>
-									</div>
-								{/if}
-							</td>
-						</tr>
-					{:else}
-						<tr>
-							<td colspan="2" class="py-4 text-center text-xs text-base-content/60">
-								No materials added yet.
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-
-			<!-- Outer Table Pagination Footer with Size Selector -->
-			{#if maxOuterRows > 0}
-				<div
-					class="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-base-200 px-2 pt-2 text-xs text-base-content/70"
-				>
-					<div class="flex items-center gap-3">
-						<span class="whitespace-nowrap">
-							Showing {(outerPage - 1) * effectivePageSize + 1} to {Math.min(
-								outerPage * effectivePageSize,
-								maxOuterRows
-							)} of {maxOuterRows} entries
-						</span>
-						<p>|</p>
-						<label class="flex items-center gap-1.5 whitespace-nowrap">
-							<span>Per page:</span>
-							<select
-								class="select-bordered select select-xs"
-								value={outerPageSize}
-								onchange={handlePageSizeChange}
-							>
-								<option value={5}>5</option>
-								<option value={10}>10</option>
-								<option value={25}>25</option>
-								<option value={50}>50</option>
-								<option value={-1}>All</option>
-							</select>
-						</label>
-					</div>
-
-					<div class="join">
-						<button
-							class="btn join-item btn-xs"
-							disabled={outerPage <= 1}
-							onclick={() => {
-								outerPage--;
-								clearSelection();
-							}}
-						>
-							« Prev
-						</button>
-						<button class="no-animation btn pointer-events-none join-item btn-xs">
-							{outerPage} / {totalOuterPages}
-						</button>
-						<button
-							class="btn join-item btn-xs"
-							disabled={outerPage >= totalOuterPages}
-							onclick={() => {
-								outerPage++;
-								clearSelection();
-							}}
-						>
-							Next »
-						</button>
-					</div>
-				</div>
+{#if isEditing}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="space-y-4 rounded-lg border border-neutral bg-base-200 p-4 select-none"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) clearSelection();
+		}}
+	>
+		<div class="flex items-center justify-between gap-2">
+			{#if showLabel}
+				<p class="text-xs font-semibold tracking-wide text-base-content/50 uppercase">{label}</p>
+			{:else}
+				<span></span>
 			{/if}
+			<div class="flex shrink-0 gap-2">
+				<button
+					type="button"
+					class="btn btn-secondary btn-sm"
+					onclick={() => (isEditing = false)}
+				>
+					View
+				</button>
+				<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}>
+					Remove
+				</button>
+			</div>
 		</div>
-	</fieldset>
-</div>
+
+		<String
+			label="Name"
+			attr="name"
+			explanation="The name of the Process"
+			bind:value={process.name}
+			showLabel={true}
+		/>
+
+		<Select
+			label="Protocol"
+			attr="executesProtocol"
+			explanation="The name of the executed Protocol"
+			options={protocolOptions}
+			bind:value={process.executesProtocol}
+			onChange={updateParameters}
+			showLabel={true}
+		/>
+
+		<ParameterValues
+			label="Parameter Values"
+			attr="parameterValues"
+			explanation="Values of the Protocol Parameters"
+			bind:value={process.parameterValues}
+			showLabel={true}
+		/>
+
+		<fieldset class="fieldset">
+			<legend class="fieldset-legend">Materials</legend>
+			<div
+				class="rounded-lg border bg-base-100 p-2 {process.inputs.length ===
+				process.outputs.length
+					? 'border-base-300'
+					: 'border-error'}"
+			>
+				<table class="table w-full overflow-visible table-sm">
+					<thead>
+						<tr>
+							<th class="border-r border-base-200 pr-4">
+								<EntitySelectModal
+									label="Input"
+									availableItems={allInputItems}
+									allowedTypes={['Source', 'Material', 'Sample', 'Data']}
+									onapprove={addInputs}
+								/>
+							</th>
+							<th class="pl-4">
+								<EntitySelectModal
+									label="Output"
+									availableItems={allOutputItems}
+									allowedTypes={['Material', 'Sample', 'Data']}
+									onapprove={addOutputs}
+								/>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each paginatedOuterIndices as i}
+							{@const isInputSelected = selectedColumn === 'input' && selectedRange.includes(i)}
+							{@const isOutputSelected = selectedColumn === 'output' && selectedRange.includes(i)}
+							{@const isInputLastSelected =
+								selectedColumn === 'input' && selectedRange[selectedRange.length - 1] === i}
+							{@const isOutputLastSelected =
+								selectedColumn === 'output' && selectedRange[selectedRange.length - 1] === i}
+							{@const isInputDraggedOver =
+								isDraggingFill &&
+								selectedColumn === 'input' &&
+								dragTargetIndex !== null &&
+								((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
+									(i < selectedRange[0] && i >= dragTargetIndex))}
+							{@const isOutputDraggedOver =
+								isDraggingFill &&
+								selectedColumn === 'output' &&
+								dragTargetIndex !== null &&
+								((i > selectedRange[selectedRange.length - 1] && i <= dragTargetIndex) ||
+									(i < selectedRange[0] && i >= dragTargetIndex))}
+
+							<tr>
+								<!-- INPUT CELL -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<td
+									class="relative cursor-pointer border-r border-base-200 pr-4 transition-colors
+										{isInputSelected ? 'bg-primary/10 ring-1 ring-primary ring-inset' : ''}
+										{isInputDraggedOver ? 'border-b border-dashed border-primary bg-primary/20' : ''}"
+									onmousedown={(e) => handleCellMouseDown('input', i, e)}
+									onmouseenter={() => handleCellMouseEnter(i)}
+								>
+									{#if process.inputs.length > i}
+										<div class="flex items-center justify-between gap-2">
+											<span>{process.inputs[i].name}</span>
+
+											<div class="dropdown dropdown-end">
+												<div
+													tabindex="0"
+													role="button"
+													class="btn btn-circle btn-ghost btn-xs"
+													onclick={(e) => e.stopPropagation()}
+												>
+													<span class="text-base font-bold">⋮</span>
+												</div>
+												<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+												<ul
+													tabindex="0"
+													class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
+												>
+													<li>
+														<button type="button" onclick={() => fillColumnInput(i)}>
+															Fill entire column
+														</button>
+													</li>
+													<li>
+														<button
+															type="button"
+															class="text-error hover:bg-error/10"
+															onclick={() => deleteRow(i)}
+														>
+															Delete Row
+														</button>
+													</li>
+												</ul>
+											</div>
+										</div>
+
+										<!-- Excel Fill Handle -->
+										{#if isInputLastSelected}
+											<!-- svelte-ignore a11y_no_static_element_interactions -->
+											<div
+												class="absolute right-0 bottom-0 z-20 h-3 w-3 cursor-crosshair bg-primary transition-transform hover:scale-125"
+												title="Drag to fill sequence"
+												onmousedown={(e) => startFillDrag('input', e)}
+											></div>
+										{/if}
+									{:else}
+										<div class="flex items-center justify-between gap-2">
+											<span class="font-medium text-error">Missing Input</span>
+											<div class="dropdown dropdown-end">
+												<div
+													tabindex="0"
+													role="button"
+													class="btn btn-circle btn-ghost btn-xs"
+													onclick={(e) => e.stopPropagation()}
+												>
+													<span class="text-base font-bold">⋮</span>
+												</div>
+												<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+												<ul
+													tabindex="0"
+													class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
+												>
+													<li>
+														<button
+															type="button"
+															class="text-error hover:bg-error/10"
+															onclick={() => deleteRow(i)}
+														>
+															Delete Row
+														</button>
+													</li>
+												</ul>
+											</div>
+										</div>
+									{/if}
+								</td>
+
+								<!-- OUTPUT CELL -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<td
+									class="relative cursor-pointer pl-4 transition-colors
+										{isOutputSelected ? 'bg-primary/10 ring-1 ring-primary ring-inset' : ''}
+										{isOutputDraggedOver ? 'border-b border-dashed border-primary bg-primary/20' : ''}"
+									onmousedown={(e) => handleCellMouseDown('output', i, e)}
+									onmouseenter={() => handleCellMouseEnter(i)}
+								>
+									{#if process.outputs.length > i}
+										<div class="flex items-center justify-between gap-2">
+											<span>{process.outputs[i].name}</span>
+
+											<div class="dropdown dropdown-end">
+												<div
+													tabindex="0"
+													role="button"
+													class="btn btn-circle btn-ghost btn-xs"
+													onclick={(e) => e.stopPropagation()}
+												>
+													<span class="text-base font-bold">⋮</span>
+												</div>
+												<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+												<ul
+													tabindex="0"
+													class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
+												>
+													<li>
+														<button type="button" onclick={() => fillColumnOutput(i)}>
+															Fill entire column
+														</button>
+													</li>
+													<li>
+														<button
+															type="button"
+															class="text-error hover:bg-error/10"
+															onclick={() => deleteRow(i)}
+														>
+															Delete Row
+														</button>
+													</li>
+												</ul>
+											</div>
+										</div>
+
+										<!-- Excel Fill Handle -->
+										{#if isOutputLastSelected}
+											<!-- svelte-ignore a11y_no_static_element_interactions -->
+											<div
+												class="absolute right-0 bottom-0 z-20 h-3 w-3 cursor-crosshair bg-primary transition-transform hover:scale-125"
+												title="Drag to fill sequence"
+												onmousedown={(e) => startFillDrag('output', e)}
+											></div>
+										{/if}
+									{:else}
+										<div class="flex items-center justify-between gap-2">
+											<span class="font-medium text-error">Missing Output</span>
+											<div class="dropdown dropdown-end">
+												<div
+													tabindex="0"
+													role="button"
+													class="btn btn-circle btn-ghost btn-xs"
+													onclick={(e) => e.stopPropagation()}
+												>
+													<span class="text-base font-bold">⋮</span>
+												</div>
+												<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+												<ul
+													tabindex="0"
+													class="dropdown-content menu z-30 w-44 rounded-box border border-base-200 bg-base-100 p-1 text-xs shadow"
+												>
+													<li>
+														<button
+															type="button"
+															class="text-error hover:bg-error/10"
+															onclick={() => deleteRow(i)}
+														>
+															Delete Row
+														</button>
+													</li>
+												</ul>
+											</div>
+										</div>
+									{/if}
+								</td>
+							</tr>
+						{:else}
+							<tr>
+								<td colspan="2" class="py-4 text-center text-xs text-base-content/60">
+									No materials added yet.
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+
+				<!-- Outer Table Pagination Footer with Size Selector -->
+				{#if maxOuterRows > 0}
+					<div
+						class="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-base-200 px-2 pt-2 text-xs text-base-content/70"
+					>
+						<div class="flex items-center gap-3">
+							<span class="whitespace-nowrap">
+								Showing {(outerPage - 1) * effectivePageSize + 1} to {Math.min(
+									outerPage * effectivePageSize,
+									maxOuterRows
+								)} of {maxOuterRows} entries
+							</span>
+							<p>|</p>
+							<label class="flex items-center gap-1.5 whitespace-nowrap">
+								<span>Per page:</span>
+								<select
+									class="select-bordered select select-xs"
+									value={outerPageSize}
+									onchange={handlePageSizeChange}
+								>
+									<option value={5}>5</option>
+									<option value={10}>10</option>
+									<option value={25}>25</option>
+									<option value={50}>50</option>
+									<option value={-1}>All</option>
+								</select>
+							</label>
+						</div>
+
+						<div class="join">
+							<button
+								class="btn join-item btn-xs"
+								disabled={outerPage <= 1}
+								onclick={() => {
+									outerPage--;
+									clearSelection();
+								}}
+							>
+								« Prev
+							</button>
+							<button class="no-animation btn pointer-events-none join-item btn-xs">
+								{outerPage} / {totalOuterPages}
+							</button>
+							<button
+								class="btn join-item btn-xs"
+								disabled={outerPage >= totalOuterPages}
+								onclick={() => {
+									outerPage++;
+									clearSelection();
+								}}
+							>
+								Next »
+							</button>
+						</div>
+					</div>
+				{/if}
+			</div>
+		</fieldset>
+	</div>
+{:else}
+	<div class="flex items-center justify-between gap-4 rounded-lg border border-neutral bg-base-200 p-4">
+		<div class="space-y-1">
+			{#if showLabel}
+				<p class="text-xs font-semibold tracking-wide text-base-content/50 uppercase">{label}</p>
+			{/if}
+			<p class="italic text-base-content/70">
+				{process.name?.trim() ? process.name : 'No process name provided'}
+			</p>
+			<p class="text-sm italic text-base-content/60">
+				{process.executesProtocol?.name
+					? `Executes: ${process.executesProtocol.name}`
+					: 'No protocol selected'}
+			</p>
+		</div>
+		<div class="flex shrink-0 gap-2">
+			<button type="button" class="btn btn-secondary btn-sm" onclick={() => (isEditing = true)}>
+				Edit
+			</button>
+			<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}>Remove</button>
+		</div>
+	</div>
+{/if}

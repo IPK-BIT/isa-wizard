@@ -18,7 +18,7 @@
 	}
 
 	function removeProcess(i: number) {
-		console.log(processes[i]);
+		processes = (processes || []).filter((_: unknown, idx: number) => idx !== i);
 	}
 </script>
 
