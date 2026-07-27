@@ -61,10 +61,10 @@
 
 <table class="table w-full table-fixed">
 	<tbody>
-		<tr>
+		<!-- <tr>
 			<th class="w-1/4 align-top">Filename</th>
 			<td>{$isaObj.filename}</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<th class="w-1/4 align-top">Identifier</th>
 			<td>{$isaObj.identifier}</td>

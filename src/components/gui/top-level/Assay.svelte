@@ -88,10 +88,10 @@
 
 <table class="table w-full table-fixed">
 	<tbody>
-		<tr>
+		<!-- <tr>
 			<th class="w-1/4 align-top">Filename</th>
 			<td>{assay.filename}</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<th class="w-1/4 align-top">Measurement Type</th>
 			<td>
