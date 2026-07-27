@@ -87,168 +87,184 @@
 	</div>
 </div>
 
-<table class="table w-full">
-	<tbody>
-		<tr>
-			<th class="w-1/4 align-top">Filename</th>
-			<td>{study.filename}</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Identifier</th>
-			<td>{study.identifier}</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Title</th>
-			<td>{study.title}</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Description</th>
-			<td>{study.description}</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Submission Date</th>
-			<td>{study.submissionDate ? new Date(study.submissionDate!).toLocaleDateString() : ''}</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Public Release Date</th>
-			<td
-				>{study.publicReleaseDate
-					? new Date(study.publicReleaseDate!).toLocaleDateString()
-					: ''}</td
-			>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Publications</th>
-			<td>
-				<ul>
-					{#each study.publications as publication}
-						<li><Publication {publication} /></li>
-					{/each}
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">People</th>
-			<td>
-				<ul>
-					{#each study.people as person}
-						<li><Person {person} /></li>
-					{/each}
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Study Design Descriptors</th>
-			<td>
-				<table class="table w-full">
-					<thead>
-						<tr>
-							<th>Annotation Value</th>
-							<th>Term Accession</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each study.studyDesignDescriptors as studyDesignDescriptor (studyDesignDescriptor)}
-							<tr>
-								<td>{studyDesignDescriptor.annotationValue}</td>
-								<td
-									><BreadcrumbWidget
-										api={config['lookup-services'].ts.api}
-										iri={studyDesignDescriptor.termAccession}
-										ontologyId={studyDesignDescriptor.termSource}
-									/></td
-								>
-							</tr>
+<div>
+	<table class="table w-full table-fixed">
+		<tbody>
+			<tr>
+				<th class="w-1/4 align-top">Filename</th>
+				<td class="w-3/4">{study.filename}</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Identifier</th>
+				<td class="w-3/4">{study.identifier}</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Title</th>
+				<td class="w-3/4">{study.title}</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Description</th>
+				<td class="w-3/4">{study.description}</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Submission Date</th>
+				<td class="w-3/4"
+					>{study.submissionDate ? new Date(study.submissionDate!).toLocaleDateString() : ''}</td
+				>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Public Release Date</th>
+				<td class="w-3/4"
+					>{study.publicReleaseDate
+						? new Date(study.publicReleaseDate!).toLocaleDateString()
+						: ''}</td
+				>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Publications</th>
+				<td class="w-3/4">
+					<ul>
+						{#each study.publications as publication}
+							<li><Publication {publication} /></li>
 						{/each}
-					</tbody>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Protocols</th>
-			<td>
-				<Protocols protocols={study.protocols} {config} />
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Materials</th>
-			<td>
-				<Materials materials={study.materials} {config} />
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Process Sequence</th>
-			<td>
-				<ProcessSequence processes={study.processSequence} {config} />
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Assays</th>
-			<td>
-				<div>
-					{#if study.assays && study.assays.length === 0}
-						<span class="text-sm text-neutral/75 italic">No assays defined</span>
-					{/if}
-					<table class="table">
-						<tbody>
-							{#each study.assays as assay, i (assay)}
-								<tr class="hover:cursor-pointer hover:bg-primary/10" onclick={() => openAssay(i)}>
-									<td>
-										<span>{assay.filename || assay.comments?.find((c: {name: string, value: string}) => c.name==='title')?.value || `Assay ${i+1}`}</span>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-				<div class="mt-2">
-					{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
-						<p>Loading...</p>
-					{:then assayTemplates}
-						{#if assayTemplates.length === 0}
-							<p>No assay templates available</p>
-						{:else}
-							<h2 class="font-semibold">Add a new assay</h2>
-							<ul>
-								{#each assayTemplates as template}
-									<li>
-										<button
-											class="btn btn-outline btn-primary btn-sm"
-											onclick={() => switchToTemplate(template)}
-											>{(template as any).metadata.label}</button
-										>
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					{:catch error}
-						<p>Error loading assay templates: {error.message}</p>
-					{/await}
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<th class="w-1/4 align-top">Comments</th>
-			<td>
-				{#if study.comments && study.comments.length > 0}
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">People</th>
+				<td class="w-3/4">
+					<ul>
+						{#each study.people as person}
+							<li><Person {person} /></li>
+						{/each}
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Study Design Descriptors</th>
+				<td class="w-3/4">
+					<div class="overflow-x-auto">
 					<table class="table w-full">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Value</th>
+								<th>Annotation Value</th>
+								<th>Term Accession</th>
 							</tr>
 						</thead>
 						<tbody>
-							{#each study.comments as comment}
+							{#each study.studyDesignDescriptors as studyDesignDescriptor (studyDesignDescriptor)}
 								<tr>
-									<td>{comment.name}</td>
-									<td>{comment.value}</td>
+									<td>{studyDesignDescriptor.annotationValue}</td>
+									<td
+										><BreadcrumbWidget
+											api={config['lookup-services'].ts.api}
+											iri={studyDesignDescriptor.termAccession}
+											ontologyId={studyDesignDescriptor.termSource}
+										/></td
+									>
 								</tr>
 							{/each}
 						</tbody>
 					</table>
-				{/if}
-			</td>
-		</tr>
-	</tbody>
-</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Protocols</th>
+				<td class="w-3/4">
+					<Protocols protocols={study.protocols} {config} />
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Materials</th>
+				<td class="w-3/4">
+					<Materials materials={study.materials} {config} />
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Process Sequence</th>
+				<td class="w-3/4">
+					<ProcessSequence processes={study.processSequence} {config} />
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Assays</th>
+				<td class="w-3/4">
+					<div>
+						{#if study.assays && study.assays.length === 0}
+							<span class="text-sm text-neutral/75 italic">No assays defined</span>
+						{/if}
+						<div class="overflow-x-auto">
+						<table class="table">
+							<tbody>
+								{#each study.assays as assay, i (assay)}
+									<tr class="hover:cursor-pointer hover:bg-primary/10" onclick={() => openAssay(i)}>
+										<td>
+											<span
+												>{assay.filename ||
+													assay.comments?.find(
+														(c: { name: string; value: string }) => c.name === 'title'
+													)?.value ||
+													`Assay ${i + 1}`}</span
+											>
+										</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+						</div>
+					</div>
+					<div class="mt-2">
+						{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
+							<p>Loading...</p>
+						{:then assayTemplates}
+							{#if assayTemplates.length === 0}
+								<p>No assay templates available</p>
+							{:else}
+								<h2 class="font-semibold">Add a new assay</h2>
+								<ul>
+									{#each assayTemplates as template}
+										<li>
+											<button
+												class="btn btn-outline btn-primary btn-sm"
+												onclick={() => switchToTemplate(template)}
+												>{(template as any).metadata.label}</button
+											>
+										</li>
+									{/each}
+								</ul>
+							{/if}
+						{:catch error}
+							<p>Error loading assay templates: {error.message}</p>
+						{/await}
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th class="w-1/4 align-top">Comments</th>
+				<td class="w-3/4">
+					{#if study.comments && study.comments.length > 0}
+						<div class="overflow-x-auto">
+						<table class="table w-full">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each study.comments as comment}
+									<tr>
+										<td>{comment.name}</td>
+										<td>{comment.value}</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+						</div>
+					{/if}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

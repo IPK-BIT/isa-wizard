@@ -4,6 +4,7 @@
 	let { processes, config } = $props();
 </script>
 
+<div class="overflow-x-auto">
 <table class="table">
 	<thead>
 		<tr>
@@ -17,10 +18,11 @@
 				<td class="align-top">{process.executesProtocol.name}</td>
 				<td>
 					{#if process.parameterValues.length > 0}
+						<div class="overflow-x-auto">
 						<table class="table">
 							<thead>
 								<tr>
-									<th>Paramter</th>
+									<th>Parameter</th>
 									<th>Value</th>
 								</tr>
 							</thead>
@@ -36,7 +38,7 @@
 											/>
 										</td>
 										<td>
-											{#if parameterValue.value.annotationValue}
+											{#if parameterValue.value && parameterValue.value.annotationValue}
 												<p>{parameterValue.value.annotationValue}</p>
 												<BreadcrumbWidget
 													api={config['lookup-services'].ts.api}
@@ -53,6 +55,7 @@
 								{/each}
 							</tbody>
 						</table>
+						</div>
 					{:else}
 						<span class="text-neutral italic">No Parameter Values available.</span>
 					{/if}
@@ -61,3 +64,4 @@
 		{/each}
 	</tbody>
 </table>
+</div>

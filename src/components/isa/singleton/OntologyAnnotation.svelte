@@ -15,9 +15,9 @@
 		}
 		if (singleSelection) {
 			let emptyOA = Schema.getObjectFromSchema('ontology_annotation');
-			emptyOA.annotationValue = selectedOptions[0].label;
-			emptyOA.termAccession = selectedOptions[0].iri;
-			emptyOA.termSource = selectedOptions[0].ontology_name;
+			emptyOA!.annotationValue = selectedOptions[0].label;
+			emptyOA!.termAccession = selectedOptions[0].iri;
+			emptyOA!.termSource = selectedOptions[0].ontology_name;
 			value = emptyOA;
 		}
 	}

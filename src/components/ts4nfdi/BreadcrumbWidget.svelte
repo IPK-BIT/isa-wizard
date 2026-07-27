@@ -1,26 +1,3 @@
-<!-- <script lang="ts">
-	import { onMount } from 'svelte';
-
-	let { api, iri, ontologyId = undefined, parameter = 'collection=DataPLANT' } = $props();
-
-	let id = `breadcrumb_widget_container_${Math.floor(Math.random() * 10000)}`;
-
-	onMount(() => {
-		//@ts-ignore
-		window['ts4nfdiWidgets'].createBreadcrumb(
-			{
-				api: api,
-				iri: iri,
-				ontologyId: ontologyId,
-				parameter: parameter
-			},
-			document.querySelector(`#${id}`)
-		);
-	});
-</script>
-
-<div {id}></div> -->
-
 <script lang="ts">
 	import { onMount } from 'svelte';
 

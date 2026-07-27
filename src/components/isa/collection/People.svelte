@@ -15,8 +15,8 @@
 	function addPerson() {
 		const newPerson = Schema.getObjectFromSchema('person');
 		const orcidComment = Schema.getObjectFromSchema('comment');
-		orcidComment.name = 'Person ID';
-		newPerson.comments.push(orcidComment);
+		orcidComment!.name = 'Person ID';
+		newPerson!.comments.push(orcidComment);
 		value = [...(value || []), newPerson];
 	}
 

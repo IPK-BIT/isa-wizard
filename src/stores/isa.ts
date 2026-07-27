@@ -52,11 +52,11 @@ function createIsaStoresSynced() {
 
 	storesSynced.isaObj.keyedComments = (jsonPath: string, commentName: string) => {
 		const keyedComments = keyed(storesSynced.isaObj, jsonPath);
-		
+
 		const derivedComments = derived(keyedComments, ($comments) => {
 			// Ensure $comments is an array to avoid undefined errors
 			if (!Array.isArray($comments)) return '';
-			
+
 			let comment = $comments.find((c: { name: string; value: string }) => c.name === commentName);
 			return comment ? comment.value : '';
 		});
@@ -71,7 +71,7 @@ function createIsaStoresSynced() {
 				let comment = commentsList.find(
 					(c: { name: string; value: string }) => c.name === commentName
 				);
-				
+
 				if (comment) {
 					comment.value = value;
 				} else {

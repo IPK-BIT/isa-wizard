@@ -18,8 +18,7 @@
 		// Deep clone or copy to avoid mutating the raw store state directly if unwanted
 		const clonedJson = JSON.parse(JSON.stringify(investigationJson));
 
-		for (const study of clonedJson.get?.("studies") || clonedJson.studies || []) {
-			const studyId = study.identifier || 'unknown_study';
+		for (const study of clonedJson.get?.('studies') || clonedJson.studies || []) {
 
 			const assays = study.assays || [];
 			for (let i = 0; i < assays.length; i++) {

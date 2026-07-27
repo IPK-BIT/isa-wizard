@@ -56,7 +56,11 @@
 				<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
 			</li>
 			<li><button onclick={openStudy}>{study?.title || 'Untitled Study'}</button></li>
-			<li>{assay.filename || assay.comments?.find((c: {name: String; value: string}) => c.name==='title')?.value || `Assay ${Number((typeof getAppstate === 'function' && getAppstate()?.isaLvl?.match(/assays\[(\d+)\]/)?.[1]) ?? 0)+1}`}</li>
+			<li>
+				{assay.filename ||
+					assay.comments?.find((c: { name: String; value: string }) => c.name === 'title')?.value ||
+					`Assay ${Number((typeof getAppstate === 'function' && getAppstate()?.isaLvl?.match(/assays\[(\d+)\]/)?.[1]) ?? 0) + 1}`}
+			</li>
 		</ul>
 	</div>
 	<div>
@@ -82,7 +86,7 @@
 	</div>
 </div>
 
-<table class="table w-full">
+<table class="table w-full table-fixed">
 	<tbody>
 		<tr>
 			<th class="w-1/4 align-top">Filename</th>
@@ -133,7 +137,7 @@
 		<tr>
 			<th class="w-1/4 align-top">Data Files</th>
 			<td>
-				<div>
+				<div class="overflow-x-auto">
 					<table class="table">
 						<thead>
 							<tr>
@@ -163,6 +167,7 @@
 			<th class="w-1/4 align-top">Comments</th>
 			<td>
 				{#if assay.comments && assay.comments.length > 0}
+					<div class="overflow-x-auto">
 					<table class="table w-full">
 						<thead>
 							<tr>
@@ -179,6 +184,7 @@
 							{/each}
 						</tbody>
 					</table>
+					</div>
 				{/if}
 			</td>
 		</tr>

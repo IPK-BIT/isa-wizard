@@ -4,6 +4,7 @@
 	let { protocols, config } = $props();
 </script>
 
+<div class="overflow-x-auto">
 <table class="table">
 	<thead>
 		<tr>
@@ -46,3 +47,4 @@
 		{/each}
 	</tbody>
 </table>
+</div>

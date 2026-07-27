@@ -11,6 +11,11 @@
 
 	function switchToTemplate(template: any) {
 		let emptyObj = Schema.getObjectFromSchema('study');
+
+        if (!emptyObj) {
+            return;
+        }
+		
 		$isaObj.studies = [...($isaObj.studies ?? []), emptyObj];
 		$isaObj = $isaObj; // trigger reactivity
 
@@ -54,7 +59,7 @@
 	</div>
 </div>
 
-<table class="table w-full">
+<table class="table w-full table-fixed">
 	<tbody>
 		<tr>
 			<th class="w-1/4 align-top">Filename</th>
@@ -116,6 +121,7 @@
 					{#if $isaObj.studies && $isaObj.studies.length === 0}
 						<span class="text-sm text-neutral/75 italic">No studies defined</span>
 					{/if}
+					<div class="overflow-x-auto">
 					<table class="table">
 						<tbody>
 							{#each $isaObj.studies as study, i (study)}
@@ -136,6 +142,7 @@
 							{/each}
 						</tbody>
 					</table>
+					</div>
 				</div>
 				<div class="mt-2">
 					{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'study')}
@@ -166,6 +173,7 @@
 		<tr>
 			<th class="w-1/4 align-top">Comments</th>
 			<td>
+				<div class="overflow-x-auto">
 				<table class="table w-full">
 					<thead>
 						<tr>
@@ -182,6 +190,7 @@
 						{/each}
 					</tbody>
 				</table>
+				</div>
 			</td>
 		</tr>
 	</tbody>
