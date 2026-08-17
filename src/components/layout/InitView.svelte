@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { updateAppstate } from '../../lib/appstate.svelte';
 	import { isaObj } from '../../stores/isa';
+	import logo from '../../assets/logo.png';
 
 	function startQuestionnaire() {
 		updateAppstate({ mode: 'wizard' });
@@ -39,7 +40,7 @@
 <section class="flex h-[90vh] w-full items-center justify-center">
 	<div class="card w-96 bg-base-100 shadow-sm">
 		<figure class="p-8 pb-0">
-			<img src="/favicon.png" alt="Shoes" />
+			<img src={logo} alt="Shoes" />
 		</figure>
 		<div class="card-body space-y-2">
 			<h2 class="mx-auto text-4xl font-bold">ISA Wizard</h2>

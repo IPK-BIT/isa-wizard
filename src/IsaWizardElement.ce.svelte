@@ -137,7 +137,7 @@
 	});
 </script>
 
-<div data-theme={theme}>
+<div data-theme={theme} class="bg-base-200">
 	{#if stylesheetUrl}
 		<!-- Third-party component CSS (e.g. svelecte) isn't compiled with `customElement`, so it's
 		     extracted to dist/style.css instead of being injected above; link it in explicitly so
