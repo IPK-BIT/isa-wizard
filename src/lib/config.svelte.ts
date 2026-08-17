@@ -78,8 +78,12 @@ export class ConfigLoader {
 	}
 }
 
-let config = $state({});
+let config: WizardConfig | {} = $state({});
 
 export function getConfig() {
 	return config;
+}
+
+export function setConfig(newConfig: WizardConfig) {
+	Object.assign(config, newConfig);
 }

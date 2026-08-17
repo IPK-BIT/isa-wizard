@@ -1,7 +1,7 @@
 <script lang="ts">
 	import errorImage from './assets/error.png';
 	import { onMount } from 'svelte';
-	import { ConfigLoader } from './lib/config.svelte';
+	import { ConfigLoader, setConfig } from './lib/config.svelte';
 	import type { WizardConfig } from './lib/types/Config';
 	import type { FinishCallback, ErrorCallback } from './lib/types/Events';
 	import Header from './components/layout/Header.svelte';
@@ -62,6 +62,7 @@
 
 			// Initialize responses object with empty values for all fields
 			if (wizardConfig) {
+				setConfig(wizardConfig);
 				updateAppstate({
 					template: wizardConfig.rootTemplate,
 					mode: wizardConfig.general.initialView

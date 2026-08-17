@@ -18,7 +18,7 @@
 		singleSelection = false
 	} = $props();
 
-	let id = `autocomplete_widget_container_${Math.floor(Math.random() * 10000)}`;
+	let container: HTMLDivElement;
 
 	onMount(() => {
 		//@ts-ignore
@@ -38,9 +38,9 @@
 				className: className,
 				initialSearchQuery: 'undefined'
 			},
-			document.querySelector(`#${id}`)
+			container
 		);
 	});
 </script>
 
-<div {id}></div>
+<div bind:this={container} class={className}></div>

@@ -74,18 +74,66 @@
 			: 'ipk-light';
 	}
 
+	// The TS4NFDI widgets (AutoComplete, Metadata, ...) are built on Elastic UI, which styles
+	// itself via Emotion (CSS-in-JS): at runtime it writes `<style data-emotion>` tags into
+	// `document.head` and, in production builds, inserts rules straight into that tag's
+	// CSSStyleSheet via the CSSOM rather than as text — so even reading `.textContent` would
+	// miss them. Either way, `document.head` is outside this component's shadow root, and
+	// shadow DOM style encapsulation blocks host-document styles from crossing in, so none of
+	// it would otherwise reach the widgets rendered in here. Mirror the *effective* rules (via
+	// `sheet.cssRules`, which reflects CSSOM inserts too) into a shadow-root-local <style>,
+	// and keep it in sync as Emotion adds more rules for new component states.
+	function mirrorEmotionStyles(shadowRoot: ShadowRoot) {
+		const mirror = document.createElement('style');
+		shadowRoot.prepend(mirror);
+
+		let syncScheduled = false;
+		function sync() {
+			syncScheduled = false;
+			const cssText: string[] = [];
+			document.querySelectorAll('style[data-emotion]').forEach((styleEl) => {
+				const sheet = (styleEl as HTMLStyleElement).sheet;
+				if (!sheet) return;
+				try {
+					for (const rule of Array.from(sheet.cssRules)) {
+						cssText.push(rule.cssText);
+					}
+				} catch {
+					// Inaccessible sheet (e.g. cross-origin) — nothing we can mirror.
+				}
+			});
+			mirror.textContent = cssText.join('\n');
+		}
+		function scheduleSync() {
+			if (syncScheduled) return;
+			syncScheduled = true;
+			requestAnimationFrame(sync);
+		}
+
+		sync();
+		const observer = new MutationObserver(scheduleSync);
+		observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+		return () => observer.disconnect();
+	}
+
 	onMount(() => {
 		const shadowRoot = $host().shadowRoot;
+		let stopEmotionMirror: (() => void) | undefined;
 		if (shadowRoot) {
 			const style = document.createElement('style');
 			style.textContent = appCss;
 			shadowRoot.prepend(style);
+
+			stopEmotionMirror = mirrorEmotionStyles(shadowRoot);
 		}
 
 		const mq = matchMedia('(prefers-color-scheme: dark)');
 		const updateTheme = () => (theme = getPreferredTheme());
 		mq.addEventListener('change', updateTheme);
-		return () => mq.removeEventListener('change', updateTheme);
+		return () => {
+			mq.removeEventListener('change', updateTheme);
+			stopEmotionMirror?.();
+		};
 	});
 </script>
 
@@ -96,6 +144,17 @@
 		     it still reaches this shadow root. Skipped in dev, where Vite serves CSS differently. -->
 		<link rel="stylesheet" href={stylesheetUrl} />
 	{/if}
+
+	<!-- The TS4NFDI widget CSS is expected to be linked by the host page (see index.html), but a
+	     host-page <link> only styles the light DOM and can't cross into this shadow root — the
+	     widgets it styles (AutoCompleteWidget etc.) render inside here. Link it directly so the
+	     widgets are styled regardless of what the host page does. The widget JS itself sets a
+	     `window.ts4nfdiWidgets` global, which isn't shadow-scoped, so the host page's <script> tag
+	     is still sufficient for that half. -->
+	<link
+		rel="stylesheet"
+		href="https://ts4nfdi.github.io/terminology-service-suite/js-modules/latest/terminology-service-suite.min.css"
+	/>
 
 	<ISAWizard {config} {configUrl} onFinish={handleFinish} onError={handleError} />
 </div>

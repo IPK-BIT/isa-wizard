@@ -28,27 +28,29 @@
 		person.email = selection.emails.length > 0 ? selection.emails.join(',') : '';
 	}
 
-	let orcid: string = $derived(
+	// Svelecte (used by Orcid.svelte) treats '' as a real, invalid search value and keeps
+	// resetting it to null, which would bounce forever against a '' fallback here. Normalize
+	// "no ORCID" to null everywhere in this derived/effect pair so the value is stable.
+	let orcid: string | null = $derived(
 		person?.comments?.find((c: { name: string; value: string }) => {
 			return c.name === 'Person ID';
-		})?.value || ''
+		})?.value || null
 	);
 
 	$effect(() => {
-		if (
-			person &&
-			orcid !==
-				person?.comments?.find((c: { name: string; value: string }) => {
-					return c.name === 'Person ID';
-				})?.value
-		) {
+		if (!person) return;
+		const current =
+			person.comments?.find((c: { name: string; value: string }) => {
+				return c.name === 'Person ID';
+			})?.value || null;
+		if (orcid !== current) {
 			let idx =
-				person?.comments?.findIndex((c: { name: string; value: string }) => {
+				person.comments?.findIndex((c: { name: string; value: string }) => {
 					return c.name === 'Person ID';
 				}) ?? -1;
-			if (idx !== -1 && person?.comments?.[idx]) {
-				person.comments[idx].value = orcid;
-			} else if (person.comments) {
+			if (idx !== -1 && person.comments?.[idx]) {
+				person.comments[idx].value = orcid ?? '';
+			} else if (person.comments && orcid) {
 				person.comments = [...person.comments, { name: 'Person ID', value: orcid }];
 			}
 		}

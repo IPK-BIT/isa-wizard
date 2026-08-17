@@ -3,7 +3,7 @@
 
 	let { api, iri, ontologyId = undefined, parameter = 'collection=DataPLANT' } = $props();
 
-	let id = `metadata_widget_container_${Math.floor(Math.random() * 10000)}`;
+	let container: HTMLDivElement;
 
 	onMount(() => {
 		//@ts-ignore
@@ -15,9 +15,9 @@
 				parameter: parameter,
 				useLegacy: true
 			},
-			document.querySelector(`#${id}`)
+			container
 		);
 	});
 </script>
 
-<div {id}></div>
+<div bind:this={container}></div>
