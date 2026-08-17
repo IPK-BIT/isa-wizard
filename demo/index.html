@@ -10,6 +10,29 @@
 		<link rel="icon" type="image/png" href="./favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+		<!-- This file is copied verbatim into the GH Pages output (see .github/workflows/gh-pages.yml)
+		     and never runs through Vite/PostCSS, so it can't use the compiled Tailwind/daisyUI
+		     bg-base-200 class the way index.html does. Mirror the same base-200 theme colors
+		     (see app.css) and prefers-color-scheme switch as IsaWizardElement.ce.svelte's
+		     getPreferredTheme(), so the host page behind the widget matches instead of showing
+		     through as plain white/black. -->
+		<style>
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+			}
+			body {
+				min-height: 100vh;
+				background-color: #edf5e8;
+			}
+			@media (prefers-color-scheme: dark) {
+				body {
+					background-color: #18221d;
+				}
+			}
+		</style>
+
 		<!-- TS4NFDI Widgets -->
 		<link
 			rel="stylesheet"
