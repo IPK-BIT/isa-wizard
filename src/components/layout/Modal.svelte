@@ -1,18 +1,17 @@
 <script lang="ts">
 	let { label = 'Open Modal', children, onopen, onapprove, class: className = '' } = $props();
 
-	const id = crypto.randomUUID();
+	let dialogElement: HTMLDialogElement | undefined = $state();
 
 	function openModal() {
 		onopen();
-		let dialogElement: HTMLDialogElement = document.getElementById(id) as HTMLDialogElement;
-		dialogElement.showModal();
+		dialogElement?.showModal();
 	}
 </script>
 
 <!-- Open the modal using ID.showModal() method -->
 <button class="btn btn-accent btn-sm" onclick={openModal}>{label}</button>
-<dialog {id} class="modal">
+<dialog bind:this={dialogElement} class="modal">
 	<div class={`modal-box ${className ?? 'w-11/12 max-w-5xl'}`}>
 		{@render children()}
 

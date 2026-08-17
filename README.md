@@ -1,47 +1,46 @@
-# Svelte + TS + Vite
+# ISA Wizard
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+An embeddable widget for collecting [ISA-Tab](https://isa-specs.readthedocs.io/) metadata (Investigation / Study / Assay) through configurable, multi-step forms. Built with Svelte 5 and shipped as a self-registering custom element, `<isa-wizard>`, so it can be dropped into any page regardless of framework.
 
-## Recommended IDE Setup
+## Usage
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+Embed the built widget on any page:
 
-## Need an official Svelte framework?
-
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
-
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store';
-export default writable(0);
+```html
+<link rel="stylesheet" href="./style.css" />
+<isa-wizard config-url="./nested-config.json"></isa-wizard>
+<script type="module" src="./widget.mjs"></script>
 ```
+
+Or configure it from JavaScript, once `widget.mjs` has registered the element:
+
+```js
+const widget = document.querySelector('isa-wizard');
+widget.setConfig({ /* WizardConfig */ });
+widget.onFinish = (data) => {
+	console.log(data.investigation); // completed ISA-Tab investigation JSON
+};
+```
+
+The widget is entirely config-driven: a `WizardConfig` JSON document (see [`public/nested-config.json`](public/nested-config.json) for a full example) defines templates per ISA level (investigation/study/assay), each with steps of fields or collection components. See [`src/lib/types/Config.ts`](src/lib/types/Config.ts) for the config schema and [`src/lib/config/mapping.ts`](src/lib/config/mapping.ts) for the registry of available field/component types.
+
+A live demo is deployed via GitHub Pages on every push to `main` (see `.github/workflows/gh-pages.yml`).
+
+## Development
+
+Requires a sibling `../isa4js` checkout (linked via `pnpm-workspace.yaml`/`package.json`) unless you're happy relying on the published `isa4js` package from npm.
+
+```sh
+pnpm install
+pnpm dev       # start the Vite dev server (demo harness at index.html)
+pnpm check     # type-check with svelte-check + tsc
+pnpm build     # build the library to dist/ (widget.mjs, widget.umd.js, style.css, widget.d.ts)
+pnpm format    # prettier --write .
+pnpm preview   # preview the production build
+```
+
+There is currently no lint script or automated test suite — `pnpm check` is the primary correctness gate.
+
+## Architecture
+
+See [`CLAUDE.md`](CLAUDE.md) for a detailed breakdown of the entry points, config-driven rendering, ISA-Tab data model, and component organization.
