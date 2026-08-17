@@ -13,16 +13,3 @@ export interface WizardEvents {
 	stepChanged: CustomEvent<{ stepIndex: number }>;
 	loaded: CustomEvent<void>;
 }
-
-/**
- * Event detail types
- */
-export interface FinishEventDetail {
-	responses: Record<string, any>;
-	timestamp: number;
-}
-
-export interface ErrorEventDetail {
-	error: Error;
-	message: string;
-}

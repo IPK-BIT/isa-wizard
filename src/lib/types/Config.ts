@@ -1,3 +1,5 @@
+import type { ISAInvestigationSchema } from './isa.generated';
+
 /**
  * Configuration schema for the ISA Wizard widget
  */
@@ -44,11 +46,7 @@ export interface WizardConfig {
 	templates: TemplateConfig;
 }
 
-export interface FormResponse {
-	[key: string]: string | number | boolean | null;
-}
-
 export interface WizardFinishData {
-	responses: FormResponse;
+	investigation: ISAInvestigationSchema;
 	timestamp: number;
 }

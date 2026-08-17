@@ -29,8 +29,7 @@ export class ConfigLoader {
 					);
 				}
 				const c = await response.json();
-				this.validate(config);
-				config = c;
+				this.validate(c);
 				return c as WizardConfig;
 			}
 

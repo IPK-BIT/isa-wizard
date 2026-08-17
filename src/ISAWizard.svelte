@@ -2,8 +2,8 @@
 	import errorImage from './assets/error.png';
 	import { onMount } from 'svelte';
 	import { ConfigLoader } from './lib/config.svelte';
-	import type { WizardConfig, WizardFinishData, FormResponse } from './lib/types/Config';
-	import type { FinishCallback } from './lib/types/Events';
+	import type { WizardConfig } from './lib/types/Config';
+	import type { FinishCallback, ErrorCallback } from './lib/types/Events';
 	import Header from './components/layout/Header.svelte';
 	import ProgressBar from './components/layout/ProgressBar.svelte';
 	import Questionnaire from './components/questionnaire/Questionnaire.svelte';
@@ -24,20 +24,20 @@
 	let {
 		config = undefined,
 		configUrl = undefined,
-		onFinish = undefined
+		onFinish = undefined,
+		onError = undefined
 	}: {
 		config?: WizardConfig;
 		configUrl?: string;
 		onFinish?: FinishCallback;
+		onError?: ErrorCallback;
 	} = $props();
 
 	// State
 	let wizardConfig: WizardConfig | null = $state(null);
 	let currentStepIndex: number = $state(0);
-	let responses: FormResponse = $state({});
 	let loading: boolean = $state(true);
 	let error: string | null = $state(null);
-	let submitting: boolean = $state(false);
 	let show: boolean = $state(false);
 
 	// Lifecycle
@@ -70,31 +70,14 @@
 
 			loading = false;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load configuration';
+			const normalizedError = err instanceof Error ? err : new Error('Failed to load configuration');
+			error = normalizedError.message;
 			loading = false;
+			await onError?.(normalizedError);
 		}
 	}
 
-	// Form submission
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		submitting = true;
-		try {
-			const finishData: WizardFinishData = {
-				responses,
-				timestamp: Date.now()
-			};
 
-			// Call onFinish callback if provided
-			if (onFinish) {
-				await onFinish(finishData);
-			}
-		} catch (err) {
-			console.error('Error during form submission:', err);
-		} finally {
-			submitting = false;
-		}
-	}
 </script>
 
 {#if loading}
@@ -137,7 +120,7 @@
 					<div class="card bg-base-100 p-4 shadow-md">
 						<Questionnaire
 							config={wizardConfig.templates[getAppstate().template]}
-							onFinish={handleSubmit}
+							{onFinish}
 						/>
 					</div>
 				{:else if getAppstate().mode === 'init'}

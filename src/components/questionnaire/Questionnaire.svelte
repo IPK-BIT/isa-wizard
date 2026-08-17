@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import { getAppstate, updateAppstate } from '../../lib/appstate.svelte';
 	import { componentTypes, fieldTypes } from '../../lib/config/mapping';
 	import { isaObj } from '../../stores/isa';
+	import type { FinishCallback } from '../../lib/types/Events';
 	import Wrapper from './Wrapper.svelte';
 
-	let { config, onFinish = undefined } = $props();
+	let { config, onFinish = undefined }: { config: any; onFinish?: FinishCallback } = $props();
 
 	function next() {
 		if (getAppstate().currentStepIndex < config.steps.length - 1) {
@@ -19,6 +21,7 @@
 	}
 
 	async function closeWizard() {
+		await onFinish?.({ investigation: get(isaObj), timestamp: Date.now() });
 		updateAppstate({ mode: 'gui', isaLvl: '' });
 	}
 </script>

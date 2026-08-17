@@ -8,9 +8,9 @@
 	"types": "./dist/widget.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/widget.d.ts",
 			"import": "./dist/widget.mjs",
-			"require": "./dist/widget.umd.js",
-			"types": "./dist/widget.d.ts"
+			"require": "./dist/widget.umd.js"
 		},
 		"./style": "./dist/style.css"
 	},
@@ -19,7 +19,7 @@
 	],
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build && tsc --declaration --emitDeclarationOnly",
+		"build": "vite build && cp src/widget.d.ts dist/widget.d.ts",
 		"format": "prettier --write .",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"

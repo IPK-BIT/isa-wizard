@@ -25,14 +25,6 @@ export default defineConfig({
 				return 'widget.js';
 			}
 		},
-		rollupOptions: {
-			output: {
-				// For UMD build, expose as global
-				globals: {
-					svelte: 'svelte'
-				}
-			}
-		},
 		cssCodeSplit: false,
 		minify: 'terser'
 	}
