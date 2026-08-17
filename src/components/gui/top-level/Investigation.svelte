@@ -2,6 +2,7 @@
 	import Person from '../building-blocks/Person.svelte';
 
 	import Publication from '../building-blocks/Publication.svelte';
+	import TemplateCards from '../building-blocks/TemplateCards.svelte';
 
 	import { isaObj } from '../../../stores/isa';
 	import { updateAppstate } from '../../../lib/appstate.svelte';
@@ -148,22 +149,12 @@
 					{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'study')}
 						<p>Loading...</p>
 					{:then studyTemplates}
-						{#if studyTemplates.length === 0}
-							<p>No study templates available</p>
-						{:else}
-							<h2 class="font-semibold">Add a new study</h2>
-							<ul>
-								{#each studyTemplates as template}
-									<li>
-										<button
-											class="btn btn-outline btn-primary btn-sm"
-											onclick={() => switchToTemplate(template)}
-											>{(template as any).metadata.label}</button
-										>
-									</li>
-								{/each}
-							</ul>
-						{/if}
+						<TemplateCards
+							templates={studyTemplates}
+							heading="Add a new study"
+							emptyMessage="No study templates available"
+							onSelect={switchToTemplate}
+						/>
 					{:catch error}
 						<p>Error loading study templates: {error.message}</p>
 					{/await}

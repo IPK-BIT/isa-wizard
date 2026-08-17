@@ -3,11 +3,13 @@
 	import Schema from '../../../lib/schemas';
 	import { isaObj } from '../../../stores/isa';
 	import BreadcrumbWidget from '../../ts4nfdi/BreadcrumbWidget.svelte';
+	import EditAsButton from '../building-blocks/EditAsButton.svelte';
 	import Materials from '../building-blocks/Materials.svelte';
 	import Person from '../building-blocks/Person.svelte';
 	import ProcessSequence from '../building-blocks/ProcessSequence.svelte';
 	import Protocols from '../building-blocks/Protocols.svelte';
 	import Publication from '../building-blocks/Publication.svelte';
+	import TemplateCards from '../building-blocks/TemplateCards.svelte';
 
 	let { value: study = $bindable(), config } = $props();
 
@@ -68,19 +70,11 @@
 		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'study')}
 			<p>Loading...</p>
 		{:then studyTemplates}
-			{#if studyTemplates.length === 0}
-				<p>No study templates available</p>
-			{:else}
-				<ul>
-					{#each studyTemplates as template}
-						<li>
-							<button class="btn btn-primary btn-sm" onclick={() => openStudy(template)}
-								>Edit as {(template as any).metadata.label}</button
-							>
-						</li>
-					{/each}
-				</ul>
-			{/if}
+			<EditAsButton
+				templates={studyTemplates}
+				emptyMessage="No study templates available"
+				onSelect={openStudy}
+			/>
 		{:catch error}
 			<p>Error loading study templates: {error.message}</p>
 		{/await}
@@ -218,22 +212,12 @@
 						{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
 							<p>Loading...</p>
 						{:then assayTemplates}
-							{#if assayTemplates.length === 0}
-								<p>No assay templates available</p>
-							{:else}
-								<h2 class="font-semibold">Add a new assay</h2>
-								<ul>
-									{#each assayTemplates as template}
-										<li>
-											<button
-												class="btn btn-outline btn-primary btn-sm"
-												onclick={() => switchToTemplate(template)}
-												>{(template as any).metadata.label}</button
-											>
-										</li>
-									{/each}
-								</ul>
-							{/if}
+							<TemplateCards
+								templates={assayTemplates}
+								heading="Add a new assay"
+								emptyMessage="No assay templates available"
+								onSelect={switchToTemplate}
+							/>
 						{:catch error}
 							<p>Error loading assay templates: {error.message}</p>
 						{/await}

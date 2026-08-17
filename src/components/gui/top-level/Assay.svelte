@@ -3,6 +3,7 @@
 	import { isaObj } from '../../../stores/isa';
 	import BreadcrumbWidget from '../../ts4nfdi/BreadcrumbWidget.svelte';
 	import { parseIsaLvl, constructStudyPath } from '../../../lib/util/breadcrumbUtils';
+	import EditAsButton from '../building-blocks/EditAsButton.svelte';
 	import Materials from '../building-blocks/Materials.svelte';
 	import ProcessSequence from '../building-blocks/ProcessSequence.svelte';
 
@@ -67,19 +68,11 @@
 		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
 			<p>Loading...</p>
 		{:then assayTemplates}
-			{#if assayTemplates.length === 0}
-				<p>No assay templates available</p>
-			{:else}
-				<ul>
-					{#each assayTemplates as template}
-						<li>
-							<button class="btn btn-primary btn-sm" onclick={() => openAssay(template)}
-								>Edit as {(template as any).metadata.label}</button
-							>
-						</li>
-					{/each}
-				</ul>
-			{/if}
+			<EditAsButton
+				templates={assayTemplates}
+				emptyMessage="No assay templates available"
+				onSelect={openAssay}
+			/>
 		{:catch error}
 			<p>Error loading assay templates: {error.message}</p>
 		{/await}

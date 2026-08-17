@@ -14,7 +14,10 @@
 		 */
 		"allowJs": true,
 		"checkJs": true,
-		"moduleDetection": "force"
+		"moduleDetection": "force",
+		"paths": {
+			"$components/*": ["./src/components/*"]
+		}
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte"]
 }

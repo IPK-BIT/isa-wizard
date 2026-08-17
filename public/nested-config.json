@@ -26,12 +26,6 @@
 					"texts": ["Please provide the following information about your investigation."],
 					"fields": [
 						{
-							"label": "Investigation File Name",
-							"type": "text",
-							"isaMapping": { "jsonPath": "filename" },
-							"explanation": "A filename for your investigation."
-						},
-						{
 							"label": "Investigation Identifier",
 							"type": "text",
 							"isaMapping": { "jsonPath": "identifier" },
@@ -335,6 +329,88 @@
 						"isaMapping": { "jsonPath": "dataFiles" },
 						"label": "Data Files",
 						"explanation": "Add data files generated in your assay."
+					}
+				},
+				{
+					"title": "Processing",
+					"texts": ["Please provide information how the material was processed in your study."],
+					"component": {
+						"type": "processes",
+						"isaMapping": { "jsonPath": "processSequence" },
+						"label": "Process Sequence",
+						"explanation": "Add Proccesses to your study."
+					}
+				}
+			]
+		},
+		"brapi-assay": {
+			"metadata": {
+				"type": "assay",
+				"code": "brapi-assay",
+				"label": "BrAPI Assay",
+				"description": "An assay represents a unit of experimental work within a study. You can have multiple assays within a study, each representing a different experiment or analysis. Please provide the necessary information for each assay you want to include in your study."
+			},
+			"steps": [
+				{
+					"title": "Assay Information",
+					"texts": ["Please provide the following information about your assay."],
+					"fields": [
+						{
+							"label": "Assay File Name",
+							"type": "text",
+							"isaMapping": { "jsonPath": "filename" },
+							"explanation": "A filename for your assay."
+						},
+						{
+							"label": "Assay Identifier",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "identifier" },
+							"explanation": "An identifier for your assay."
+						},
+						{
+							"label": "Assay Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "title" },
+							"explanation": "A title for your assay."
+						},
+						{
+							"label": "Assay Measurement Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "measurementType" },
+							"explanation": "The type of measurement performed in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "technologyType" },
+							"explanation": "The type of technology used in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Platform",
+							"type": "text",
+							"isaMapping": { "jsonPath": "technologyPlatform" },
+							"explanation": "The technology platform for your assay."
+						}
+					]
+				},
+				{
+					"title": "Materials",
+					"texts": ["Please provide information about the materials used in your assay."],
+					"component": {
+						"type": "entities",
+						"isaMapping": { "jsonPath": "materials" },
+						"label": "Materials",
+						"explanation": "Add materials used in your study."
+					}
+				},
+				{
+					"title": "Data Files",
+					"texts": ["Please provide information about the data files generated in your assay."],
+					"component": {
+						"type": "brapi:images",
+						"isaMapping": { "jsonPath": "dataFiles" },
+						"label": "Images",
+						"explanation": "Add images generated in your assay."
 					}
 				},
 				{

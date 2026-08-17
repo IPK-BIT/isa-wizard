@@ -1,4 +1,5 @@
 import { mount, unmount } from 'svelte';
+import './app.css';
 import ISAWizard from './ISAWizard.svelte';
 import type { WizardConfig, WizardFinishData } from './lib/types/Config';
 import type { FinishCallback } from './lib/types/Events';
