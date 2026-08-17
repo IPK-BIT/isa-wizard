@@ -1,4 +1,4 @@
 allowBuilds:
-  core-js: set this to true or false
-overrides:
-  isa4js: link:../isa4js
+  core-js: true
+minimumReleaseAgeExclude:
+  - isa4js@0.1.3

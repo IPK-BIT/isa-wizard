@@ -7,12 +7,12 @@ export default defineConfig({
 	plugins: [svelte()],
 	resolve: {
 		alias: {
-			"$components": path.resolve(__dirname, './src/components')
+			"$components": path.resolve(import.meta.dirname, './src/components')
 		}
 	},
 	build: {
 		lib: {
-			entry: path.resolve(__dirname, 'src/web-component.ts'),
+			entry: path.resolve(import.meta.dirname, 'src/web-component.ts'),
 			name: 'ISAWizard',
 			formats: ['es', 'umd'],
 			cssFileName: 'style',

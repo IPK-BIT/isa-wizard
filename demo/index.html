@@ -1,0 +1,29 @@
+<!--
+  GH Pages demo entry point: loads the *built* widget.mjs (as external consumers would),
+  unlike index.html which imports unbuilt src/ for local dev. Deployed by
+  .github/workflows/gh-pages.yml alongside the dist/ output.
+-->
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/png" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- TS4NFDI Widgets -->
+		<link
+			rel="stylesheet"
+			href="https://ts4nfdi.github.io/terminology-service-suite/js-modules/latest/terminology-service-suite.min.css"
+		/>
+		<script
+			type="text/javascript"
+			src="https://ts4nfdi.github.io/terminology-service-suite/js-modules/latest/terminology-service-suite.min.js"
+		></script>
+
+		<title>ISA Wizard</title>
+	</head>
+	<body>
+		<isa-wizard config-url="./nested-config.json"></isa-wizard>
+		<script type="module" src="./widget.mjs"></script>
+	</body>
+</html>
