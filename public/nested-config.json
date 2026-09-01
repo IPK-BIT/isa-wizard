@@ -6,10 +6,20 @@
 		"showQuestionnaireProgressBar": true,
 		"showConsole": true
 	},
-	"lookup-services": {
+	"integrations": {
 		"ts": {
 			"api": "https://api.terminology.tib.eu/api/",
 			"parameter": "collection=DataPLANT"
+		},
+		"fairdom": {
+			"url": "https://testing.sysmo-db.org",
+			"clientId": "UodZp3TiZ5L0YiOYNKC7PugYsGXDSbA-LsCHd0MqzwQ",
+			"scope": "write"
+		},
+		"datahub": {
+			"url": "https://git.nfdi4plants.org",
+			"clientId": "ee972a8d5ebacf828a79f37ea25e0353330798da754049c5722ebb4f1dd237ce",
+			"scope": "api"
 		}
 	},
 	"templates": {

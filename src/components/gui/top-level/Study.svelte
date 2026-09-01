@@ -151,7 +151,7 @@
 										<td>{studyDesignDescriptor.annotationValue}</td>
 										<td
 											><BreadcrumbWidget
-												api={config['lookup-services'].ts.api}
+												api={config['integrations'].ts.api}
 												iri={studyDesignDescriptor.termAccession}
 												ontologyId={studyDesignDescriptor.termSource}
 											/></td

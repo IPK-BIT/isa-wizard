@@ -49,7 +49,7 @@
 								<div>
 									<p>{characteristic.value.annotationValue}</p>
 									<BreadcrumbWidget
-										api={config['lookup-services'].ts.api}
+										api={config['integrations'].ts.api}
 										iri={characteristic.value.termAccession}
 										ontologyId={characteristic.value.termSource}
 									/>

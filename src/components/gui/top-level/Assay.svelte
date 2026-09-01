@@ -92,7 +92,7 @@
 					{#if assay.measurementType && assay.measurementType.annotationValue}
 						<span>{assay.measurementType.annotationValue}</span>
 						<BreadcrumbWidget
-							api={config['lookup-services'].ts.api}
+							api={config['integrations'].ts.api}
 							iri={assay.measurementType.termAccession}
 							ontologyId={assay.measurementType.termSource}
 						/>
@@ -107,7 +107,7 @@
 					{#if assay.technologyType.annotationValue}
 						<span>{assay.technologyType.annotationValue}</span>
 						<BreadcrumbWidget
-							api={config['lookup-services'].ts.api}
+							api={config['integrations'].ts.api}
 							iri={assay.technologyType.termAccession}
 							ontologyId={assay.technologyType.termSource}
 						/>

@@ -41,6 +41,13 @@ export interface TemplateConfig {
 
 export interface WizardConfig {
 	general: GeneralConfig;
+	'integrations': {
+		fairdom: {
+			url: string,
+			clientId: string,
+			scope: string
+		}
+	}
 	// steps: StepConfig[];
 	rootTemplate: string;
 	templates: TemplateConfig;

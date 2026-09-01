@@ -31,8 +31,8 @@
 		onRemove = undefined
 	} = $props();
 
-	const config: { 'lookup-services': { ts: { api: string } } } = getConfig() as {
-		'lookup-services': { ts: { api: string } };
+	const config: { integrations: { ts: { api: string } } } = getConfig() as {
+		integrations: { ts: { api: string } };
 	};
 	const displayLabel = $derived(label || attr);
 </script>
@@ -50,7 +50,7 @@
 				<div>
 					<span class="text-lg font-semibold">{value.annotationValue}</span>
 					<BreadcrumbWidget
-						api={config['lookup-services'].ts.api}
+						api={config['integrations'].ts.api}
 						iri={value.termAccession}
 						ontologyId={value.termSource}
 					/>
@@ -72,7 +72,7 @@
 				<div class="w-full">
 					<AutoCompleteWidget
 						className="z-10"
-						api={config['lookup-services'].ts.api}
+						api={config['integrations'].ts.api}
 						{parameter}
 						{selectionChangedEvent}
 						{singleSelection}

@@ -32,7 +32,7 @@
 												<td>
 													<p>{parameterValue.category.parameterName.annotationValue}</p>
 													<BreadcrumbWidget
-														api={config['lookup-services'].ts.api}
+														api={config['integrations'].ts.api}
 														iri={parameterValue.category.parameterName.termAccession}
 														ontologyId={parameterValue.category.parameterName.termSource}
 													/>
@@ -41,7 +41,7 @@
 													{#if parameterValue.value && parameterValue.value.annotationValue}
 														<p>{parameterValue.value.annotationValue}</p>
 														<BreadcrumbWidget
-															api={config['lookup-services'].ts.api}
+															api={config['integrations'].ts.api}
 															iri={parameterValue.value.termAccession}
 															ontologyId={parameterValue.value.termSource}
 														/>

@@ -36,7 +36,7 @@
 						{#if protocol?.protocolType?.annotationValue}
 							<span>{protocol.protocolType.annotationValue}</span>
 							<BreadcrumbWidget
-								api={(getConfig() as { 'lookup-services': { ts: { api: any } } })['lookup-services']
+								api={(getConfig() as { 'integrations': { ts: { api: any } } })['integrations']
 									.ts.api}
 								iri={protocol.protocolType.termAccession}
 								ontologyId={protocol.protocolType.termSource}

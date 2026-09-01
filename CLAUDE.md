@@ -51,5 +51,5 @@ Two runes-based `.svelte.ts` singletons (getter/updater functions, not Svelte co
 - `gui/building-blocks/` — composite widgets used by the top-level screens (Materials, Protocols, ProcessSequence, TemplateCards, EditAsButton, ...).
 - `questionnaire/` — the alternative step-by-step "wizard" mode UI (`mode: 'wizard'` in appstate), as opposed to `gui/`'s drill-down mode.
 - `layout/` — chrome (Header, ProgressBar, Tree, Modal, InitView).
-- `ts4nfdi/` — Terminology Service for NFDI ontology-lookup widgets (AutoComplete, Breadcrumb, Title, Metadata), tied to the `lookup-services` block in the wizard config.
+- `ts4nfdi/` — Terminology Service for NFDI ontology-lookup widgets (AutoComplete, Breadcrumb, Title, Metadata), tied to the `integrations` block in the wizard config.
 - `util/` — misc dialogs (MaterialUpload, EntitySelectModal).

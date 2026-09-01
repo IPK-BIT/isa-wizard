@@ -20,7 +20,7 @@
 					<td class="align-top">
 						<p>{protocol.protocolType.annotationValue}</p>
 						<BreadcrumbWidget
-							api={config['lookup-services'].ts.api}
+							api={config['integrations'].ts.api}
 							iri={protocol.protocolType.termAccession}
 							ontologyId={protocol.protocolType.termSource}
 						/>
@@ -33,7 +33,7 @@
 										<td>
 											<p>{parameter.parameterName.annotationValue}</p>
 											<BreadcrumbWidget
-												api={config['lookup-services'].ts.api}
+												api={config['integrations'].ts.api}
 												iri={parameter.parameterName.termAccession}
 												ontologyId={parameter.parameterName.termSource}
 											/>
