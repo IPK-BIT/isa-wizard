@@ -30,5 +30,10 @@ export default defineConfig({
 		},
 		cssCodeSplit: false,
 		minify: 'terser'
+	},
+	server: {
+		allowedHosts: [
+			'mira.ipk-gatersleben.de'
+		]
 	}
 });

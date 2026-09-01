@@ -98,7 +98,7 @@
 {:else if wizardConfig}
 	<div>
 		{#if wizardConfig.general.layoutMode === 'standalone' && getAppstate().mode != 'init'}
-			<Header config={wizardConfig.general} />
+			<Header config={wizardConfig} />
 		{/if}
 
 		<main
