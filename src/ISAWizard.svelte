@@ -15,6 +15,7 @@
 	import Tree from './components/layout/Tree.svelte';
 	import InitView from './components/layout/InitView.svelte';
 	import type { ISAInvestigationSchema } from './lib/types/isa.generated';
+	import { requestToken, verifyState } from '$lib/auth/oauth';
 
 	onMount(() => {
 		$isaObj = Schema.getObjectFromSchema('investigation') as ISAInvestigationSchema;
@@ -43,7 +44,34 @@
 	// Lifecycle
 	onMount(async () => {
 		await loadConfig();
-		return;
+
+		const urlParams = new URLSearchParams(window.location.search);
+		const code = urlParams.get('code');
+		const returnedState = urlParams.get('state');
+		if (code) {
+			// Strip the code (and state) from the URL up front so a duplicate
+			// effect run, HMR reload, or page refresh can't redeem it a second
+			// time.
+			window.history.replaceState({}, '', window.location.pathname);
+			try {
+				// Reject the callback outright if the state doesn't match what
+				// authorizeClient generated — a mismatch means this redirect
+				// wasn't triggered by our own login attempt (CSRF / code
+				// injection), so the code must not be redeemed.
+				verifyState(returnedState ?? '');
+				await requestToken(
+					`${wizardConfig?.['integrations'].fairdom.url}/oauth`,
+					'authorization_code',
+					code,
+					window.location.origin,
+					wizardConfig?.['integrations'].fairdom.clientId!
+				);
+			} catch (err) {
+				const normalizedError = err instanceof Error ? err : new Error('OAuth login failed');
+				error = normalizedError.message;
+				await onError?.(normalizedError);
+			}
+		}
 	});
 
 	// Load configuration
