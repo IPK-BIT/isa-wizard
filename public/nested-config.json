@@ -14,7 +14,8 @@
 		"fairdom": {
 			"url": "https://testing.sysmo-db.org",
 			"clientId": "UodZp3TiZ5L0YiOYNKC7PugYsGXDSbA-LsCHd0MqzwQ",
-			"scope": "write"
+			"scope": "write",
+			"token": "mUlvrc9ykQzwlnNQhZUJAJEfKemsJVyi1nVqXBAf"
 		},
 		"datahub": {
 			"url": "https://git.nfdi4plants.org",

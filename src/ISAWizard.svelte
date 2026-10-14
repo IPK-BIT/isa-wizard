@@ -149,7 +149,7 @@
 						<Questionnaire config={wizardConfig.templates[getAppstate().template]} {onFinish} />
 					</div>
 				{:else if getAppstate().mode === 'init'}
-					<InitView />
+					<InitView config={wizardConfig} />
 				{:else}
 					<Gui config={wizardConfig} />
 				{/if}
