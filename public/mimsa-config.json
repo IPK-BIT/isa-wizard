@@ -1,0 +1,66 @@
+{
+	"general": {
+		"name": "MIMSA Wizard",
+		"layoutMode": "standalone",
+		"initialView": "init",
+		"showQuestionnaireProgressBar": true,
+		"showConsole": true
+	},
+	"integrations": {
+		"ts": {
+			"api": "https://api.terminology.tib.eu/api/",
+			"parameter": "collection=DataPLANT"
+		},
+		"fairdom": {
+			"url": "https://testing.sysmo-db.org",
+			"clientId": "UodZp3TiZ5L0YiOYNKC7PugYsGXDSbA-LsCHd0MqzwQ",
+			"scope": "write",
+			"token": "mUlvrc9ykQzwlnNQhZUJAJEfKemsJVyi1nVqXBAf"
+		}
+	},
+	"templates": {
+		"investigation": {
+			"metadata": {
+				"type": "investigation",
+				"code": "investigation",
+				"label": "Investigation",
+				"description": "An investigation represents a unit of research. You can have multiple studies within an investigation, each representing a different aspect of your research. Please provide the necessary information for your investigation and its related studies."
+			},
+			"steps": [
+				{
+					"title": "Investigation Metadata",
+					"texts": [],
+					"component": {
+						"type": "fairdom:investigation",
+						"isaMapping": { "jsonPath": "." },
+						"label": "Investigation",
+						"explanation": "Top Level of the ISA Hierarchy"
+					}
+				},
+				{
+					"title": "Investigation Publications",
+					"texts": [
+						"Please provide information about the publications related to your investigation."
+					],
+					"component": {
+						"type": "publications",
+						"isaMapping": { "jsonPath": "publications" },
+						"label": "Publications",
+						"explanation": "Add publications related to your investigation."
+					}
+				},
+				{
+					"title": "Investigation People",
+					"texts": ["Please provide information about the persons involved in your investigation."],
+					"component": {
+						"type": "people",
+						"isaMapping": { "jsonPath": "people" },
+						"label": "Authors",
+						"explanation": "Add people involved in your investigation."
+					}
+				}
+			]
+		}
+	},
+	"rootTemplate": "investigation"
+}
