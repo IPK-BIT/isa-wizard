@@ -25,6 +25,7 @@
 		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^3.0.1",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@tailwindcss/postcss": "^4.3.2",
 		"@tsconfig/svelte": "^5.0.8",
