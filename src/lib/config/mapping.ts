@@ -20,6 +20,16 @@ import DataFiles from '$components/isa/collection/DataFiles.svelte';
 
 import BrapiImages from '$components/brapi/collection/BrapiImages.svelte';
 
+/**
+ * FAIRDOM Components
+ */
+
+import FairdomInvestigation from '$components/fairdom/composed/Investigation.svelte';
+
+/**
+ * MAPPINGS
+ */
+
 export const fieldTypes = {
 	date: Date,
 	license: License,
@@ -36,5 +46,6 @@ export const componentTypes = {
 	entities: Entities,
 	processes: ProcessSequence,
 	data: DataFiles,
-	'brapi:images': BrapiImages
+	'brapi:images': BrapiImages,
+	'fairdom:investigation': FairdomInvestigation
 };
