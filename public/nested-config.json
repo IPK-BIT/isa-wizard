@@ -52,12 +52,14 @@
 							"label": "Investigation Title",
 							"type": "text",
 							"isaMapping": { "jsonPath": "title" },
+							"metabuddy": true,
 							"explanation": "A descriptive title for your investigation."
 						},
 						{
 							"label": "Investigation Description",
 							"type": "textarea",
 							"isaMapping": { "jsonPath": "description" },
+							"metabuddy": true,
 							"explanation": "A description of your investigation."
 						},
 						{
@@ -76,6 +78,7 @@
 							"label": "License",
 							"type": "license",
 							"isaMapping": { "jsonPath": "comments", "commentName": "License" },
+							"metabuddy": true,
 							"explanation": "The license under which your investigation is released."
 						}
 					]
@@ -88,6 +91,7 @@
 					"component": {
 						"type": "publications",
 						"isaMapping": { "jsonPath": "publications" },
+						"metabuddy": { "convert": true },
 						"label": "Publications",
 						"explanation": "Add publications related to your investigation."
 					}
@@ -98,6 +102,7 @@
 					"component": {
 						"type": "people",
 						"isaMapping": { "jsonPath": "people" },
+						"metabuddy": { "convert": true },
 						"label": "Authors",
 						"explanation": "Add people involved in your investigation."
 					}
@@ -162,6 +167,7 @@
 							"label": "Study Start Date",
 							"type": "date",
 							"isaMapping": { "jsonPath": "comments", "commentName": "Study Start Date" },
+							"metabuddy": true,
 							"explanation": "The date when your study started."
 						},
 						{

@@ -34,14 +34,49 @@
 			},
 			"steps": [
 				{
-					"title": "Investigation Metadata",
-					"texts": [],
-					"component": {
-						"type": "fairdom:investigation",
-						"isaMapping": { "jsonPath": "." },
-						"label": "Investigation",
-						"explanation": "Top Level of the ISA Hierarchy"
-					}
+					"title": "Investigation Information",
+					"texts": ["Please provide the following information about your investigation."],
+					"fields": [
+						{
+							"label": "Investigation Identifier",
+							"type": "text",
+							"isaMapping": { "jsonPath": "identifier" },
+							"explanation": "A descriptive identifier for your investigation."
+						},
+						{
+							"label": "Investigation Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "title" },
+							"metabuddy": true,
+							"explanation": "A descriptive title for your investigation."
+						},
+						{
+							"label": "Investigation Description",
+							"type": "textarea",
+							"isaMapping": { "jsonPath": "description" },
+							"metabuddy": true,
+							"explanation": "A description of your investigation."
+						},
+						{
+							"label": "Investigation Submission Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "submissionDate" },
+							"explanation": "The date when your investigation was submitted."
+						},
+						{
+							"label": "Investigation Public Release Date",
+							"type": "date",
+							"isaMapping": { "jsonPath": "publicReleaseDate" },
+							"explanation": "The date when your investigation was made public."
+						},
+						{
+							"label": "License",
+							"type": "license",
+							"isaMapping": { "jsonPath": "comments", "commentName": "License" },
+							"metabuddy": true,
+							"explanation": "The license under which your investigation is released."
+						}
+					]
 				},
 				{
 					"title": "Investigation Publications",
@@ -51,6 +86,7 @@
 					"component": {
 						"type": "publications",
 						"isaMapping": { "jsonPath": "publications" },
+						"metabuddy": { "convert": true },
 						"label": "Publications",
 						"explanation": "Add publications related to your investigation."
 					}

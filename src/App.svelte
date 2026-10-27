@@ -3,5 +3,5 @@
 </script>
 
 <div class="bg-base-200">
-	<ISAWizard configUrl="/mimsa-config.json" />
+	<ISAWizard configUrl="/nested-config.json" />
 </div>

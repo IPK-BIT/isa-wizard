@@ -4,9 +4,15 @@
 	import { componentTypes, fieldTypes } from '$lib/config/mapping';
 	import { isaObj } from '$stores/isa';
 	import type { FinishCallback } from '$lib/types/Events';
+	import { getConfig } from '$lib/config.svelte';
+	import type { WizardConfig } from '$lib/types/Config';
 	import Wrapper from './Wrapper.svelte';
 
 	let { config, onFinish = undefined }: { config: any; onFinish?: FinishCallback } = $props();
+
+	const convertEnabled = $derived(
+		!!(getConfig() as WizardConfig).integrations?.metabuddy?.features.convert
+	);
 
 	function next() {
 		if (getAppstate().currentStepIndex < config.steps.length - 1) {
@@ -55,6 +61,7 @@
 									attr2={field.isaMapping.commentName}
 									explanation={field.explanation}
 									type={field.type}
+									metabuddy={field.metabuddy}
 								/>
 							{/if}
 						{/each}
@@ -69,6 +76,17 @@
 							label={config.steps[getAppstate().currentStepIndex].component.label}
 							explanation={config.steps[getAppstate().currentStepIndex].component.explanation}
 						/>
+						{#if convertEnabled && config.steps[getAppstate().currentStepIndex].component.metabuddy?.convert}
+							{#await import('$components/metabuddy/ConvertDropzone.svelte') then { default: ConvertDropzone }}
+								<div class="mt-4">
+									<ConvertDropzone
+										jsonPath={config.steps[getAppstate().currentStepIndex].component.isaMapping
+											.jsonPath}
+										label={config.steps[getAppstate().currentStepIndex].component.label}
+									/>
+								</div>
+							{/await}
+						{/if}
 					{/if}
 				{/if}
 			{/key}
