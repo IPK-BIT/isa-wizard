@@ -39,38 +39,16 @@
 	let loading: boolean = $state(true);
 	let error: string | null = $state(null);
 	let show: boolean = $state(false);
+	// wizardConfig is only assigned inside async functions, so TS narrows it to `null` here
+	const metabuddyEnabled = $derived(
+		Object.values(
+			(wizardConfig as WizardConfig | null)?.integrations?.metabuddy?.features ?? {}
+		).some(Boolean)
+	);
 
 	// Lifecycle
 	onMount(async () => {
 		await loadConfig();
-
-		const urlParams = new URLSearchParams(window.location.search);
-		const code = urlParams.get('code');
-		const returnedState = urlParams.get('state');
-		if (code) {
-			// Strip the code (and state) from the URL up front so a duplicate
-			// effect run, HMR reload, or page refresh can't redeem it a second
-			// time.
-			window.history.replaceState({}, '', window.location.pathname);
-			try {
-				// Reject the callback outright if the state doesn't match what
-				// authorizeClient generated — a mismatch means this redirect
-				// wasn't triggered by our own login attempt (CSRF / code
-				// injection), so the code must not be redeemed.
-				verifyState(returnedState ?? '');
-				await requestToken(
-					`${wizardConfig?.['integrations'].fairdom.url}/oauth`,
-					'authorization_code',
-					code,
-					window.location.origin,
-					wizardConfig?.['integrations'].fairdom.clientId!
-				);
-			} catch (err) {
-				const normalizedError = err instanceof Error ? err : new Error('OAuth login failed');
-				error = normalizedError.message;
-				await onError?.(normalizedError);
-			}
-		}
 	});
 
 	// Load configuration
@@ -154,21 +132,30 @@
 				{/if}
 			</div>
 			{#if wizardConfig.general.layoutMode === 'standalone'}
-				<div class="col-start-3 row-start-2 self-stretch border-l-0 py-5 pr-2.75 pl-2.5">
-					{#if wizardConfig.general.showConsole && getAppstate().mode != 'init'}
-						<div class="card bg-base-100 p-4 shadow-md">
-							<button class="btn mb-2 btn-outline btn-sm" onclick={() => (show = !show)}>
-								{show ? 'Hide ISA' : 'Show ISA'}
-							</button>
-							{#if show}
-								<textarea
-									bind:value={$isaStr}
-									class="block min-h-125 w-full resize-y rounded-md border border-base-300 bg-base-100 p-2 font-mono text-sm text-base-content outline-none focus:border-warning"
-								></textarea>
-							{/if}
-						</div>
-					{/if}
-				</div>
+				{#if (wizardConfig.general.showConsole || metabuddyEnabled) && getAppstate().mode != 'init'}
+					<div
+						class="col-start-3 row-start-2 flex flex-col gap-4 self-stretch border-l-0 py-5 pr-2.75 pl-2.5"
+					>
+						{#if wizardConfig.general.showConsole}
+							<div class="card bg-base-100 p-4 shadow-md">
+								<button class="btn mb-2 btn-outline btn-sm" onclick={() => (show = !show)}>
+									{show ? 'Hide ISA' : 'Show ISA'}
+								</button>
+								{#if show}
+									<textarea
+										bind:value={$isaStr}
+										class="block min-h-125 w-full resize-y rounded-md border border-base-300 bg-base-100 p-2 font-mono text-sm text-base-content outline-none focus:border-warning"
+									></textarea>
+								{/if}
+							</div>
+						{/if}
+						{#if wizardConfig.integrations?.metabuddy?.features.validate || wizardConfig.integrations?.metabuddy?.features.ask}
+							{#await import('$components/metabuddy/MetabuddyPanel.svelte') then { default: MetabuddyPanel }}
+								<MetabuddyPanel />
+							{/await}
+						{/if}
+					</div>
+				{/if}
 			{/if}
 		</main>
 	</div>
