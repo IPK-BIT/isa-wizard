@@ -22,6 +22,7 @@
 		"build": "vite build && cp src/widget.d.ts dist/widget.d.ts",
 		"format": "prettier --write .",
 		"preview": "vite preview",
+		"mock:metabuddy": "node mock/metabuddy-server.mjs",
 		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
 	},
 	"devDependencies": {

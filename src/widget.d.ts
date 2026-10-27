@@ -4,6 +4,18 @@
  * cannot introspect, so this file (not a generated one) is copied to dist/widget.d.ts.
  */
 
+export interface MetabuddyConfig {
+	baseUrl: string;
+	apiKey?: string;
+	/** Request timeout in milliseconds. Default 60000. */
+	timeoutMs?: number;
+	/** Confidence below which converted fields are flagged for review. Default 0.7. */
+	confidenceThreshold?: number;
+	/** Maximum size of a single file offered for conversion, in MB. Default 10. */
+	maxFileSizeMb?: number;
+	features: { explain?: boolean; ask?: boolean; convert?: boolean; validate?: boolean };
+}
+
 export interface WizardConfig {
 	general: {
 		name: string;
@@ -11,6 +23,10 @@ export interface WizardConfig {
 		initialView: 'init' | 'form' | 'wizard';
 		showQuestionnaireProgressBar: boolean;
 		showConsole: boolean;
+	};
+	integrations?: {
+		metabuddy?: MetabuddyConfig;
+		[key: string]: unknown;
 	};
 	rootTemplate: string;
 	templates: Record<string, unknown>;

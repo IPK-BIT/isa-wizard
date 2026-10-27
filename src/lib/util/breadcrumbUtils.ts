@@ -51,3 +51,11 @@ export function constructStudyPath(studyIndex: number): string {
 export function constructAssayPath(studyIndex: number, assayIndex: number): string {
 	return `studies[${studyIndex}].assays[${assayIndex}]`;
 }
+
+/**
+ * Joins a level path and a path relative to it into an absolute path from the document root.
+ * Example: joinIsaPath('studies[0]', 'title') → 'studies[0].title', joinIsaPath('', 'title') → 'title'
+ */
+export function joinIsaPath(isaLvl: string, relativePath: string): string {
+	return parseIsaLvl(isaLvl).level === 'investigation' ? relativePath : `${isaLvl}.${relativePath}`;
+}

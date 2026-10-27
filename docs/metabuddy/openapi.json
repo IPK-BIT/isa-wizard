@@ -1,0 +1,452 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MetaBuddy Assistant API — Minimal",
+    "description": "LLM-powered ISA metadata assistance API, consumed by ISA Wizard.\nThis is the minimal specification. All calls are synchronous and stateless — ISA Wizard owns all state and passes the relevant ISA-JSON context on every request. No session management is required.\n## Authentication\nISA Wizard authenticates as a service client using a pre-shared API key (`X-API-Key` header) issued by MetaBuddy. This is a backend-to-backend credential managed via a Keycloak service account on the MetaBuddy side. Individual end-user identity does not cross the boundary. ISA Wizard end-users may be anonymous.\n## Scoping\nEvery endpoint accepts a `scope` parameter that indicates which ISA hierarchy level the user is currently at in the wizard.\n",
+    "version": "1.0.2",
+    "contact": {
+      "name": "TBD"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://metabuddy.dci.thehyve.nl/api/v1",
+      "description": "MetaBuddy API server (assumption)"
+    },
+    {
+      "url": "https://bfsp2026-wp8-metabuddy-activity2.onrender.com/",
+      "description": "Mockup server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Service-level API key issued by MetaBuddy to the ISA Wizard application. Not tied to individual end-users. Managed via Keycloak service account on the MetaBuddy side.\n"
+      }
+    },
+    "schemas": {
+      "IsaScope": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "example": "sample",
+        "description": "The ISA entity the user is currently working on in the wizard. Any ISA entity type is allowed. This includes the three hierarchy levels (`investigation`, `study`, `assay`) and entities within them, such as `source`, `sample`, `protocol`, `process`, `material`, `data_file`, `factor`, `person`, `publication` or `ontology_annotation`. Values are lowercase, with underscores between words, matching the entity names in the ISA model. MetaBuddy uses this value to limit its response to what is relevant for that entity. If MetaBuddy does not recognise a value, it still accepts it and gives a general response instead of rejecting the request.\n"
+      },
+      "IsaJson": {
+        "type": "object",
+        "description": "Partial or complete ISA-JSON object representing the user's current metadata state. Follows the ISA-JSON specification: https://isa-specs.readthedocs.io/en/latest/isajson.html\n",
+        "additionalProperties": true,
+        "example": {
+          "identifier": "STUDY-001",
+          "title": "Drought stress in Arabidopsis thaliana",
+          "studyDesignDescriptors": [
+            {
+              "annotationValue": "drought stress design",
+              "termSource": "EFO",
+              "termAccession": "http://www.ebi.ac.uk/efo/EFO_0001272"
+            }
+          ]
+        }
+      },
+      "OntologyTerm": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "example": "drought stress design"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "example": "http://www.ebi.ac.uk/efo/EFO_0001272"
+          },
+          "source": {
+            "type": "string",
+            "description": "Ontology abbreviation, e.g. EFO, OBI, PATO, ENVO, TO, CO",
+            "example": "EFO"
+          }
+        }
+      },
+      "ValidationIssue": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "ISA-JSON path of the affected field using dot/bracket notation.\n",
+            "example": "studies[0].studyDesignDescriptors"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "suggestion"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "example": "studyDesignDescriptors is required for MIAPPE compliance."
+          },
+          "suggestion": {
+            "type": "string",
+            "description": "Optional LLM-generated corrective suggestion.",
+            "example": "Consider adding a descriptor such as 'drought stress design' (EFO:0001272).\n"
+          }
+        }
+      },
+      "ConvertResponse": {
+        "type": "object",
+        "properties": {
+          "isaJson": {
+            "$ref": "#/components/schemas/IsaJson"
+          },
+          "confidence": {
+            "type": "object",
+            "description": "Map of ISA-JSON field paths to confidence scores (0.0–1.0). ISA Wizard can use these to visually flag fields that need human review (e.g. highlight fields below 0.7).\n",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "example": {
+              "studies[0].title": 0.95,
+              "studies[0].studyDesignDescriptors": 0.62,
+              "studies[0].studyPublications": 0.1
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "description": "ISA-JSON field paths that could not be inferred from the uploaded files and still require manual input.\n",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "studies[0].studyPublications",
+              "studies[0].studyContacts"
+            ]
+          }
+        }
+      },
+      "ValidateRequest": {
+        "type": "object",
+        "required": [
+          "isaJson",
+          "scope"
+        ],
+        "properties": {
+          "isaJson": {
+            "$ref": "#/components/schemas/IsaJson"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/IsaScope"
+          }
+        }
+      },
+      "ValidateResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "True only if no issues of severity 'error' were found within the given scope.\n"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            }
+          }
+        }
+      },
+      "ExplainRequest": {
+        "type": "object",
+        "required": [
+          "field",
+          "scope"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "ISA-JSON path of the field the user is asking about. Pass an empty string for a general introduction to the scope level.\n",
+            "example": "studies[0].studyDesignDescriptors"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/IsaScope"
+          },
+          "userQuestion": {
+            "type": "string",
+            "description": "Optional freeform question from the user. If omitted, MetaBuddy returns a generic explanation of the field.\n",
+            "example": "What kind of values are expected here for a field experiment?"
+          },
+          "isaJson": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IsaJson"
+              }
+            ],
+            "description": "Current ISA-JSON state so the explanation can be tailored to what the user has already filled in.\n"
+          }
+        }
+      },
+      "ExplainResponse": {
+        "type": "object",
+        "properties": {
+          "explanation": {
+            "type": "string",
+            "description": "LLM-generated explanation contextualised to the user's ISA state."
+          },
+          "examples": {
+            "type": "array",
+            "description": "Concrete example values relevant to the field.",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "drought stress design (EFO:0001272)",
+              "factorial design (EFO:0001426)"
+            ]
+          },
+          "ontologyTerms": {
+            "type": "array",
+            "description": "Suggested ontology terms if the field expects controlled vocabulary, ordered by relevance.\n",
+            "items": {
+              "$ref": "#/components/schemas/OntologyTerm"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "invalid_request"
+          },
+          "detail": {
+            "type": "string",
+            "example": "The 'scope' field is required."
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/convert": {
+      "post": {
+        "summary": "Convert uploaded files to ISA-JSON",
+        "description": "The user uploads one or more files they consider relevant (lab notebooks, metadata spreadsheets, protocols, README files). MetaBuddy extracts and maps content to the ISA schema at the given scope level, returning a partial or complete ISA-JSON.\nIf `existingIsa` is supplied, MetaBuddy merges extracted information into the existing structure rather than generating from scratch.\n**Suggested supported file types:** PDF, XLSX, CSV, DOCX, TXT. Maximum file size per upload to be agreed with the MetaBuddy team.\n",
+        "operationId": "convertFilesToIsa",
+        "tags": [
+          "Assist"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "scope",
+                  "files"
+                ],
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "description": "Optional free-text instruction that guides the conversion, e.g. what information to extract, which files to prioritise, or how to interpret ambiguous content. If omitted, MetaBuddy performs a default extraction for the given `scope`. The prompt refines the conversion but cannot extend it beyond `scope`.\n",
+                    "example": "Fill in the study design and growth conditions from the attached protocol; ignore the raw data sheets."
+                  },
+                  "scope": {
+                    "$ref": "#/components/schemas/IsaScope"
+                  },
+                  "existingIsa": {
+                    "type": "string",
+                    "description": "JSON string of existing ISA-JSON to extend (optional). MetaBuddy will fill gaps rather than overwrite existing values.\n",
+                    "example": "{\"identifier\":\"STUDY-001\",\"title\":\"My study\"}"
+                  },
+                  "files": {
+                    "type": "array",
+                    "description": "One or more files to extract metadata from.",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conversion succeeded. Returns extracted ISA-JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConvertResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key."
+          },
+          "413": {
+            "description": "One or more uploaded files exceed the size limit."
+          },
+          "422": {
+            "description": "Files received but no ISA content could be extracted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validate": {
+      "post": {
+        "summary": "Validate ISA-JSON at a given scope level",
+        "description": "Checks the provided ISA-JSON for completeness and correctness within the given scope. Combines rule-based checks (required fields, controlled vocabulary) with LLM-generated contextual suggestions.\nErrors indicate missing required fields or invalid values. Warnings indicate potential issues. Suggestions are optional improvements.\n",
+        "operationId": "validateIsa",
+        "tags": [
+          "Assist"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateRequest"
+              },
+              "example": {
+                "scope": "study",
+                "isaJson": {
+                  "identifier": "STUDY-001",
+                  "title": "Drought stress in Arabidopsis thaliana",
+                  "studyDesignDescriptors": []
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation result with structured issue list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateResponse"
+                },
+                "example": {
+                  "valid": false,
+                  "issues": [
+                    {
+                      "field": "studies[0].studyDesignDescriptors",
+                      "severity": "error",
+                      "message": "studyDesignDescriptors must contain at least one entry.",
+                      "suggestion": "Add a descriptor such as 'drought stress design' (EFO:0001272).\n"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key."
+          }
+        }
+      }
+    },
+    "/explain": {
+      "post": {
+        "summary": "Explain an ISA field or answer a user question",
+        "description": "Returns a contextual explanation of a specific ISA field, optionally answering a freeform user question typed in the ISA Wizard UI.\nThe current ISA-JSON state should be passed as `isaJson` so that MetaBuddy can tailor the explanation — for example, recommending ontology terms relevant to the organism or experiment type already recorded.\nIf `field` is an empty string and `userQuestion` is provided, this acts as general freeform Q&A scoped to the current ISA level.\n",
+        "operationId": "explainField",
+        "tags": [
+          "Assist"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExplainRequest"
+              },
+              "example": {
+                "scope": "study",
+                "field": "studies[0].studyDesignDescriptors",
+                "userQuestion": "What values are expected here for a field experiment?",
+                "isaJson": {
+                  "identifier": "STUDY-001",
+                  "title": "Drought stress in Arabidopsis thaliana"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Explanation with optional examples and ontology suggestions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExplainResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key."
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Assist",
+      "description": "Stateless assist calls: file-to-ISA conversion, ISA-JSON validation, and contextual field explanation. Each call is fully self-contained.\n"
+    }
+  ]
+}

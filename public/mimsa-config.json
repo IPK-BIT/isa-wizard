@@ -7,15 +7,21 @@
 		"showConsole": true
 	},
 	"integrations": {
+		"metabuddy": {
+			"baseUrl": "http://localhost:4010",
+			"apiKey": "dev-key",
+			"timeoutMs": 60000,
+			"confidenceThreshold": 0.7,
+			"features": {
+				"explain": true,
+				"ask": true,
+				"convert": true,
+				"validate": true
+			}
+		},
 		"ts": {
 			"api": "https://api.terminology.tib.eu/api/",
 			"parameter": "collection=DataPLANT"
-		},
-		"fairdom": {
-			"url": "https://testing.sysmo-db.org",
-			"clientId": "UodZp3TiZ5L0YiOYNKC7PugYsGXDSbA-LsCHd0MqzwQ",
-			"scope": "write",
-			"token": "mUlvrc9ykQzwlnNQhZUJAJEfKemsJVyi1nVqXBAf"
 		}
 	},
 	"templates": {
