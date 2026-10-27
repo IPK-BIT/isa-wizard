@@ -15,7 +15,6 @@
 	import Tree from './components/layout/Tree.svelte';
 	import InitView from './components/layout/InitView.svelte';
 	import type { ISAInvestigationSchema } from './lib/types/isa.generated';
-	import { requestToken, verifyState } from '$lib/auth/oauth';
 
 	onMount(() => {
 		$isaObj = Schema.getObjectFromSchema('investigation') as ISAInvestigationSchema;

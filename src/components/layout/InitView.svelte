@@ -2,7 +2,6 @@
 	import { updateAppstate } from '$lib/appstate.svelte';
 	import { isaObj } from '$stores/isa';
 	import logo from '$assets/logo.png';
-	import { authorizeClient } from '$lib/auth/oauth';
 
 	let { config } = $props();
 
@@ -39,22 +38,6 @@
 		input.click();
 	}
 
-	async function startAuthFlow() {
-		if (config['integrations'].fairdom.token) {
-			localStorage.setItem('fairdom_access_token', config['integrations'].fairdom.token);
-
-			updateAppstate({ mode: 'gui' });
-		} else {
-			authorizeClient(
-				`${config['integrations']['fairdom'].url}/oauth`,
-				config['integrations']['fairdom'].clientId,
-				window.location.origin,
-				'code',
-				config['integrations']['fairdom'].scope,
-				'S256'
-			);
-		}
-	}
 </script>
 
 <section class="flex h-[90vh] w-full items-center justify-center">
@@ -65,7 +48,6 @@
 		<div class="card-body space-y-2">
 			<h2 class="mx-auto text-4xl font-bold">ISA Wizard</h2>
 			<div class="flex flex-col space-y-1">
-				<button class="btn btn-primary" onclick={startAuthFlow}>Login</button>
 				<button class="btn btn-secondary" onclick={startQuestionnaire}>Start Questionnaire</button>
 				<button class="btn btn-secondary" onclick={loadIsaJson}>Load ISA JSON</button>
 			</div>
