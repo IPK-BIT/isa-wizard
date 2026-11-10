@@ -7,7 +7,16 @@ import type { ISAInvestigationSchema } from './isa.generated';
 export interface FieldConfig {
 	label: string;
 	type: string;
-	isaMapping: { jsonPath: string };
+	isaMapping: {
+		jsonPath: string;
+		/** The field is stored in the comment of this name inside the `jsonPath` array */
+		commentName?: string;
+		/**
+		 * For composed fields that edit several comments together (e.g. `coordinates`):
+		 * the comment name of each part, keyed by the part's name.
+		 */
+		commentNames?: Record<string, string>;
+	};
 	explanation: string;
 	metabuddy?: boolean;
 }

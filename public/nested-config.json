@@ -1,24 +1,12 @@
 {
 	"general": {
-		"name": "MIAPPE Wizard",
+		"name": "ISA Wizard",
 		"layoutMode": "standalone",
 		"initialView": "init",
 		"showQuestionnaireProgressBar": true,
 		"showConsole": true
 	},
 	"integrations": {
-		"metabuddy": {
-			"baseUrl": "http://localhost:4010",
-			"apiKey": "dev-key",
-			"timeoutMs": 60000,
-			"confidenceThreshold": 0.7,
-			"features": {
-				"explain": true,
-				"ask": true,
-				"convert": true,
-				"validate": true
-			}
-		},
 		"ts": {
 			"api": "https://api.terminology.tib.eu/api/",
 			"parameter": "collection=DataPLANT"
@@ -52,14 +40,12 @@
 							"label": "Investigation Title",
 							"type": "text",
 							"isaMapping": { "jsonPath": "title" },
-							"metabuddy": true,
 							"explanation": "A descriptive title for your investigation."
 						},
 						{
 							"label": "Investigation Description",
 							"type": "textarea",
 							"isaMapping": { "jsonPath": "description" },
-							"metabuddy": true,
 							"explanation": "A description of your investigation."
 						},
 						{
@@ -78,8 +64,13 @@
 							"label": "License",
 							"type": "license",
 							"isaMapping": { "jsonPath": "comments", "commentName": "License" },
-							"metabuddy": true,
 							"explanation": "The license under which your investigation is released."
+						},
+						{
+							"label": "Keywords",
+							"type": "stringlist",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Keywords" },
+							"explanation": "Keywords that discribe the specific research area or the topic(s) of the investigation."
 						}
 					]
 				},
@@ -109,12 +100,85 @@
 				}
 			]
 		},
-		"phenotyping-study": {
+		"mimsa-study": {
 			"metadata": {
 				"type": "study",
-				"code": "phenotyping-study",
-				"label": "Phenotyping Study",
-				"description": "A study represents a unit of research within your investigation. You can have multiple studies, each with its own set of assays. Please provide the necessary information for each study you want to include in your investigation."
+				"code": "mimsa-study",
+				"label": "MIMSA Study",
+				"description": "A study following the MIMSA standard."
+			},
+			"steps": [
+				{
+					"title": "Study Information",
+					"texts": ["Please provide the following information about your study."],
+					"fields": [
+						{
+							"label": "Study Identifier",
+							"type": "text",
+							"isaMapping": { "jsonPath": "identifier" },
+							"explanation": "A descriptive identifier for your study."
+						},
+						{
+							"label": "Study Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "title" },
+							"explanation": "A descriptive title for your study."
+						},
+						{
+							"label": "Study Description",
+							"type": "textarea",
+							"isaMapping": { "jsonPath": "description" },
+							"explanation": "A description of your study."
+						},
+						{
+							"label": "Study Project",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Project"},
+							"explanation": "The referred project, the study, the founder, or a collective that is working on this study."
+						},
+						{
+							"label": "Contact Institute",
+							"type": "rorid",
+							"isaMapping": { "jsonPath": "comments", "commentName": "Study Contact Institution"},
+							"explanation": "The name and address of the institution responsible for the study. It's recommended to include a ROR."
+						},
+						{
+							"label": "Experimental Design",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "studyDesignDescriptors[0]" },
+							"explanation": "The experimental design of the study."
+						}
+					]
+				},
+				{
+					"title": "Study People",
+					"texts": ["Please provide information about the persons involved in your study."],
+					"component": {
+						"type": "people",
+						"isaMapping": { "jsonPath": "people" },
+						"metabuddy": { "convert": true },
+						"label": "Authors",
+						"explanation": "Add people involved in your study."
+					}
+				},
+				{
+					"title": "Protocols",
+					"texts": ["Please provide information about the protocols used in your study."],
+					"component": {
+						"type": "protocols",
+						"isaMapping": { "jsonPath": "protocols" },
+						"label": "Protocols",
+						"explanation": "Add protocols used in your study."
+					}
+				}
+			]
+		},
+		"miappe-study": {
+			"metadata": {
+				"type": "study",
+				"code": "miappe-study",
+				"label": "MIAPPE Study",
+				"description": "A study following the MIAPPE standard."
 			},
 			"steps": [
 				{
@@ -195,22 +259,17 @@
 							"explanation": "The site where your study was conducted."
 						},
 						{
-							"label": "Study Latitude",
-							"type": "text",
-							"isaMapping": { "jsonPath": "comments", "commentName": "Study Latitude" },
-							"explanation": "The latitude of the study location."
-						},
-						{
-							"label": "Study Longitude",
-							"type": "text",
-							"isaMapping": { "jsonPath": "comments", "commentName": "Study Longitude" },
-							"explanation": "The longitude of the study location."
-						},
-						{
-							"label": "Study Altitude",
-							"type": "text",
-							"isaMapping": { "jsonPath": "comments", "commentName": "Study Altitude" },
-							"explanation": "The altitude of the study location."
+							"label": "Study Coordinates",
+							"type": "coordinates",
+							"isaMapping": {
+								"jsonPath": "comments",
+								"commentNames": {
+									"latitude": "Study Latitude",
+									"longitude": "Study Longitude",
+									"altitude": "Study Altitude"
+								}
+							},
+							"explanation": "The location of the study: latitude and longitude in decimal degrees, altitude in metres."
 						},
 						{
 							"label": "Study Design Description",

@@ -38,6 +38,9 @@ function createIsaStoresSynced() {
 			keyed: (lvl: string) => keyed(storesSynced.isaObj, lvl),
 			keyedComments: (jsonPath: string, commentName: string) => {
 				return {} as any;
+			},
+			keyedCommentGroup: (jsonPath: string, commentNames: Record<string, string>) => {
+				return {} as any;
 			}
 		},
 		isaStr: {
@@ -92,6 +95,60 @@ function createIsaStoresSynced() {
 			subscribe: derivedComments.subscribe,
 			update,
 			set
+		};
+	};
+
+	/**
+	 * Several comments of one `comments` array as a single object store, e.g.
+	 * `{ latitude: 'Study Latitude', ... }` <-> `{ latitude: '48.85', ... }`. Used by composed
+	 * widgets that edit a few related comments together. Keys missing on `set` are left untouched.
+	 */
+	storesSynced.isaObj.keyedCommentGroup = (
+		jsonPath: string,
+		commentNames: Record<string, string>
+	) => {
+		const keyedComments = keyed(storesSynced.isaObj, jsonPath);
+
+		const derivedGroup = derived(keyedComments, ($comments) => {
+			const list = Array.isArray($comments) ? $comments : [];
+			return Object.fromEntries(
+				Object.entries(commentNames).map(([key, name]) => [
+					key,
+					list.find((c: { name: string; value: string }) => c.name === name)?.value ?? ''
+				])
+			) as Record<string, string>;
+		});
+
+		const set = (values: Record<string, string>) => {
+			keyedComments.update(($comments) => {
+				const commentsList = Array.isArray($comments) ? [...$comments] : [];
+				for (const [key, name] of Object.entries(commentNames)) {
+					if (!(key in values)) continue;
+					const value = values[key] ?? '';
+					const comment = commentsList.find(
+						(c: { name: string; value: string }) => c.name === name
+					);
+					if (comment) {
+						comment.value = value;
+					} else {
+						const newComment = Schema.getObjectFromSchema('comment');
+						newComment!.name = name;
+						newComment!.value = value;
+						commentsList.push(newComment);
+					}
+				}
+				return commentsList;
+			});
+		};
+
+		return {
+			subscribe: derivedGroup.subscribe,
+			set,
+			update: (fn: (v: Record<string, string>) => Record<string, string>) => {
+				let current: Record<string, string> = {};
+				derivedGroup.subscribe((v) => (current = v))();
+				set(fn(current));
+			}
 		};
 	};
 	return storesSynced;

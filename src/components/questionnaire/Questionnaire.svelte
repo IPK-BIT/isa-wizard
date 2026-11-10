@@ -59,6 +59,7 @@
 									label={field.label}
 									attr={field.isaMapping.jsonPath}
 									attr2={field.isaMapping.commentName}
+									commentNames={field.isaMapping.commentNames}
 									explanation={field.explanation}
 									type={field.type}
 									metabuddy={field.metabuddy}

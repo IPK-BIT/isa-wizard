@@ -10,6 +10,7 @@
 		label = '',
 		attr,
 		attr2 = undefined,
+		commentNames = undefined,
 		explanation = '',
 		showLabel = true,
 		type,
@@ -19,8 +20,18 @@
 	// Absolute path of the field from the document root, e.g. `studies[0].title`
 	const path = $derived(joinIsaPath(getAppstate().isaLvl, attr));
 
+	// Composed fields (`commentNames`) edit several comments as one object
 	let value = $derived.by(() =>
-		attr2 != null ? isaObj.keyedComments(path, attr2) : isaObj.keyed(path)
+		commentNames != null
+			? isaObj.keyedCommentGroup(path, commentNames)
+			: attr2 != null
+				? isaObj.keyedComments(path, attr2)
+				: isaObj.keyed(path)
+	);
+
+	// Every comment the field is stored in. `undefined` stands for a field without a comment.
+	const commentList: (string | undefined)[] = $derived(
+		commentNames != null ? Object.values(commentNames) : [attr2]
 	);
 
 	// Metabuddy hooks. Everything Metabuddy is loaded on demand, so a disabled feature costs nothing.
@@ -33,7 +44,12 @@
 		if (features?.convert && !review)
 			import('$lib/metabuddy/review.svelte').then((m) => (review = m));
 	});
-	const hint = $derived(review?.needsReview(path, attr2));
+	const hint = $derived.by(() => {
+		const hints = commentList.map((name) => review?.needsReview(path, name)).filter(Boolean);
+		if (!hints.length) return undefined;
+		const scores = hints.map((h) => h?.score).filter((score) => score !== undefined) as number[];
+		return scores.length ? { score: Math.min(...scores) } : {};
+	});
 
 	// DOM events only come from the user, a conversion writes into the store without any. The
 	// explain button and the badge sit outside of the element that listens.
@@ -46,7 +62,7 @@
 		) {
 			return;
 		}
-		review?.clearReview(path, attr2);
+		for (const name of commentList) review?.clearReview(path, name);
 	}
 </script>
 
@@ -69,7 +85,7 @@
 				<!-- Next to the legend row of the field, which every field type renders first -->
 				<div class="absolute top-0 right-0 flex items-center gap-1">
 					{#if hint}{@render badge()}{/if}
-					{#if features?.explain && metabuddy}
+					{#if features?.explain && metabuddy && commentNames == null}
 						{#await import('$components/metabuddy/FieldExplain.svelte') then { default: FieldExplain }}
 							<FieldExplain {label} {path} commentName={attr2} />
 						{/await}

@@ -7,18 +7,6 @@
 		"showConsole": true
 	},
 	"integrations": {
-		"metabuddy": {
-			"baseUrl": "http://localhost:4010",
-			"apiKey": "dev-key",
-			"timeoutMs": 60000,
-			"confidenceThreshold": 0.7,
-			"features": {
-				"explain": true,
-				"ask": true,
-				"convert": true,
-				"validate": true
-			}
-		},
 		"ts": {
 			"api": "https://api.terminology.tib.eu/api/",
 			"parameter": "collection=DataPLANT"

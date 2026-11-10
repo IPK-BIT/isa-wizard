@@ -13,6 +13,10 @@ import String from '$components/isa/singleton/String.svelte';
 import Textarea from '$components/isa/singleton/Textarea.svelte';
 import ProcessSequence from '$components/isa/collection/ProcessSequence.svelte';
 import DataFiles from '$components/isa/collection/DataFiles.svelte';
+import StringList from '$components/isa/singleton/StringList.svelte';
+import Coordinates from '$components/isa/composed/Coordinates.svelte';
+import Rorid from '$components/isa/singleton/Rorid.svelte';
+import Number from '$components/isa/singleton/Number.svelte';
 
 /**
  * BrAPI Components
@@ -29,7 +33,11 @@ export const fieldTypes = {
 	license: License,
 	ontologyAnnotation: OntologyAnnotation,
 	text: String,
-	textarea: Textarea
+	textarea: Textarea,
+	stringlist: StringList,
+	rorid: Rorid,
+	number: Number,
+	coordinates: Coordinates,
 };
 
 export const componentTypes = {
