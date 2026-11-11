@@ -168,7 +168,137 @@
 						"type": "protocols",
 						"isaMapping": { "jsonPath": "protocols" },
 						"label": "Protocols",
-						"explanation": "Add protocols used in your study."
+						"explanation": "Add protocols used in your study.",
+						"default": [
+							{
+								"@id": "",
+								"name": "",
+								"protocolType": {
+									"@id": "",
+									"annotationValue": "",
+									"termSource": "",
+									"termAccession": "",
+									"comments": []
+								},
+								"description": "",
+								"uri": "",
+								"version": "",
+								"parameters": [
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "Study Start Date",
+											"termSource": "NCIT",
+											"termAccession": "http://purl.obolibrary.org/obo/NCIT_C69208",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "Study Completion Date",
+											"termSource": "NCIT",
+											"termAccession": "http://purl.obolibrary.org/obo/NCIT_C142702",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "Country of Investigational Site",
+											"termSource": "NCIT",
+											"termAccession": "http://purl.obolibrary.org/obo/NCIT_C170990",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "Short Site Name",
+											"termSource": "NCIT",
+											"termAccession": "http://purl.obolibrary.org/obo/NCIT_C166277",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "latitude",
+											"termSource": "SIO",
+											"termAccession": "http://semanticscience.org/resource/SIO_000319",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "longitude",
+											"termSource": "SIO",
+											"termAccession": "http://semanticscience.org/resource/SIO_000318",
+											"comments": []
+										},
+										"comments": []
+									},
+									{
+										"@id": "",
+										"parameterName": {
+											"@id": "",
+											"annotationValue": "altitude",
+											"termSource": "SIO",
+											"termAccession": "http://semanticscience.org/resource/SIO_000438",
+											"comments": []
+										},
+										"comments": []
+									}
+								],
+								"components": [],
+								"comments": []
+							}
+						],
+						"locked": true
+					}
+				},
+				{
+					"title": "Materials",
+					"texts": [
+						"Please provide information about the materials used in your study."
+					],
+					"component": {
+						"type": "entities",
+						"isaMapping": { "jsonPath": "materials" },
+						"label": "Materials",
+						"explanation": "Add materials used in your study.",
+						"entityLabels": {
+							"sources": "Source",
+							"materials": "Sample",
+							"samples": "Observation Unit"
+						},
+						"templateHeaders": {
+							"sources": ["SourceId", "SourceExtId", "SourceDesc", "SourceOrganism", "SourceGenus", "SourceSpecies", "SourceSubspecies", "SourceBreed", "SourcePreprocessing"],
+							"materials": ["sampleId", "externalId", "sampleDesc", "developmentStage", "anatomicalEntity", "collectionDate"],
+							"samples": ["obsUnitId", "obsUnitType", "obsUnitFactorValue", "obsUnitSex", "obsUnitDate_of_birth", "obsUnitAnimal_number", "obsStartDate", "obsEndDate"]
+						}
+					}
+				},
+				{
+					"title": "Processing",
+					"texts": ["Please provide information how the material was processed in your study."],
+					"component": {
+						"type": "processes",
+						"isaMapping": { "jsonPath": "processSequence" },
+						"label": "Process Sequence",
+						"explanation": "Add Proccesses to your study."
 					}
 				}
 			]
@@ -328,7 +458,12 @@
 						"type": "entities",
 						"isaMapping": { "jsonPath": "materials" },
 						"label": "Materials",
-						"explanation": "Add materials used in your study."
+						"explanation": "Add materials used in your study.",
+						"templateHeaders": {
+							"sources": ["Source Name", "Organism", "Accession Number"],
+							"materials": ["Material Name", "Organism", "Genus", "Species"],
+							"samples": ["Sample Name", "Source Name", "Plot", "Replicate"]
+						}
 					}
 				},
 				{
@@ -400,7 +535,12 @@
 						"type": "entities",
 						"isaMapping": { "jsonPath": "materials" },
 						"label": "Materials",
-						"explanation": "Add materials used in your study."
+						"explanation": "Add materials used in your study.",
+						"templateHeaders": {
+							"sources": ["Source Name", "Organism", "Accession Number"],
+							"materials": ["Material Name", "Organism", "Genus", "Species"],
+							"samples": ["Sample Name", "Source Name", "Plot", "Replicate"]
+						}
 					}
 				},
 				{
@@ -482,7 +622,12 @@
 						"type": "entities",
 						"isaMapping": { "jsonPath": "materials" },
 						"label": "Materials",
-						"explanation": "Add materials used in your study."
+						"explanation": "Add materials used in your study.",
+						"templateHeaders": {
+							"sources": ["Source Name", "Organism", "Accession Number"],
+							"materials": ["Material Name", "Organism", "Genus", "Species"],
+							"samples": ["Sample Name", "Source Name", "Plot", "Replicate"]
+						}
 					}
 				},
 				{
