@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getAppstate, updateAppstate } from '$lib/appstate.svelte';
 	import Schema from '$lib/schemas';
+	import { applyTemplateDefaults } from '$lib/util/templateDefaults';
 	import { isaObj } from '$stores/isa';
 	import BreadcrumbWidget from '$components/ts4nfdi/BreadcrumbWidget.svelte';
 	import EditAsButton from '$components/gui/building-blocks/EditAsButton.svelte';
@@ -17,6 +18,11 @@
 		let emptyObj = Schema.getObjectFromSchema('assay');
 		study.assays = [...(study.assays ?? []), emptyObj];
 		study = study; // trigger reactivity
+
+		applyTemplateDefaults(
+			template,
+			getAppstate().isaLvl + '.assays[' + (study.assays.length - 1) + ']'
+		);
 
 		updateAppstate({
 			template: template.metadata.code,

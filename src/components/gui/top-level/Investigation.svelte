@@ -7,6 +7,7 @@
 	import { isaObj } from '$stores/isa';
 	import { updateAppstate } from '$lib/appstate.svelte';
 	import Schema from '$lib/schemas';
+	import { applyTemplateDefaults } from '$lib/util/templateDefaults';
 
 	let { config, value = $bindable() } = $props();
 
@@ -19,6 +20,8 @@
 
 		$isaObj.studies = [...($isaObj.studies ?? []), emptyObj];
 		$isaObj = $isaObj; // trigger reactivity
+
+		applyTemplateDefaults(template, 'studies[' + ($isaObj.studies!.length - 1) + ']');
 
 		updateAppstate({
 			template: template.metadata.code,

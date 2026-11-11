@@ -10,6 +10,7 @@
 
 	import { isaObj, isaStr } from './stores/isa';
 	import Schema from './lib/schemas';
+	import { applyTemplateDefaults } from './lib/util/templateDefaults';
 	import { getAppstate, updateAppstate } from './lib/appstate.svelte';
 	import Gui from './components/gui/Gui.svelte';
 	import Tree from './components/layout/Tree.svelte';
@@ -68,6 +69,7 @@
 			// Initialize responses object with empty values for all fields
 			if (wizardConfig) {
 				setConfig(wizardConfig);
+				applyTemplateDefaults(wizardConfig.templates[wizardConfig.rootTemplate]);
 				updateAppstate({
 					template: wizardConfig.rootTemplate,
 					mode: wizardConfig.general.initialView
