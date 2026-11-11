@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Schema from '$lib/schemas';
 	import MaterialUpload from '$components/util/MaterialUpload.svelte';
+	import EntitySelectModal from '$components/util/EntitySelectModal.svelte';
+	import { appendUniqueEntities } from '$lib/util/entityImport.svelte';
 
 	let {
 		label = 'Samples',
@@ -9,8 +11,17 @@
 		value = $bindable(),
 		showLabel = true
 	,
-		templateHeaders = undefined
-	} = $props();
+		templateHeaders = undefined,
+		studyItems = undefined
+	}: { [key: string]: any; studyItems?: any[] } = $props();
+
+	const studyOptions = $derived(
+		(studyItems ?? []).map((item) => ({ item, type: 'Sample' as const }))
+	);
+
+	function importFromStudy(selected: any[]) {
+		value = appendUniqueEntities(value, selected);
+	}
 
 	const displayLabel = $derived(label || attr);
 
@@ -48,6 +59,16 @@
 			class="rounded-md border p-4"
 			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 		>
+			{#if studyItems}
+				<div class="mb-3">
+					<EntitySelectModal
+						label="Sample from Study"
+						availableItems={studyOptions}
+						allowedTypes={['Sample']}
+						onapprove={importFromStudy}
+					/>
+				</div>
+			{/if}
 			<MaterialUpload type="sample" {templateHeaders} onapprove={importSamples} />
 		</div>
 
