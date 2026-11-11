@@ -36,7 +36,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          cp dist/*.js dist/style.css _site/
+          cp dist/*.mjs dist/*.js dist/style.css _site/
           cp demo/index.html _site/
           cp public/nested-config.json public/favicon.png _site/
 
