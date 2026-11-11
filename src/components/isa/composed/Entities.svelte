@@ -2,6 +2,8 @@
 	import { getAppstate } from '$lib/appstate.svelte';
 	import Materials from '$components/isa/collection/Materials.svelte';
 	import Samples from '$components/isa/collection/Samples.svelte';
+	import { isaObj } from '$stores/isa';
+	import { parseIsaLvl } from '$lib/util/breadcrumbUtils';
 	import Sources from '$components/isa/collection/Sources.svelte';
 
 	let {
@@ -14,6 +16,14 @@
 		entityLabels = undefined,
 		onRemove
 	} = $props();
+
+	const parsed = $derived(parseIsaLvl(getAppstate().isaLvl));
+	const isAssay = $derived(parsed.level === 'assay');
+	const studyMaterials = $derived(
+		isAssay && parsed.studyIndex !== undefined
+			? ($isaObj.studies?.[parsed.studyIndex]?.materials as any)
+			: undefined
+	);
 </script>
 
 {#if !getAppstate().isaLvl.includes('assay')}
@@ -34,6 +44,7 @@
 	bind:value={materials.samples}
 	templateHeaders={templateHeaders?.samples}
 	{showLabel}
+	studyItems={isAssay ? (studyMaterials?.samples ?? []) : undefined}
 />
 
 
@@ -44,4 +55,5 @@
 	bind:value={materials.otherMaterials}
 	templateHeaders={templateHeaders?.materials}
 	{showLabel}
+	studyItems={isAssay ? (studyMaterials?.otherMaterials ?? []) : undefined}
 />
