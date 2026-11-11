@@ -7,7 +7,8 @@
 		attr,
 		explanation = '',
 		value: files = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -35,7 +36,12 @@
 		<div class="space-y-4">
 			{#if files && files.length > 0}
 				{#each files as _, i (i)}
-					<Data label="Data" attr="" bind:value={files[i]} onRemove={() => removeDataFile(i)} />
+					<Data
+						label="Data"
+						attr=""
+						bind:value={files[i]}
+						onRemove={i < lockedCount ? undefined : () => removeDataFile(i)}
+					/>
 				{/each}
 			{:else}
 				<p class="label text-neutral/75 italic">No files added yet</p>

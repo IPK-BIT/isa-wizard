@@ -14,7 +14,12 @@
 		explanation = '',
 		showLabel = true,
 		type,
-		metabuddy = false
+		metabuddy = false,
+		locked = false,
+		lockedCount = 0,
+		lockedItems = undefined,
+		templateHeaders = undefined,
+		entityLabels = undefined
 	} = $props();
 
 	// Absolute path of the field from the document root, e.g. `studies[0].title`
@@ -103,7 +108,10 @@
 				onchange={edited}
 				onclick={edited}
 			>
-				<Component {label} {attr} {explanation} {showLabel} bind:value={$value} />
+				<!-- A disabled fieldset makes every input inside of it read-only -->
+				<fieldset disabled={locked} class="contents">
+					<Component {label} {attr} {explanation} {showLabel} {...{ lockedCount, lockedItems, templateHeaders, entityLabels }} bind:value={$value} />
+				</fieldset>
 			</div>
 		</div>
 	{/if}

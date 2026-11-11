@@ -7,7 +7,8 @@
 		attr,
 		explanation = '',
 		value = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -43,7 +44,7 @@
 						attr={`component[${index}]`}
 						bind:value={value[index]}
 						showLabel={false}
-						onRemove={() => removeComponent(index)}
+						onRemove={index < lockedCount ? undefined : () => removeComponent(index)}
 					/>
 				{/each}
 			{:else}

@@ -7,7 +7,9 @@
 		attr,
 		explanation = '',
 		value = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0,
+		lockedItems = undefined
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -40,7 +42,8 @@
 						attr={`protocol[${index}]`}
 						bind:value={value[index]}
 						showLabel={false}
-						onRemove={() => removeProtocol(index)}
+						lockedParameters={lockedItems?.[index]?.parameters?.length ?? 0}
+						onRemove={index < lockedCount ? undefined : () => removeProtocol(index)}
 					/>
 				{/each}
 			{:else}

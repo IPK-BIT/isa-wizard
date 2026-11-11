@@ -7,7 +7,8 @@
 		attr,
 		explanation = '',
 		value = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -38,13 +39,16 @@
 		>
 			{#if value && value.length > 0}
 				{#each value as _, index (index)}
-					<Parameter
-						label={`Parameter ${index + 1}`}
-						attr={`parameter[${index}]`}
-						bind:value={value[index]}
-						showLabel={false}
-						onRemove={() => removeParameter(index)}
-					/>
+					<!-- A disabled fieldset makes every input and button inside of it read-only -->
+					<fieldset disabled={index < lockedCount} class="contents">
+						<Parameter
+							label={`Parameter ${index + 1}`}
+							attr={`parameter[${index}]`}
+							bind:value={value[index]}
+							showLabel={false}
+							onRemove={index < lockedCount ? undefined : () => removeParameter(index)}
+						/>
+					</fieldset>
 				{/each}
 			{:else}
 				<p class="label text-gray-500 italic">No parameters added yet</p>

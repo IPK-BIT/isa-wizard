@@ -63,6 +63,7 @@
 									explanation={field.explanation}
 									type={field.type}
 									metabuddy={field.metabuddy}
+									locked={field.locked}
 								/>
 							{/if}
 						{/each}
@@ -76,6 +77,14 @@
 							attr={config.steps[getAppstate().currentStepIndex].component.isaMapping.jsonPath}
 							label={config.steps[getAppstate().currentStepIndex].component.label}
 							explanation={config.steps[getAppstate().currentStepIndex].component.explanation}
+							templateHeaders={config.steps[getAppstate().currentStepIndex].component.templateHeaders}
+							entityLabels={config.steps[getAppstate().currentStepIndex].component.entityLabels}
+							lockedItems={config.steps[getAppstate().currentStepIndex].component.locked
+								? config.steps[getAppstate().currentStepIndex].component.default
+								: undefined}
+							lockedCount={config.steps[getAppstate().currentStepIndex].component.locked
+								? (config.steps[getAppstate().currentStepIndex].component.default?.length ?? 0)
+								: 0}
 						/>
 						{#if convertEnabled && config.steps[getAppstate().currentStepIndex].component.metabuddy?.convert}
 							{#await import('$components/metabuddy/ConvertDropzone.svelte') then { default: ConvertDropzone }}

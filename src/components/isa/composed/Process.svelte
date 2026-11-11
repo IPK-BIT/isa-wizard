@@ -331,7 +331,9 @@
 				<button type="button" class="btn btn-secondary btn-sm" onclick={() => (isEditing = false)}>
 					View
 				</button>
-				<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}> Remove </button>
+				{#if onRemove}<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}>
+						Remove
+					</button>{/if}
 			</div>
 		</div>
 
@@ -673,7 +675,9 @@
 			<button type="button" class="btn btn-secondary btn-sm" onclick={() => (isEditing = true)}>
 				Edit
 			</button>
-			<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}>Remove</button>
+			{#if onRemove}<button type="button" class="btn btn-error btn-sm" onclick={handleRemove}
+					>Remove</button
+				>{/if}
 		</div>
 	</div>
 {/if}

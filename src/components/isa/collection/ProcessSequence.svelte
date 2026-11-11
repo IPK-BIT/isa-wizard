@@ -7,7 +7,8 @@
 		attr,
 		explanation = '',
 		value: processes = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -40,7 +41,7 @@
 						attr={`processSequence[${index}]`}
 						bind:value={processes[index]}
 						showLabel={false}
-						onRemove={() => removeProcess(index)}
+						onRemove={index < lockedCount ? undefined : () => removeProcess(index)}
 					/>
 				{/each}
 			{:else}

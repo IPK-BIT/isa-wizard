@@ -8,7 +8,8 @@
 		attr,
 		explanation = '',
 		value = $bindable(),
-		showLabel = true
+		showLabel = true,
+		lockedCount = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -41,7 +42,7 @@
 						attr={`publication[${index}]`}
 						bind:value={value[index]}
 						showLabel={false}
-						onRemove={() => removeOntologyAnnotation(index)}
+						onRemove={index < lockedCount ? undefined : () => removeOntologyAnnotation(index)}
 					/>
 				{/each}
 			{:else}

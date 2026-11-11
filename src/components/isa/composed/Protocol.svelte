@@ -13,7 +13,8 @@
 		explanation = '',
 		value: protocol = $bindable(),
 		showLabel = true,
-		onRemove
+		onRemove,
+		lockedParameters = 0
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -124,6 +125,7 @@
 				attr="parameters"
 				explanation="A list of parameters used in the protocol."
 				bind:value={protocol.parameters}
+				lockedCount={lockedParameters}
 				showLabel={true}
 			/>
 
