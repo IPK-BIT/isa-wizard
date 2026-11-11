@@ -3,7 +3,21 @@
 	import OntologyAnnotation from '$components/isa/singleton/OntologyAnnotation.svelte';
 	import Schema from '$lib/schemas';
 
-	let { type = 'material', onapprove } = $props();
+	let { type = 'material', onapprove, templateHeaders = undefined } = $props();
+
+	/** Downloads a CSV that holds only the configured header row */
+	function downloadTemplate() {
+		if (!templateHeaders?.length) return;
+		const escape = (cell: string) =>
+			/[",\n\r]/.test(cell) ? `"${cell.replaceAll('"', '""')}"` : cell;
+		const csv = templateHeaders.map(escape).join(',') + '\n';
+		const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${type}-template.csv`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 
 	let files: FileList | null = $state(null);
 	let dataframe: DataFrame | null = $state(null);
@@ -99,19 +113,24 @@
 </script>
 
 {#if !dataframe}
-	<fieldset class="fieldset">
+	<fieldset class="fieldset min-w-0">
 		<legend class="fieldset-legend">Select a CSV file</legend>
 		<input
 			id="file-input"
 			accept=".csv,text/csv"
 			type="file"
-			class="file-input w-full"
+			class="file-input w-full max-w-full min-w-0"
 			bind:files
 			onchange={handleSelect}
 		/>
 		<label for="file-input" class="label text-xs text-base-content/60"
 			>Allowed file formats: text/csv</label
 		>
+		{#if templateHeaders?.length}
+			<button type="button" class="btn w-fit btn-outline btn-xs" onclick={downloadTemplate}>
+				Download CSV template
+			</button>
+		{/if}
 	</fieldset>
 {:else}
 	<div class="flex flex-col space-y-3">

@@ -10,32 +10,38 @@
 		explanation = '',
 		value: materials = $bindable(),
 		showLabel = true,
+		templateHeaders = undefined,
+		entityLabels = undefined,
 		onRemove
 	} = $props();
 </script>
 
 {#if !getAppstate().isaLvl.includes('assay')}
 	<Sources
-		label="Material Sources"
+		label={entityLabels?.sources ?? 'Material Sources'}
 		attr={`${getAppstate().isaLvl}.${attr}.sources`}
 		explanation="The origin of the biological material (e.g. gene bank accession, in situ material like an orchard, tree material provenance including forest wild site, laboratory-specific populations)."
 		bind:value={materials.sources}
+		templateHeaders={templateHeaders?.sources}
 		{showLabel}
 	/>
 {/if}
 
-<Materials
-	label="Biological Materials"
-	attr="materials"
-	explanation="Biological materials identify and describe the plant materials used in the studies."
-	bind:value={materials.otherMaterials}
-	{showLabel}
-/>
-
 <Samples
-	label="Observation Units"
+	label={entityLabels?.samples ?? 'Observation Units'}
 	attr="samples"
 	explanation="The experimentation object on which phenotypic and environmental parameters are measured and to which experimental factors are applied."
 	bind:value={materials.samples}
+	templateHeaders={templateHeaders?.samples}
+	{showLabel}
+/>
+
+
+<Materials
+	label={entityLabels?.materials ?? 'Biological Materials'}
+	attr="materials"
+	explanation="Biological materials identify and describe the plant materials used in the studies."
+	bind:value={materials.otherMaterials}
+	templateHeaders={templateHeaders?.materials}
 	{showLabel}
 />

@@ -8,6 +8,8 @@
 		explanation = '',
 		value = $bindable(),
 		showLabel = true
+	,
+		templateHeaders = undefined
 	} = $props();
 
 	const displayLabel = $derived(label || attr);
@@ -33,20 +35,20 @@
 </script>
 
 <section>
-	<fieldset class="fieldset space-y-4">
+	<fieldset class="fieldset min-w-0 space-y-4">
 		{#if showLabel}
 			<legend class="fieldset-legend">{displayLabel}</legend>
 		{/if}
 
 		{#if explanation}
-			<p class="label">{explanation}</p>
+			<p class="label whitespace-normal">{explanation}</p>
 		{/if}
 
 		<div
 			class="rounded-md border p-4"
 			style="border-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);"
 		>
-			<MaterialUpload type="sample" onapprove={importSamples} />
+			<MaterialUpload type="sample" {templateHeaders} onapprove={importSamples} />
 		</div>
 
 		{#if value && value.length > 0}
