@@ -19,6 +19,13 @@ export interface FieldConfig {
 	};
 	explanation: string;
 	metabuddy?: boolean;
+	/**
+	 * Predefined value, written once when the entity is created from the template. Plain ISA JSON,
+	 * for fields with `commentNames` an object keyed by the part's name.
+	 */
+	default?: unknown;
+	/** The field is read-only */
+	locked?: boolean;
 }
 
 export interface ComponentConfig {
@@ -28,6 +35,23 @@ export interface ComponentConfig {
 	explanation?: string;
 	/** Opt-in per component. `convert` shows a file import under it (needs `features.convert`). */
 	metabuddy?: { convert?: boolean };
+	/** Predefined ISA JSON (usually an array), written once when the entity is created. */
+	default?: unknown;
+	/** The predefined items (the first `default.length` ones) cannot be removed. */
+	locked?: boolean;
+	/**
+	 * For the `entities` component: the column headers of the downloadable CSV template, per
+	 * entity list. Without an entry, the list offers no template download.
+	 */
+	templateHeaders?: EntityTemplateHeaders;
+	/** For the `entities` component: overrides the heading of each entity list. */
+	entityLabels?: Partial<Record<keyof EntityTemplateHeaders, string>>;
+}
+
+export interface EntityTemplateHeaders {
+	sources?: string[];
+	materials?: string[];
+	samples?: string[];
 }
 
 export interface StepConfig {
