@@ -478,6 +478,81 @@
 				}
 			]
 		},
+		"mimsa-assay": {
+			"metadata": {
+				"type": "assay",
+				"code": "mimsa-assay",
+				"label": "MIMSA Assay",
+				"description": "An assay following the MIMSA standard."
+			},
+			"steps": [
+				{
+					"title": "Assay Information",
+					"texts": ["Please provide the following information about your assay."],
+					"fields": [
+						{
+							"label": "Assay Title",
+							"type": "text",
+							"isaMapping": { "jsonPath": "comments", "commentName": "title" },
+							"explanation": "A title for your assay."
+						},
+						{
+							"label": "Assay Measurement Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "measurementType" },
+							"explanation": "The type of measurement performed in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Type",
+							"type": "ontologyAnnotation",
+							"isaMapping": { "jsonPath": "technologyType" },
+							"explanation": "The type of technology used in your assay, annotated with an ontology term."
+						},
+						{
+							"label": "Assay Technology Platform",
+							"type": "text",
+							"isaMapping": { "jsonPath": "technologyPlatform" },
+							"explanation": "The technology platform for your assay."
+						}
+					]
+				},
+				{
+					"title": "Materials",
+					"texts": ["Please provide information about the materials used in your assay."],
+					"component": {
+						"type": "entities",
+						"isaMapping": { "jsonPath": "materials" },
+						"label": "Materials",
+						"explanation": "Add materials used in your study.",
+						"templateHeaders": {
+							"sources": ["Source Name", "Organism", "Accession Number"],
+							"materials": ["Material Name", "Organism", "Genus", "Species"],
+							"samples": ["Sample Name", "Source Name", "Plot", "Replicate"]
+						}
+					}
+				},
+				{
+					"title": "Data Files",
+					"texts": ["Please provide information about the data files generated in your assay."],
+					"component": {
+						"type": "data",
+						"isaMapping": { "jsonPath": "dataFiles" },
+						"label": "Data Files",
+						"explanation": "Add data files generated in your assay."
+					}
+				},
+				{
+					"title": "Processing",
+					"texts": ["Please provide information how the material was processed in your study."],
+					"component": {
+						"type": "processes",
+						"isaMapping": { "jsonPath": "processSequence" },
+						"label": "Process Sequence",
+						"explanation": "Add Proccesses to your study."
+					}
+				}
+			]
+		},
 		"phenotyping-assay": {
 			"metadata": {
 				"type": "assay",
