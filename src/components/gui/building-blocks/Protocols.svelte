@@ -18,12 +18,14 @@
 				<tr>
 					<td class="align-top">{protocol.name}</td>
 					<td class="align-top">
-						<p>{protocol.protocolType.annotationValue}</p>
-						<BreadcrumbWidget
-							api={config['integrations'].ts.api}
-							iri={protocol.protocolType.termAccession}
-							ontologyId={protocol.protocolType.termSource}
-						/>
+						{#if protocol.protocolType?.annotationValue}
+							<p>{protocol.protocolType.annotationValue}</p>
+							<BreadcrumbWidget
+								api={config['integrations'].ts.api}
+								iri={protocol.protocolType.termAccession}
+								ontologyId={protocol.protocolType.termSource}
+							/>
+						{/if}
 					</td>
 					<td class="align-top">
 						<table class="table">
@@ -31,12 +33,14 @@
 								{#each protocol.parameters as parameter}
 									<tr>
 										<td>
-											<p>{parameter.parameterName.annotationValue}</p>
-											<BreadcrumbWidget
-												api={config['integrations'].ts.api}
-												iri={parameter.parameterName.termAccession}
-												ontologyId={parameter.parameterName.termSource}
-											/>
+											{#if parameter.parameterName?.annotationValue}
+												<p>{parameter.parameterName.annotationValue}</p>
+												<BreadcrumbWidget
+													api={config['integrations'].ts.api}
+													iri={parameter.parameterName.termAccession}
+													ontologyId={parameter.parameterName.termSource}
+												/>
+											{/if}
 										</td>
 									</tr>
 								{/each}

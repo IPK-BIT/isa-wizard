@@ -15,7 +15,7 @@
 		<tbody>
 			{#each processes as process}
 				<tr>
-					<td class="align-top">{process.executesProtocol.name}</td>
+					<td class="align-top">{process.executesProtocol?.name ?? ''}</td>
 					<td>
 						{#if process.parameterValues.length > 0}
 							<div class="overflow-x-auto">
@@ -30,12 +30,14 @@
 										{#each process.parameterValues as parameterValue}
 											<tr>
 												<td>
-													<p>{parameterValue.category.parameterName.annotationValue}</p>
-													<BreadcrumbWidget
-														api={config['integrations'].ts.api}
-														iri={parameterValue.category.parameterName.termAccession}
-														ontologyId={parameterValue.category.parameterName.termSource}
-													/>
+													{#if parameterValue.category?.parameterName?.annotationValue}
+														<p>{parameterValue.category.parameterName.annotationValue}</p>
+														<BreadcrumbWidget
+															api={config['integrations'].ts.api}
+															iri={parameterValue.category.parameterName.termAccession}
+															ontologyId={parameterValue.category.parameterName.termSource}
+														/>
+													{/if}
 												</td>
 												<td>
 													{#if parameterValue.value && parameterValue.value.annotationValue}

@@ -107,7 +107,9 @@
 </script>
 
 <fieldset class="fieldset rounded-box border border-base-300 bg-base-100 p-4">
-	<legend class="fieldset-legend">{value.category.parameterName.annotationValue}</legend>
+	<legend class="fieldset-legend">
+		{value.category?.parameterName?.annotationValue || 'Unnamed parameter'}
+	</legend>
 
 	<div class="w-full">
 		<Select

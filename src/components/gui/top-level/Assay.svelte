@@ -104,7 +104,7 @@
 			<th class="w-1/4 align-top">Technology Type</th>
 			<td>
 				<div>
-					{#if assay.technologyType.annotationValue}
+					{#if assay.technologyType?.annotationValue}
 						<span>{assay.technologyType.annotationValue}</span>
 						<BreadcrumbWidget
 							api={config['integrations'].ts.api}
