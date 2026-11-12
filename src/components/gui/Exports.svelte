@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { convertIsaJsonToArc } from '$lib/export/arc';
-	import { convertIsaJsonToIsaTab } from '$lib/export/isatab';
 	import { isaObj } from '$stores/isa';
 	import { getConfig } from '$lib/config.svelte';
 	import type { WizardConfig } from '$lib/types/Config';
@@ -45,6 +43,8 @@
 			filename: 'isa-tab-archive.zip',
 			formatBadge: 'ZIP',
 			action: async (data) => {
+				// Converters are loaded on demand to keep them out of the main bundle
+				const { convertIsaJsonToIsaTab } = await import('$lib/export/isatab');
 				return await convertIsaJsonToIsaTab(data);
 			}
 		},
@@ -63,6 +63,7 @@
 			filename: 'arc.zip',
 			formatBadge: 'ZIP',
 			action: async (data) => {
+				const { convertIsaJsonToArc } = await import('$lib/export/arc');
 				return (await convertIsaJsonToArc(data)) as Blob;
 			}
 		}

@@ -1,4 +1,4 @@
-import { buildArcFiles, isIsaSpreadsheet } from '$lib/export/arc';
+import type { ArcFile } from '$lib/export/arc';
 import {
 	toBase64,
 	type CommitAction,
@@ -7,6 +7,9 @@ import {
 	type GitlabProject,
 	type Visibility
 } from './api';
+
+/** The ARC libraries (arctrl, exceljs, ...) are ~2.5 MB, so load them only when exporting. */
+const loadArcExport = () => import('$lib/export/arc');
 
 export interface ArcTarget {
 	/** Display name of the GitLab project (the investigation title) */
@@ -50,6 +53,7 @@ async function createArc(
 	namespace: GitlabNamespace,
 	visibility: Visibility
 ): Promise<DatahubExportResult> {
+	const { buildArcFiles } = await loadArcExport();
 	const files = await buildArcFiles(investigation);
 	const project = await client.createProject({
 		name: target.name,
@@ -65,7 +69,7 @@ async function createArc(
 async function pushToEmptyProject(
 	client: GitlabClient,
 	project: GitlabProject,
-	files: Awaited<ReturnType<typeof buildArcFiles>>
+	files: ArcFile[]
 ): Promise<void> {
 	await client.commit(project.id, {
 		branch: project.default_branch || 'main',
@@ -89,6 +93,7 @@ async function proposeUpdate(
 	investigation: any,
 	project: GitlabProject
 ): Promise<DatahubExportResult> {
+	const { buildArcFiles, isIsaSpreadsheet } = await loadArcExport();
 	const files = await buildArcFiles(investigation);
 	if (project.empty_repo || !project.default_branch) {
 		await pushToEmptyProject(client, project, files);
