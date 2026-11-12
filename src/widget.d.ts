@@ -16,6 +16,20 @@ export interface MetabuddyConfig {
 	features: { explain?: boolean; ask?: boolean; convert?: boolean; validate?: boolean };
 }
 
+export interface DatahubConfig {
+	/** Base URL of the GitLab instance, e.g. `https://git.nfdi4plants.org` */
+	url: string;
+	/** Client ID of the GitLab OAuth application (non-confidential, PKCE) */
+	clientId: string;
+	/** OAuth scopes, default `api` (needed to create projects) */
+	scope?: string;
+	/**
+	 * Redirect URI registered in the GitLab OAuth application. Defaults to the host page's URL
+	 * without query and hash.
+	 */
+	redirectUri?: string;
+}
+
 export interface WizardConfig {
 	general: {
 		name: string;
@@ -26,6 +40,7 @@ export interface WizardConfig {
 	};
 	integrations?: {
 		metabuddy?: MetabuddyConfig;
+		datahub?: DatahubConfig;
 		[key: string]: unknown;
 	};
 	rootTemplate: string;

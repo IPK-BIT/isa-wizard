@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { convertIsaJsonToArc } from '$lib/export/arc';
-	import { convertIsaJsonToZip } from 'isa4js';
+	import { convertIsaJsonToIsaTab } from '$lib/export/isatab';
 	import { isaObj } from '$stores/isa';
+	import { getConfig } from '$lib/config.svelte';
+	import type { WizardConfig } from '$lib/types/Config';
+	import { datahubSession } from '$lib/datahub/session.svelte';
+	import DataHubExport from './DataHubExport.svelte';
+
+	const datahubConfig = $derived((getConfig() as Partial<WizardConfig>).integrations?.datahub);
 
 	interface ExportOption {
 		id: string;
@@ -79,7 +85,10 @@
 	}
 </script>
 
-<details class="collapse-arrow collapse mb-4 border border-base-300 bg-base-100">
+<details
+	class="collapse-arrow collapse mb-4 border border-base-300 bg-base-100"
+	open={datahubSession.returnedFromLogin}
+>
 	<summary class="collapse-title font-semibold">
 		<h2 class="text-xl font-bold tracking-tight text-base-content">Export Data</h2>
 		<p class="mt-1 text-sm text-base-content/70">Select a format to download your ISA metadata.</p>
@@ -153,6 +162,9 @@
 					</div>
 				</div>
 			{/each}
+			{#if datahubConfig?.clientId}
+				<DataHubExport config={datahubConfig} />
+			{/if}
 		</div>
 	</div>
 </details>

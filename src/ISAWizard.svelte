@@ -16,6 +16,7 @@
 	import Tree from './components/layout/Tree.svelte';
 	import InitView from './components/layout/InitView.svelte';
 	import type { ISAInvestigationSchema } from './lib/types/isa.generated';
+	import { handleDatahubRedirect } from './lib/datahub/session.svelte';
 
 	onMount(() => {
 		$isaObj = Schema.getObjectFromSchema('investigation') as ISAInvestigationSchema;
@@ -74,6 +75,16 @@
 					template: wizardConfig.rootTemplate,
 					mode: wizardConfig.general.initialView
 				});
+
+				// Back from the PLANTdataHUB sign-in: restore the work saved before the redirect
+				const datahub = wizardConfig.integrations?.datahub;
+				if (datahub?.clientId) {
+					const snapshot = await handleDatahubRedirect(datahub);
+					if (snapshot) {
+						isaObj.set(snapshot.isa);
+						updateAppstate(snapshot.appstate);
+					}
+				}
 			}
 
 			loading = false;
