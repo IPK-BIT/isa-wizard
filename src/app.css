@@ -89,3 +89,65 @@
 	--depth: 1;
 	--noise: 0;
 }
+
+/* Mobile layout fixes (see docs/mobile-assessment.md) */
+
+/* Native fieldsets default to min-width: min-content and daisyUI labels don't wrap,
+   so long help texts stretch form fields beyond narrow columns. */
+.fieldset {
+	min-width: 0;
+}
+.fieldset .label {
+	white-space: normal;
+}
+
+@media (pointer: coarse) {
+	/* iOS Safari zooms into focused inputs with a font size below 16px. */
+	input,
+	select,
+	textarea,
+	.input,
+	.select,
+	.textarea,
+	.svelecte {
+		/* svelecte inputs use `font: inherit`, so set it on the component root */
+		font-size: 16px;
+	}
+
+	/* daisyUI derives field height from --size (40px by default). */
+	.input,
+	.select {
+		--size: 2.75rem;
+	}
+
+	/* Touch targets of at least 44x44px (WCAG 2.5.5). */
+	.btn {
+		min-height: 2.75rem;
+		min-width: 2.75rem;
+	}
+
+	/* Navigation tree (daisyUI menu) and breadcrumb links */
+	.menu li > :is(button, a),
+	.breadcrumbs :is(button, a) {
+		min-height: 2.75rem;
+		align-content: center;
+		align-items: center;
+	}
+}
+
+/* Entity overview tables (Investigation/Study/Assay): on narrow screens stack each
+   label above its value, so nested tables get the full card width. */
+@media (width < 40rem) {
+	.entity-overview,
+	.entity-overview > tbody,
+	.entity-overview > tbody > tr,
+	.entity-overview > tbody > tr > th,
+	.entity-overview > tbody > tr > td {
+		display: block;
+		width: 100%;
+	}
+	.entity-overview > tbody > tr > th {
+		padding-bottom: 0;
+		border-bottom: 0;
+	}
+}
