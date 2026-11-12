@@ -15,33 +15,6 @@
 	let loadingId = $state<string | null>(null);
 	let errorMessage = $state<string | null>(null);
 
-	function prepareAssayFilenames(investigationJson: Record<string, any>): Record<string, any> {
-		// Deep clone or copy to avoid mutating the raw store state directly if unwanted
-		const clonedJson = JSON.parse(JSON.stringify(investigationJson));
-
-		for (const study of clonedJson.get?.('studies') || clonedJson.studies || []) {
-			const assays = study.assays || [];
-			for (let i = 0; i < assays.length; i++) {
-				const assay = assays[i];
-				let assayId: string | null = null;
-				for (const comment of assay.comments || []) {
-					if (comment.name === 'identifier') {
-						assayId = comment.value;
-						break;
-					}
-				}
-
-				if (!assayId) {
-					assayId = `assay${i}`;
-				}
-
-				assay.filename = `a_${assayId}.txt`;
-			}
-		}
-
-		return clonedJson;
-	}
-
 	function triggerDownload(content: Blob | string, filename: string) {
 		const blob =
 			content instanceof Blob ? content : new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -66,8 +39,7 @@
 			filename: 'isa-tab-archive.zip',
 			formatBadge: 'ZIP',
 			action: async (data) => {
-				const preparedData = prepareAssayFilenames(data);
-				return (await convertIsaJsonToZip(preparedData, 'blob')) as Blob;
+				return await convertIsaJsonToIsaTab(data);
 			}
 		},
 		{
