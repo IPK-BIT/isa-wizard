@@ -125,11 +125,13 @@
 
 		<main
 			class="p-0 {wizardConfig.general.layoutMode === 'standalone'
-				? 'grid grid-cols-[1fr_3fr_1fr] grid-rows-[0.25rem_auto] gap-0'
+				? 'grid grid-cols-1 gap-0 lg:grid-cols-[1fr_3fr_1fr] lg:grid-rows-[0.25rem_auto]'
 				: ''}"
 		>
 			{#if wizardConfig.general.layoutMode === 'standalone'}
-				<div class="col-start-1 row-start-2 self-stretch py-5 pr-2.5 pl-2.75">
+				<div
+					class="self-stretch px-2.5 pt-4 lg:col-start-1 lg:row-start-2 lg:py-5 lg:pr-2.5 lg:pl-2.75"
+				>
 					{#if getAppstate().mode === 'wizard' && wizardConfig.general.showQuestionnaireProgressBar}
 						<ProgressBar totalSteps={wizardConfig.templates[getAppstate().template].steps.length} />
 					{:else if getAppstate().mode === 'gui'}
@@ -137,7 +139,7 @@
 					{/if}
 				</div>
 			{/if}
-			<div class="col-start-2 row-start-2 mt-5 overflow-y-auto px-2.5 py-0 pb-5">
+			<div class="min-w-0 overflow-y-auto px-2.5 py-0 pb-5 lg:col-start-2 lg:row-start-2 lg:mt-5">
 				{#if getAppstate().mode === 'wizard'}
 					<div class="card bg-base-100 p-4 shadow-md">
 						<Questionnaire config={wizardConfig.templates[getAppstate().template]} {onFinish} />
@@ -151,7 +153,7 @@
 			{#if wizardConfig.general.layoutMode === 'standalone'}
 				{#if (wizardConfig.general.showConsole || metabuddyEnabled) && getAppstate().mode != 'init'}
 					<div
-						class="col-start-3 row-start-2 flex flex-col gap-4 self-stretch border-l-0 py-5 pr-2.75 pl-2.5"
+						class="flex min-w-0 flex-col gap-4 self-stretch border-l-0 px-2.5 pb-5 lg:col-start-3 lg:row-start-2 lg:py-5 lg:pr-2.75 lg:pl-2.5"
 					>
 						{#if wizardConfig.general.showConsole}
 							<div class="card bg-base-100 p-4 shadow-md">
