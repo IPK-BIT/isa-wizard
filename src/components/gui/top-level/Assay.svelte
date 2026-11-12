@@ -50,8 +50,8 @@
 	});
 </script>
 
-<div class="flex justify-between">
-	<div class="breadcrumbs text-sm">
+<div class="flex items-start justify-between gap-2">
+	<div class="breadcrumbs min-w-0 text-sm">
 		<ul>
 			<li>
 				<button onclick={openInvestigation}>{$isaObj.title || 'Untitled Investigation'}</button>
@@ -64,7 +64,7 @@
 			</li>
 		</ul>
 	</div>
-	<div>
+	<div class="shrink-0">
 		{#await Object.values(config.templates).filter((t: any) => t.metadata.type === 'assay')}
 			<p>Loading...</p>
 		{:then assayTemplates}
@@ -79,7 +79,7 @@
 	</div>
 </div>
 
-<table class="table w-full table-fixed">
+<table class="entity-overview table w-full table-fixed">
 	<tbody>
 		<!-- <tr>
 			<th class="w-1/4 align-top">Filename</th>

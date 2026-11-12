@@ -52,18 +52,18 @@
 	}
 </script>
 
-<div class="flex justify-between">
-	<div class="breadcrumbs text-sm">
+<div class="flex items-start justify-between gap-2">
+	<div class="breadcrumbs min-w-0 text-sm">
 		<ul>
 			<li>{$isaObj.title || 'Untitled Investigation'}</li>
 		</ul>
 	</div>
-	<div>
+	<div class="shrink-0">
 		<button class="btn btn-primary btn-sm" onclick={openInvestigation}>Edit Investigation</button>
 	</div>
 </div>
 
-<table class="table w-full table-fixed">
+<table class="entity-overview table w-full table-fixed">
 	<tbody>
 		<!-- <tr>
 			<th class="w-1/4 align-top">Filename</th>
