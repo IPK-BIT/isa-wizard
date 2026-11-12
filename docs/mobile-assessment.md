@@ -10,7 +10,7 @@
 | Overall        | **Not mobile-ready**                      | **Usable on phones**, pending a real-device check |
 | Questionnaire  | Form column ~142 px, fields clipped       | Full width, nothing clipped                       |
 | GUI mode       | Not assessed                              | Stacks to one column; nested tables use full card |
-| `widget.mjs`   | 2.76 MB gzipped                           | 719 KB gzipped (target was < 500 KB)              |
+| Initial JS     | 2.76 MB gzipped (`widget.mjs`)            | 254 KB gzipped (`widget.mjs` 146 KB + `config.svelte` 107 KB); target was < 500 KB |
 
 ## Method
 
@@ -52,15 +52,19 @@
    - Below 640 px each label sits above its value instead of in a 25 % column.
    - The header button no longer wraps, and the breadcrumb shrinks instead.
 6. **Landing card** (`InitView.svelte`): `w-full max-w-96` with smaller padding on phones.
+7. **Export libraries load on demand** (`Exports.svelte`, `lib/datahub/export.ts`):
+   - `@nfdi4plants/arctrl`, `exceljs`, `fsspreadsheet` and `jszip` made up 87 % of `widget.mjs`.
+   - They are now imported dynamically when an ISA-Tab, ARC or PLANTdataHUB export starts, as `arc-*.js` (543 KB gzipped) and `isatab-*.js` (30 KB gzipped).
 
 ## Remaining issues
 
-- **Bundle still 719 KB gzipped,** above the 500 KB target.
-  - The rest is JavaScript, not images; `config.svelte` alone is 111 KB gzipped.
-  - Next steps: analyse the bundle with `rollup-plugin-visualizer`, and lazy-load heavy, rarely used parts (exports, DataHub, Leaflet is already split).
-  - `widget.umd.js` (2.9 MB gzipped) doesn't benefit, because UMD puts everything in one file. Recommend that embedders use the ES build.
+- **Biggest remaining items at startup:**
+  - The embedded logo (`src/assets/logo.png`): 759×749 px and 101 KB, but never shown larger than ~320 px. A 384 px WebP would save roughly 90 KB.
+  - The compiled CSS embedded in the shadow root: 141 KB raw, about 20 KB gzipped, mostly daisyUI components.
+- **`widget.umd.js` (2.9 MB gzipped) doesn't benefit:** UMD puts everything, including the export libraries, in one file. Recommend that embedders use the ES build.
+- **First export is slower:** it now downloads ~570 KB the first time.
 - **Wide nested tables still scroll inside their box.** The 3-column protocol table is 435 px wide in a 275 px box. That's acceptable, but a card/list layout for protocols on phones would read better.
 - **Breadcrumbs are cut off visually** on long titles. They can be scrolled horizontally, but nothing indicates that.
 - **External TS4NFDI widget assets** are loaded from `ts4nfdi.github.io` on every visit. I didn't measure them.
-- **Bug found while testing (not mobile-specific):** `Protocols.svelte:25` reads `protocol.protocolType.termSource` without a guard. A protocol without `protocolType`, which is optional in ISA-JSON, crashes the whole study view.
+- ~~**Bug found while testing:** a protocol without `protocolType` crashed the study view.~~ Fixed. Optional ontology fields are now guarded in `Protocols.svelte`, `ProcessSequence.svelte`, `ParameterValue.svelte` and `Assay.svelte` (`technologyType`).
 - **No real-device test yet.** The touch rules were checked by simulation only. iOS Safari and Android Chrome still need checking before release.

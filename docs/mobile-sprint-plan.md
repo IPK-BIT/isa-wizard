@@ -34,13 +34,13 @@ Details in [mobile-assessment.md](mobile-assessment.md). Nothing has been commit
 | Item | Status |
 |---|---|
 | P0 Responsive main grid | ✅ Done, verified at 375 px |
-| P0 Shrink the bundle | ⚠️ Partly done: 2.76 MB → 719 KB gzipped; target < 500 KB not met |
+| P0 Shrink the bundle | ✅ Done: initial JS 2.76 MB → 254 KB gzipped; export libraries load on demand |
 | P0 Form controls fit the column | ✅ Done, verified (16 px font checked by simulating touch) |
 | P1 Touch targets ≥ 44 px | ✅ Done, verified by simulating touch: 0 small controls in GUI, 2 inside the License picker |
 | P1 Init card width | ✅ Done, verified |
 | P1 GUI mode at 375 px | ✅ Overview tables stack and headers no longer wrap; wide nested tables still scroll inside their box |
 
-**Still open:** the real-device check (Definition of Done), the bundle-size target, and the unguarded `protocolType` crash in `Protocols.svelte`, which I found while testing.
+**Still open:** the real-device check (Definition of Done). The `protocolType` crash found while testing is fixed.
 
 ## Risks
 
