@@ -40,9 +40,9 @@
 
 </script>
 
-<section class="flex h-[90vh] w-full items-center justify-center">
-	<div class="card w-96 bg-base-100 shadow-sm">
-		<figure class="p-8 pb-0">
+<section class="flex min-h-[90vh] w-full items-center justify-center px-4">
+	<div class="card w-full max-w-96 bg-base-100 shadow-sm">
+		<figure class="p-6 pb-0 sm:p-8 sm:pb-0">
 			<img src={logo} alt="ISA WIzard" />
 		</figure>
 		<div class="card-body space-y-2">
