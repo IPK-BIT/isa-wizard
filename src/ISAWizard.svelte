@@ -1,5 +1,4 @@
 <script lang="ts">
-	import errorImage from './assets/error.png';
 	import { onMount } from 'svelte';
 	import { ConfigLoader, setConfig } from './lib/config.svelte';
 	import type { WizardConfig } from './lib/types/Config';
@@ -104,10 +103,15 @@
 		<span class="ml-2">Loading configuration...</span>
 	</div>
 {:else if error}
-	<div class="card mx-auto mt-10 card-side w-lg bg-error p-4 text-error-content">
-		<figure>
-			<img class="w-32" src={errorImage} alt="Movie" />
-		</figure>
+	<div
+		class="card mx-auto mt-10 w-full max-w-lg bg-error p-4 text-error-content sm:card-side"
+	>
+		<!-- Lazy-loaded: library mode inlines assets, so a static import would put this image in the main bundle -->
+		{#await import('./assets/error.png') then { default: errorImage }}
+			<figure>
+				<img class="w-32" src={errorImage} alt="" />
+			</figure>
+		{/await}
 		<div class="card-body">
 			<h2 class="card-title">Error</h2>
 			<p>{error}</p>
